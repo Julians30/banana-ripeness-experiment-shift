@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Normalize the reviewer-facing analysis representation.
+"""Materialize the reviewer-facing analysis representation.
 
 This utility has two deterministic jobs:
 
-1. During the one-time repository migration, reconstruct the frozen source-clean
-   notebooks from the historical ``notebooks_packed/*.ipynb.b85gz`` files.
+1. Reconstruct any missing frozen source-clean notebooks from the immutable
+   ``archive/frozen_notebook_payloads/*.ipynb.b85gz`` provenance payloads.
 2. Regenerate one readable ``scripts/<notebook>.py`` mirror per authoritative
    notebook by extracting code cells verbatim, while commenting notebook-only
    shell/magic lines so the mirror remains valid Python syntax.
 
 The scientific notebooks are authoritative. This utility never changes notebook
-analysis code, parameters, results, or frozen evidence.
+analysis code, parameters, results, or frozen evidence. The archived payloads are
+retained intentionally so the exact source-clean notebooks can always be rebuilt
+and hash-verified from a fresh clone.
 """
 from __future__ import annotations
 
@@ -18,12 +20,11 @@ import base64
 import gzip
 import hashlib
 import json
-import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
-PACKED_DIR = ROOT / "notebooks_packed"
+PAYLOAD_DIR = ROOT / "archive" / "frozen_notebook_payloads"
 SCRIPT_DIR = ROOT / "scripts"
 
 NOTEBOOKS = [
@@ -61,9 +62,9 @@ def restore_missing_notebooks() -> None:
         direct = NOTEBOOK_DIR / name
         if direct.exists():
             continue
-        packed = PACKED_DIR / f"{name}.b85gz"
+        packed = PAYLOAD_DIR / f"{name}.b85gz"
         if not packed.exists():
-            raise SystemExit(f"Missing authoritative notebook and packed migration source: {name}")
+            raise SystemExit(f"Missing authoritative notebook and archived provenance payload: {name}")
         data = gzip.decompress(base64.b85decode(packed.read_bytes()))
         direct.write_bytes(data)
         print(f"Restored {direct.relative_to(ROOT)}")
@@ -132,22 +133,19 @@ def rebuild_script_mirrors() -> None:
         print(f"Wrote {path.relative_to(ROOT)}")
 
 
-def remove_historical_packing_layer() -> None:
+def remove_legacy_unpacker() -> None:
     old_unpack = SCRIPT_DIR / "unpack_notebooks.py"
     if old_unpack.exists():
         old_unpack.unlink()
-        print("Removed scripts/unpack_notebooks.py")
-    if PACKED_DIR.exists():
-        shutil.rmtree(PACKED_DIR)
-        print("Removed notebooks_packed/")
+        print("Removed legacy scripts/unpack_notebooks.py")
 
 
 def main() -> None:
     restore_missing_notebooks()
     verify_frozen_notebooks()
     rebuild_script_mirrors()
-    remove_historical_packing_layer()
-    print("Repository analysis representation is normalized.")
+    remove_legacy_unpacker()
+    print("Reviewer-facing analysis representation is materialized and verified.")
 
 
 if __name__ == "__main__":
