@@ -17,6 +17,7 @@ The study uses the University of Bath public dataset **Dataset for “Low-Cost, 
 - DOI: `10.15125/BATH-01459`
 - License: CC BY 4.0
 - Raw data are not redistributed in this repository.
+- Frozen source archives used by NB01: `ds_34.zip`, `Spect.zip`, `TPHiS.zip`, and `VOC.zip`.
 
 The primary four-experiment analysis uses the TPHiS data and three sensor representations: **TPH**, **Spectral**, and **TPH + Spectral**.
 
@@ -73,56 +74,62 @@ Only the **four held-out experiments** are treated as independent generalization
 
 The factorial ANOVA in NB07 is used for **descriptive structural effect-size decomposition**. Conventional ANOVA p-values are not used as confirmatory population inference.
 
-## Reviewer-facing code
+## Reviewer-facing code and exact reconstruction
 
-The repository now exposes the complete analytical sequence without a packing/unpacking step:
+The repository preserves the frozen analysis in two layers:
 
-- **nine directly browsable source-clean notebooks** in `notebooks/`;
-- **one deterministic Python script mirror per notebook** in `scripts/`;
-- frozen hashes linking the source-clean notebooks to the executed Colab files in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`;
-- an automated integrity audit that verifies notebook bytes, script–notebook equivalence, frozen protocol content, manuscript evidence, and repository cleanliness.
+1. **Canonical reviewer-facing files.** NB01 is stored directly in `notebooks/`. A single deterministic command materializes the remaining source-clean notebooks NB02–NB08 and one text-diff-friendly Python mirror per notebook.
+2. **Immutable provenance payloads.** `archive/frozen_notebook_payloads/` contains compact Base85+gzip payloads for NB02–NB08. They are not alternative analyses; they exist only to reconstruct the exact frozen notebook bytes from a fresh clone.
 
-The notebooks remain the canonical execution record. The `.py` mirrors are mechanically generated from notebook code cells to make code searching, static review, and text-based diffing easier.
+Run:
+
+```bash
+python scripts/rebuild_analysis_mirrors.py
+python scripts/audit_repository.py
+```
+
+The first command reconstructs any missing notebook, verifies the expected SHA-256 and byte count, validates notebook JSON, and generates deterministic `.py` mirrors. The second command verifies notebook bytes, script–notebook equivalence, the frozen LOEO protocol, numerical manuscript evidence, traceability safeguards and repository file policy.
+
+Executed-Colab hashes and source-clean hashes are linked in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`. The notebooks remain the canonical execution record; generated `.py` mirrors exist to simplify code search, static review and text-based diffing.
 
 ## Repository structure
 
 ```text
-notebooks/                  9 directly browsable source-clean notebooks
-scripts/                    9 deterministic Python mirrors + audit/rebuild utilities
-config/                     frozen nested-LOEO protocol
-results/main_tables/        frozen manuscript tables
-results/supplementary_tables/ selected complete supplementary evidence
-docs/                       data, statistics, provenance and reproducibility documentation
-.github/workflows/          CI repository-integrity audit
+notebooks/                         canonical source-clean notebooks after materialization
+scripts/                           deterministic mirror generator + integrity audit
+archive/frozen_notebook_payloads/  immutable NB02–NB08 reconstruction payloads
+config/                            frozen nested-LOEO protocol
+results/main_tables/               seven frozen manuscript tables
+results/SUPPLEMENTARY_EVIDENCE_MANIFEST.md  S1–S14 inventory and SHA-256
+results/                           frozen numerical facts and figure/table manifests
+docs/                              data, statistics, provenance and reproducibility documentation
+.github/workflows/                 repository-integrity audit
 ```
 
-The historical `notebooks_packed/` layer is intentionally removed after normalization. Reviewers do not need to decode or reconstruct notebooks before reading the analysis.
+The technical payload archive is intentionally isolated from the reviewer-facing root and never participates in scientific inference. It is a provenance/recovery mechanism only.
 
 ## Reproduce or inspect the analysis
 
 1. Download the original Bath dataset using DOI `10.15125/BATH-01459`.
-2. Reconstruct the project folders described in `docs/REPRODUCIBILITY.md`.
-3. Verify the master-data and frozen-protocol hashes documented in `docs/DATA_AVAILABILITY.md`.
-4. Install the environment from `requirements.txt` or `environment.yml`.
-5. Execute the notebooks in the order shown above.
-6. For text-based code review, inspect the matching files in `scripts/`.
-7. Run `python scripts/audit_repository.py`.
-
-`python scripts/rebuild_analysis_mirrors.py` deterministically regenerates the `.py` mirrors from the frozen notebooks after verifying the expected notebook SHA-256 values.
-
-A matching GitHub Actions workflow executes normalization checks and the structural audit on every push and pull request.
+2. Place the four source archives under the project's `01_RAW_ZIPS/` directory as documented in `docs/REPRODUCIBILITY.md`.
+3. Install the environment from `requirements.txt` or `environment.yml`.
+4. Run `python scripts/rebuild_analysis_mirrors.py` to materialize and verify the frozen source code.
+5. Run `python scripts/audit_repository.py` before executing any analysis.
+6. Execute NB01–NB08 in the frozen order shown above when full computational reproduction is required.
+7. Compare manuscript claims against `docs/MANUSCRIPT_EVIDENCE_MAP.md`, `results/main_tables/`, and `results/SUPPLEMENTARY_EVIDENCE_MANIFEST.md`.
 
 ## Important exclusions and safeguards
 
 - The known NB02 `external_support_distance_ratio` diagnostic is **not used as manuscript evidence** because exact duplicate spectral feature vectors produced a zero denominator in several scenarios.
 - External post-hoc best models are descriptive and are never presented as leakage-safe deployment selections.
 - SMOTE is applied only inside training data.
+- Probability calibration is fitted from development-only cross-fitted predictions; NB06-v1.1 changes calibration values only, not classifier training or outer predictions.
 - Raw data archives and large row-level prediction dumps are intentionally not committed to Git.
-- The repository audit treats the nine source-clean notebook SHA-256 values as frozen provenance checks; an unintended analytical-code change therefore fails CI.
+- The repository audit treats the nine source-clean notebook SHA-256 values as frozen provenance checks; an unintended analytical-code change therefore fails the audit.
 
 ## Data and code availability
 
-See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md`, `docs/EXECUTED_NOTEBOOK_PROVENANCE.md` and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
+See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md`, `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`, `docs/MANUSCRIPT_EVIDENCE_MAP.md` and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
 
 ## Citation
 
