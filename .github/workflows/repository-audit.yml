@@ -1,5 +1,6 @@
 name: repository-audit
 
+# Reviewer-facing normalization is deterministic and does not alter scientific results.
 on:
   push:
     branches: [main]
