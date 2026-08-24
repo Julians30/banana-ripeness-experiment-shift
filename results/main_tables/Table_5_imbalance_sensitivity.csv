@@ -1,0 +1,3 @@
+Strategy,Model x modality x experiment cells,Mean Δ Macro-F1,Median Δ Macro-F1,Fraction cells with improved Macro-F1,Mean Δ QWK,Mean Δ ordinal MAE,Mean Δ severe error >=2,Independent outer experiments,Experiments with positive mean Δ Macro-F1,Exact sign-flip p (descriptive),Minimum possible two-sided p with n=4
+class_weight_balanced,36,0.0040435402940787,0.0002032986868379,0.6388888888888888,0.0103039624608276,-0.0015919274314619,0.0043484766404982,4,2,0.75,0.125
+smote_training_only,60,0.0042168782953987,4.1419930532285006e-05,0.5833333333333334,0.032600398014101,0.073014979216968,0.0379527088515965,4,2,0.75,0.125

@@ -1,0 +1,9 @@
+Statistic,Value
+Outer x modality scenarios,12.0
+Internal winner = external winner,1.0
+Winner agreement rate,0.0833333333333333
+"Mean selection loss, Macro-F1",0.1147282930057584
+"Median selection loss, Macro-F1",0.110285086216339
+"Maximum selection loss, Macro-F1",0.2147904405320931
+Mean Spearman inner vs external rank,-0.0754141157953075
+Mean Kendall inner vs external rank,-0.0690967030930895

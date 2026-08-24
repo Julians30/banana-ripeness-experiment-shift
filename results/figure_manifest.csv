@@ -1,0 +1,9 @@
+Figure,Base filename,Role,Scientific purpose
+1,Figure_1_stage_distribution_by_experiment,Main,Dataset stage-support heterogeneity
+2,Figure_2_stage_matched_domain_auc,Main,Experiment-specific sensor signatures
+3,Figure_3_selected_models_external_macro_f1,Main,Confirmatory external performance
+4,Figure_4_selected_vs_runnerup_bootstrap_forest,Main,Internal selection transportability
+5,Figure_5_ece_raw_vs_temperature_scaled,Main,Probability reliability under shift
+6,Figure_6_macro_f1_partial_eta_squared,Main,Structural effect sizes
+S1,Figure_S1_balancing_effect_by_experiment,Supplementary,Imbalance sensitivity
+S2,Figure_S2_calibration_transfer_by_experiment,Supplementary,Calibration-transfer heterogeneity

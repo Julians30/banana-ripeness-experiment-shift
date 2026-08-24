@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import hashlib, json, math, pathlib
+import base64, gzip, hashlib, json, math, pathlib
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 REQUIRED_NOTEBOOKS=[
@@ -12,49 +12,35 @@ REQUIRED_NOTEBOOKS=[
 '06_CALIBRATION_RELIABILITY_ORDINAL.ipynb',
 '06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb',
 '07_FINAL_STATISTICAL_INFERENCE.ipynb',
-'08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb',
-]
+'08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb']
 EXPECTED_PROTOCOL_SHA='86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930'
-EXPECTED={
-'n_original_observations':17662,
-'n_outer_experiments':4,
-'n_modalities':3,
-'n_models':5,
-'n_outer_model_cells':60,
-'n_outer_modality_selection_scenarios':12,
-'internal_external_winner_matches':1,
-'internal_external_winner_agreement_rate':1/12,
-'mean_selection_loss_macro_f1':0.114728,
-'max_selection_loss_macro_f1':0.214790,
-'mean_inner_external_spearman':-0.075414,
-}
+EXPECTED={'n_original_observations':17662,'n_outer_experiments':4,'n_modalities':3,'n_models':5,'n_outer_model_cells':60,'n_outer_modality_selection_scenarios':12,'internal_external_winner_matches':1,'internal_external_winner_agreement_rate':1/12,'mean_selection_loss_macro_f1':0.114728,'max_selection_loss_macro_f1':0.214790,'mean_inner_external_spearman':-0.075414}
 
-def fail(msg):
-    raise SystemExit('FAIL: '+msg)
-
+def fail(msg): raise SystemExit('FAIL: '+msg)
 def sha256(path):
     h=hashlib.sha256()
     with path.open('rb') as f:
-        for chunk in iter(lambda:f.read(1024*1024),b''):
-            h.update(chunk)
+        for chunk in iter(lambda:f.read(1024*1024),b''): h.update(chunk)
     return h.hexdigest()
 
+def notebook_bytes(name):
+    direct=ROOT/'notebooks'/name
+    if direct.exists(): return direct.read_bytes()
+    packed=ROOT/'notebooks_packed'/f'{name}.b85gz'
+    if not packed.exists(): fail(f'missing notebook source or packed source: {name}')
+    try: return gzip.decompress(base64.b85decode(packed.read_bytes()))
+    except Exception as e: fail(f'cannot reconstruct {name}: {e}')
+
 for name in REQUIRED_NOTEBOOKS:
-    p=ROOT/'notebooks'/name
-    if not p.exists(): fail(f'missing notebook: {name}')
-    try:
-        nb=json.loads(p.read_text(encoding='utf-8'))
-    except Exception as e:
-        fail(f'invalid notebook JSON {name}: {e}')
+    try: nb=json.loads(notebook_bytes(name).decode('utf-8'))
+    except Exception as e: fail(f'invalid notebook JSON {name}: {e}')
     for i,cell in enumerate(nb.get('cells',[])):
         if cell.get('cell_type')!='code': continue
         src=cell.get('source','')
         if isinstance(src,list): src=''.join(src)
         cleaned='\n'.join(line for line in src.splitlines() if not line.lstrip().startswith(('!','%')))
-        try:
-            compile(cleaned,f'{name}:cell{i}','exec')
-        except SyntaxError as e:
-            fail(f'python syntax error in {name} cell {i}: {e}')
+        try: compile(cleaned,f'{name}:cell{i}','exec')
+        except SyntaxError as e: fail(f'python syntax error in {name} cell {i}: {e}')
 
 protocol=ROOT/'config'/'nested_loeo_protocol_v1.json'
 if not protocol.exists(): fail('missing frozen protocol JSON')
@@ -85,6 +71,6 @@ for phrase in ['10.15125/BATH-01459','Leave-One-Experiment-Out','1/12','0.1147']
     if phrase not in readme: fail(f'README missing required phrase: {phrase}')
 
 print('PASS: repository structure and frozen evidence are internally consistent.')
-print(f'PASS: {len(REQUIRED_NOTEBOOKS)} notebooks parse and syntax-check.')
+print(f'PASS: {len(REQUIRED_NOTEBOOKS)} notebooks reconstruct, parse and syntax-check.')
 print('PASS: frozen protocol SHA-256 matches audited protocol.')
 print('PASS: seven main manuscript tables are present.')

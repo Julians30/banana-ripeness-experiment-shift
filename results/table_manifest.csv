@@ -1,0 +1,8 @@
+Table,Filename,Role,Scientific purpose
+1,Table_1_dataset_stage_distribution.csv,Main,Dataset composition
+2,Table_2_experiment_shift_diagnostics.csv,Main,Domain shift
+3,Table_3_confirmatory_external_selected_models.csv,Main,Confirmatory external results
+4,Table_4_model_selection_instability_summary.csv,Main,Selection instability
+5,Table_5_imbalance_sensitivity.csv,Main,Imbalance sensitivity
+6,Table_6_probabilistic_calibration_selected_models.csv,Main,Calibration
+7,Table_7_structural_effect_sizes.csv,Main,Structural effect sizes
