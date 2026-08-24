@@ -58,7 +58,7 @@ def notebook_bytes(name: str) -> bytes:
         fail(f'cannot reconstruct {name}: {exc}')
 
 
-print('AUDIT 1/5 — notebooks')
+print('AUDIT 1/6 — notebooks')
 for name in REQUIRED_NOTEBOOKS:
     try:
         nb = json.loads(notebook_bytes(name).decode('utf-8'))
@@ -82,7 +82,7 @@ for name in REQUIRED_NOTEBOOKS:
             fail(f'python syntax error in {name} cell {i}: {exc}')
 print(f'PASS: {len(REQUIRED_NOTEBOOKS)} notebooks reconstruct, parse and syntax-check.')
 
-print('AUDIT 2/5 — frozen LOEO protocol')
+print('AUDIT 2/6 — frozen LOEO protocol')
 protocol_path = ROOT/'config'/'nested_loeo_protocol_v1.json'
 if not protocol_path.exists():
     fail('missing frozen protocol JSON')
@@ -113,7 +113,7 @@ else:
         f'current={raw_sha}, archived={ORIGINAL_PROTOCOL_RAW_SHA}'
     )
 
-print('AUDIT 3/5 — frozen numerical evidence')
+print('AUDIT 3/6 — frozen numerical evidence')
 facts_path = ROOT/'results'/'frozen_numeric_facts_nb08.json'
 if not facts_path.exists():
     fail('missing frozen NB08 facts')
@@ -132,7 +132,7 @@ for key, expected in EXPECTED.items():
         fail(f'frozen fact mismatch: {key}: got={got}, expected={expected}')
 print('PASS: frozen NB08 numerical evidence matches audited values.')
 
-print('AUDIT 4/5 — manuscript tables and repository policy')
+print('AUDIT 4/6 — manuscript tables and repository policy')
 main_table_dir = ROOT/'results'/'main_tables'
 if not main_table_dir.exists():
     fail('missing results/main_tables directory')
@@ -153,7 +153,7 @@ for path in ROOT.rglob('*'):
         fail(f'file exceeds 10 MiB policy: {rel}')
 print('PASS: tracked research-file policy checks passed.')
 
-print('AUDIT 5/5 — README safeguards')
+print('AUDIT 5/6 — README safeguards')
 readme_path = ROOT/'README.md'
 if not readme_path.exists():
     fail('missing README.md')
@@ -168,5 +168,22 @@ for phrase in [
         fail(f'README missing required phrase: {phrase}')
 print('PASS: README contains dataset, validation, and frozen-result safeguards.')
 
+print('AUDIT 6/6 — manuscript evidence traceability')
+evidence_map_path = ROOT/'docs'/'MANUSCRIPT_EVIDENCE_MAP.md'
+if not evidence_map_path.exists():
+    fail('missing docs/MANUSCRIPT_EVIDENCE_MAP.md')
+evidence_map = evidence_map_path.read_text(encoding='utf-8')
+for phrase in [
+    'Table_3_confirmatory_external_selected_models.csv',
+    'Table_4_model_selection_instability_summary.csv',
+    'Table_6_probabilistic_calibration_selected_models.csv',
+    'Table_7_structural_effect_sizes.csv',
+    'external_support_distance_ratio',
+    'NB06-v1.1',
+]:
+    if phrase not in evidence_map:
+        fail(f'manuscript evidence map missing required traceability phrase: {phrase}')
+print('PASS: manuscript claims are linked to frozen evidence and safeguards.')
+
 print('\nPASS: repository structure and frozen evidence are internally consistent.')
-print('PASS: CI reproducibility audit completed successfully.')
+print('PASS: repository integrity audit completed successfully.')
