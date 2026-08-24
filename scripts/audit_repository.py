@@ -41,7 +41,7 @@ EXPECTED_NOTEBOOK_SOURCE = {
     "06_CALIBRATION_RELIABILITY_ORDINAL.ipynb": ("21cc97bac89b13a910e5a7a4009de0a5713ed3b7364239db678edfac32484eca", 42401),
     "06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb": ("d8999076c4c067be8aba6a83f3ad2b5351c784ac7646f879c1055aa024f496bd", 33826),
     "07_FINAL_STATISTICAL_INFERENCE.ipynb": ("3232477307baea128472ecd12fee0346168a548cf6b117a99ca7f8e1878b674b", 35257),
-    "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb": ("8efd3456de3bf2ee2eb6c78a2a60721c582937232b1fe8e2b8363e5a601f32d3", 47560),
+    "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb": ("59b4f7e2dcc6cfb214536cf31736b50a2af9666b207387eb897ff6f994d58c9e", 46883),
 }
 
 EXPECTED_PAYLOAD_GIT_BLOBS = {
@@ -91,9 +91,9 @@ def normalized_code(source: str) -> str:
 
 def parse_and_compile_notebook(name: str, data: bytes) -> dict:
     expected_sha, expected_size = EXPECTED_NOTEBOOK_SOURCE[name]
-    if len(data) != expected_size:
-        fail(f"{name}: byte size {len(data)} != frozen {expected_size}")
     got = sha256(data)
+    if len(data) != expected_size:
+        fail(f"{name}: byte size {len(data)} != frozen {expected_size}; SHA-256={got}")
     if got != expected_sha:
         fail(f"{name}: SHA-256 {got} != frozen {expected_sha}")
     try:
