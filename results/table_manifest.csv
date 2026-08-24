@@ -1,8 +1,8 @@
-Table,Filename,Role,Scientific purpose
-1,Table_1_dataset_stage_distribution.csv,Main,Dataset composition
-2,Table_2_experiment_shift_diagnostics.csv,Main,Domain shift
-3,Table_3_confirmatory_external_selected_models.csv,Main,Confirmatory external results
-4,Table_4_model_selection_instability_summary.csv,Main,Selection instability
-5,Table_5_imbalance_sensitivity.csv,Main,Imbalance sensitivity
-6,Table_6_probabilistic_calibration_selected_models.csv,Main,Calibration
-7,Table_7_structural_effect_sizes.csv,Main,Structural effect sizes
+Frozen table,Filename,Role,Scientific purpose,Current revised manuscript mapping
+1,Table_1_dataset_stage_distribution.csv,Frozen analytical evidence,Dataset composition,Current Table 1
+2,Table_2_experiment_shift_diagnostics.csv,Frozen analytical evidence,Domain shift,Current Table 3 and Figure 1
+3,Table_3_confirmatory_external_selected_models.csv,Frozen analytical evidence,Confirmatory external selected-model results,Current Table 4 and Figure 2
+4,Table_4_model_selection_instability_summary.csv,Frozen analytical evidence,Selection instability,Current Table 4 and Figure 3
+5,Table_5_imbalance_sensitivity.csv,Frozen analytical evidence,Imbalance sensitivity,Current Table 5 and Figure S1
+6,Table_6_probabilistic_calibration_selected_models.csv,Frozen analytical evidence,Calibration,Current Table 5 Figure 4 and Figure S2
+7,Table_7_structural_effect_sizes.csv,Frozen analytical evidence,Structural effect sizes,Current Table 5 and Figure 5

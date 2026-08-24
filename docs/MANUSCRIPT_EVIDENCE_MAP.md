@@ -1,55 +1,91 @@
 # Manuscript evidence map
 
-This document links the principal manuscript claims to frozen repository evidence. It is intended as a reviewer-facing traceability layer and does not introduce new analysis.
+This document links the **current revised manuscript** to frozen analytical evidence and reviewer-requested explanatory additions. It is a traceability layer; it does not introduce new confirmatory analysis.
 
-## Scope and design
+## Evidence layers
 
-| Manuscript claim | Frozen evidence | Analytical source | Interpretation constraint |
+The repository deliberately separates two layers:
+
+1. **Frozen analytical evidence** — NB01–NB08, the frozen LOEO protocol, `results/main_tables/`, and `results/frozen_numeric_facts_nb08.json`.
+2. **Current revised-manuscript presentation/reviewer evidence** — `results/manuscript_current/` and `results/reviewer_revision/`.
+
+Reviewer-requested additions never replace or modify frozen outer predictions, model rankings, calibration fits, or confirmatory numerical values.
+
+## Scope and data reconstruction
+
+| Current manuscript claim | Current presentation artifact | Frozen / source evidence | Interpretation constraint |
 |---|---|---|---|
-| The confirmatory analysis uses 17,662 original observations from four external experiments, three sensor representations and five algorithms. | `results/frozen_numeric_facts_nb08.json`; `results/main_tables/Table_1_dataset_stage_distribution.csv` | NB01, NB08 | Counts describe the audited TPHiS analysis set. |
-| Model development and external evaluation are separated by nested Leave-One-Experiment-Out validation. | `config/nested_loeo_protocol_v1.json`; `docs/REPRODUCIBILITY.md` | NB01, NB03, NB04 | The held-out experiment must remain isolated from preprocessing, hyperparameter selection, algorithm selection, resampling and calibration fitting. |
-| The experiments exhibit substantial measurable distribution shift. | `results/main_tables/Table_2_experiment_shift_diagnostics.csv`; `results/figure_manifest.csv` Figure 2 | NB02, NB08 | Use stage-matched domain AUC, MMD, PCA and UMAP evidence. Do not use `external_support_distance_ratio`. |
+| Confirmatory analysis uses 17,662 inferred-original TPHiS observations from four experiments. | current Table 1; mapping in `results/table_manifest.csv` | NB01; `results/frozen_numeric_facts_nb08.json` | Counts describe the audited original block only. |
+| The inferred balancing tail exactly fills class deficits to 6,533 per stage. | `results/reviewer_revision/Table_S1_reconstruction_count_audit.csv` | NB01 source-index reconstruction; `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | Source ordering supports the inference but is not a demonstrated time variable or author-provided synthetic flag. |
+| Nested LOEO isolates a complete acquisition experiment from development. | `config/nested_loeo_protocol_v1.json`; `docs/REPRODUCIBILITY.md` | NB01, NB03, NB04 | External rows cannot influence preprocessing, tuning, resampling, calibration, or algorithm selection. |
+
+## Experiment shift
+
+| Current manuscript claim | Current presentation artifact | Frozen / source evidence | Interpretation constraint |
+|---|---|---|---|
+| Experiment identity remains strongly recoverable after matching on ripeness stage. | current Table 3; mapping in `results/table_manifest.csv`; current Figure 1; checksum in `results/manuscript_current/figures/README.md` | NB02; frozen analytical `Table_2_experiment_shift_diagnostics.csv` | Error bars are repeated-CV variability, not confidence intervals over independent experiments. |
+| Actual matched sample sizes vary substantially by stage. | `results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv` | source-index experiment mapping; `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | `matched n/domain = min(n_dev, n_external, 600)`; matching precedes modality construction. |
+| The preliminary nearest-neighbor support-ratio diagnostic is excluded. | documentation only | NB02 | Do not use `external_support_distance_ratio` because duplicate spectral vectors generated zero denominators. |
 
 ## Confirmatory predictive transportability
 
-| Manuscript claim | Frozen evidence | Analytical source | Interpretation constraint |
+| Current manuscript claim | Current presentation artifact | Frozen evidence | Interpretation constraint |
 |---|---|---|---|
-| Internally selected models frequently lose performance on completely unseen experiments. | `results/main_tables/Table_3_confirmatory_external_selected_models.csv`; Figure 3 | NB04, NB08 | External post-hoc best models are descriptive comparators only. |
-| The internally selected winner matches the external post-hoc winner in only 1 of 12 experiment × modality scenarios (8.3%). | `results/main_tables/Table_4_model_selection_instability_summary.csv`; `results/frozen_numeric_facts_nb08.json` | NB04, NB07, NB08 | This is model-selection transportability, not an estimate of a population probability over future experiments. |
-| Mean selection loss is 0.114728 Macro-F1 and the maximum observed loss is 0.214790. | `results/main_tables/Table_4_model_selection_instability_summary.csv`; `results/frozen_numeric_facts_nb08.json` | NB04, NB07, NB08 | Selection loss is defined relative to the post-hoc external best model and therefore quantifies the cost of internal model selection under shift. |
-| Mean inner-versus-external model-rank agreement is approximately null (Spearman = -0.075414; Kendall = -0.069097). | `results/main_tables/Table_4_model_selection_instability_summary.csv` | NB07, NB08 | Treat these as descriptive summaries across the 12 outer experiment × modality scenarios. |
+| Internally selected models frequently lose external performance. | current Table 4; mapping in `results/table_manifest.csv`; Figure 2 | frozen `Table_3_confirmatory_external_selected_models.csv`; NB04 | Post-hoc external best models are descriptive comparators only. |
+| Internal winner = post-hoc external winner in 1/12 scenarios. | Current Table 4; current Figure 3 | frozen `Table_4_model_selection_instability_summary.csv`; `frozen_numeric_facts_nb08.json` | This is observed model-selection transportability, not a population probability over future experiments. |
+| Mean selection loss = 0.114728 Macro-F1; max = 0.214790. | Current Table 4; current Figure 3 | frozen `Table_4_model_selection_instability_summary.csv`; NB04/NB07 | Selection loss is defined relative to the post-hoc external best model. |
+| Mean inner–external rank association is approximately null. | Current Table 5 synthesis | frozen `Table_4_model_selection_instability_summary.csv` | Descriptive across 12 experiment × modality scenarios. |
+
+## Trivial baseline
+
+| Current manuscript claim | Current presentation artifact | Source evidence | Interpretation constraint |
+|---|---|---|---|
+| Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | `results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv` | `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | Majority class is determined from development experiments only; external labels are used only for scoring. |
+
+## Imbalance sensitivity
+
+| Current manuscript claim | Current presentation artifact | Frozen evidence | Interpretation constraint |
+|---|---|---|---|
+| Class weighting and training-only SMOTE change mean Macro-F1 by only about +0.004. | Current Table 5; Figure S1 | frozen `Table_5_imbalance_sensitivity.csv`; NB05/NB07 | Effects are heterogeneous across four experiments; sign-flip p-values have coarse resolution. |
+| SMOTE can worsen ordinal error structure. | discussion + Figure S1 context | NB05 | Synthetic interpolation should not be interpreted as repairing experiment shift. |
 
 ## Probabilistic reliability
 
-| Manuscript claim | Frozen evidence | Analytical source | Interpretation constraint |
+| Current manuscript claim | Current presentation artifact | Frozen evidence | Interpretation constraint |
 |---|---|---|---|
-| Probability estimates lose reliability under experiment shift. | `results/main_tables/Table_6_probabilistic_calibration_selected_models.csv`; Figure 5 | NB06-v1.1, NB08 | NB06-v1.1 is authoritative for final temperature-scaling values. |
-| Development-only temperature scaling reduces mean ECE from 0.438699 to 0.256772 and mean NLL from 4.616133 to 1.768828. | `results/frozen_numeric_facts_nb08.json`; `results/main_tables/Table_6_probabilistic_calibration_selected_models.csv` | NB06-v1.1, NB08 | Calibration improves average reliability but does not establish reliable probability transfer in every experiment/modality cell. |
-| Three selected temperature fits reached the predefined upper bound. | `results/frozen_numeric_facts_nb08.json`; `results/main_tables/Table_6_probabilistic_calibration_selected_models.csv` | NB06-v1.1, NB08 | Report this as evidence of severe calibration mismatch in specific development folds, not as a numerical optimization failure. |
+| Development-only temperature scaling improves average ECE and NLL. | Current Table 5; `Figure_4_ece_raw_vs_temperature_scaled.png`; Figure S2 | frozen `Table_6_probabilistic_calibration_selected_models.csv`; NB06-v1.1 | NB06-v1.1 is authoritative for final temperature values. |
+| Mean ECE 0.438699 → 0.256772; mean NLL 4.616133 → 1.768828. | Current Table 5 / Figure 4 | `frozen_numeric_facts_nb08.json` | Average improvement does not imply uniform calibration transfer. |
+| Three selected temperature fits reached the upper bound. | frozen Table 6 / manuscript text | NB06-v1.1 | Indicates severe calibration mismatch in particular development folds, not an optimization crash. |
 
-## Structural dominance of experiment shift
+## Structural effect-size decomposition
 
-| Manuscript claim | Frozen evidence | Analytical source | Interpretation constraint |
+| Current manuscript claim | Current presentation artifact | Frozen evidence | Interpretation constraint |
 |---|---|---|---|
-| Held-out experiment explains substantially more external Macro-F1 variation than algorithm identity. | `results/main_tables/Table_7_structural_effect_sizes.csv`; Figure 6 | NB07, NB08 | Partial eta-squared: held-out experiment = 0.466088; algorithm = 0.053088. |
-| The factorial model is used for structural effect-size decomposition, not confirmatory population inference. | `docs/REPRODUCIBILITY.md`; `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md` | NB07 | Do not interpret conventional ANOVA p-values as evidence over a population of independent experiments. |
+| Held-out experiment contributes much more Macro-F1 variation than algorithm identity. | Current Table 5; Figure 5 | frozen `Table_7_structural_effect_sizes.csv`; NB07 | partial eta-squared: experiment 0.466088, algorithm 0.053088. |
+| Factorial OLS/ANOVA is descriptive. | manuscript text; `docs/STATISTICAL_ANALYSIS.md` | NB07 | Conventional ANOVA p-values are not population-level confirmatory inference. |
+| Residual variation remains substantial. | manuscript discussion | NB07 model R² = 0.516 | Residual variation may contain unmodeled interactions, biological variability, sensor noise, and acquisition microconditions; these are plausible sources, not separately identified causal components. |
 
-## Imbalance-treatment sensitivity
+## Reviewer-requested TreeSHAP explanation
 
-| Manuscript claim | Frozen evidence | Analytical source | Interpretation constraint |
+| Current manuscript claim | Current presentation artifact | Analytical basis | Interpretation constraint |
 |---|---|---|---|
-| Class weighting and training-only SMOTE produce only small average Macro-F1 changes relative to the magnitude of experiment shift. | `results/main_tables/Table_5_imbalance_sensitivity.csv`; Figure S1 | NB05, NB08 | Mean delta Macro-F1 is about +0.004 for each strategy, with heterogeneous experiment-specific effects. |
-| With only four independent outer experiments, exact experiment-level sign-flip inference has coarse resolution. | `results/main_tables/Table_5_imbalance_sensitivity.csv`; `docs/REPRODUCIBILITY.md` | NB05, NB07 | The minimum possible two-sided p-value is 0.125 for n = 4. |
+| Spectral tree explanations emphasize visible-green and selected NIR bands. | `Figure_S3_treeshap_spectral_tree_models.png` (checksum in `results/manuscript_current/figures/README.md`) | Post-hoc TreeSHAP using spectral RF/XGBoost and frozen NB03 hyperparameters | Explanatory only; no role in tuning/model selection; attribution may mix ripeness and experiment-specific signal. |
+| TreeSHAP is not causal biochemical attribution. | `results/reviewer_revision/README.md` | manuscript discussion | Do not claim that a band's SHAP value proves a specific physiological mechanism. |
 
-## Manuscript-level conclusion supported by the frozen evidence
+## Current manuscript presentation manifest
 
-The repository supports a conclusion about **transportability**, not about a universal best classifier. Across the audited experiments, experiment-specific distribution shift is associated with unstable internal model ranking, substantial selection loss, and degraded probability reliability. Calibration can improve average reliability metrics, but it does not remove experiment-specific failures. Accordingly, manuscript wording should emphasize leakage-safe external validation, model-selection instability and probabilistic transportability rather than presenting any single algorithm as globally superior.
+The exact current presentation layer is indexed by:
 
-## Evidence exclusions and provenance safeguards
+- `results/figure_manifest.csv`
+- `results/table_manifest.csv`
+- `results/reviewer_revision/manifest.csv`
 
-- Do not use the NB02 `external_support_distance_ratio` diagnostic as manuscript evidence.
-- Do not present external post-hoc winners as leakage-safe deployment selections.
-- Preserve NB06 for provenance, but use NB06-v1.1 for final temperature-scaling values.
+## Evidence exclusions and safeguards
+
+- Do not use `external_support_distance_ratio` as manuscript evidence.
+- Do not present post-hoc external winners as deployable leakage-safe selections.
+- Preserve NB06 for provenance; use NB06-v1.1 for final temperature-scaling values.
 - Treat row-level bootstrap intervals as conditional within each held-out experiment.
-- Treat only the four held-out experiments as independent generalization units.
-- Do not modify frozen numerical values in `results/frozen_numeric_facts_nb08.json` outside a formally rerun and re-audited analysis.
+- Treat only four held-out experiments as independent generalization units.
+- Treat TreeSHAP as post-hoc explanatory evidence, not confirmatory or causal evidence.
+- Do not modify `results/frozen_numeric_facts_nb08.json` outside a formally rerun and re-audited analysis.

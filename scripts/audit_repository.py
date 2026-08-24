@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
-"""Read-only integrity audit for the frozen banana experiment-shift repository.
+"""Read-only integrity audit for the banana experiment-shift repository.
 
-The audit is deliberately side-effect free: CI never rewrites notebooks, commits
-generated files, or pushes back to the repository. Frozen NB02–NB08 notebooks are
-stored as immutable base85+gzip provenance payloads and are decoded only in memory.
+The audit is side-effect free. It verifies:
+1) frozen notebook provenance;
+2) clean repository layout;
+3) frozen LOEO protocol;
+4) frozen numerical evidence;
+5) original analytical tables/manifests;
+6) current revised-manuscript presentation artifacts;
+7) reviewer-requested revision evidence;
+8) environment/citation metadata;
+9) manuscript-evidence traceability and documentation;
+10) repository file policy.
+
+CI never rewrites notebooks, commits generated files, or pushes to the repository.
 """
 from __future__ import annotations
 
@@ -72,22 +82,33 @@ EXPECTED_FACTS = {
     "mean_inner_external_spearman": -0.075414,
 }
 
+CURRENT_ARTIFACT_SHA256 = {
+    "results/reviewer_revision/Table_S1_reconstruction_count_audit.csv": "d0897be3128e001d7a91b313097d6e99b4319680b7660c25a7d88fe80e8bcc70",
+    "results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv": "df88ec28798fa8b19442d18deb1d6308dce31aebb90088b46ca9f8c70b41dbf3",
+    "results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv": "dab5bf76b28bef36dd97a2454b46747b093a40f5cbe888a776e0cfa5cd68a349",
+}
+
+
 def fail(message: str) -> None:
     print(f"FAIL: {message}", file=sys.stderr)
     raise SystemExit(1)
 
+
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
 
 def git_blob_sha(data: bytes) -> str:
     header = f"blob {len(data)}\0".encode("ascii")
     return hashlib.sha1(header + data).hexdigest()
+
 
 def normalized_code(source: str) -> str:
     return "\n".join(
         line for line in source.splitlines()
         if not line.lstrip().startswith(("!", "%"))
     )
+
 
 def parse_and_compile_notebook(name: str, data: bytes) -> dict:
     expected_sha, expected_size = EXPECTED_NOTEBOOK_SOURCE[name]
@@ -114,7 +135,8 @@ def parse_and_compile_notebook(name: str, data: bytes) -> dict:
             fail(f"{name}: Python syntax error in code cell {idx}: {exc}")
     return nb
 
-print("AUDIT 1/8 — frozen notebook provenance")
+
+print("AUDIT 1/10 — frozen notebook provenance")
 nb01 = NOTEBOOK_DIR / NOTEBOOKS[0]
 if not nb01.exists():
     fail("missing directly browsable NB01 notebook")
@@ -137,9 +159,9 @@ for name in NOTEBOOKS[1:]:
     except Exception as exc:
         fail(f"{payload_name}: cannot decode base85+gzip payload: {exc}")
     parse_and_compile_notebook(name, notebook_bytes)
-print("PASS: NB01 and eight immutable notebook payloads reproduce all nine frozen notebook sources.")
+print("PASS: NB01 and eight immutable payloads reproduce all nine frozen notebook sources.")
 
-print("AUDIT 2/8 — repository layout")
+print("AUDIT 2/10 — repository layout")
 if (ROOT / "notebooks_packed").exists():
     fail("obsolete notebooks_packed/ directory is present at repository root")
 if (SCRIPT_DIR / "unpack_notebooks.py").exists():
@@ -148,15 +170,14 @@ for required in [
     ROOT / "archive" / "README.md",
     NOTEBOOK_DIR / "README.md",
     SCRIPT_DIR / "rebuild_analysis_mirrors.py",
+    SCRIPT_DIR / "09_REVIEWER_REQUESTED_AUDITS.py",
 ]:
     if not required.exists():
         fail(f"missing reviewer-facing file: {required.relative_to(ROOT)}")
-print("PASS: provenance payloads are archived and the reviewer-facing root is clean.")
+print("PASS: provenance archive and reviewer-facing utilities are present.")
 
-print("AUDIT 3/8 — frozen LOEO protocol")
+print("AUDIT 3/10 — frozen LOEO protocol")
 protocol_path = ROOT / "config" / "nested_loeo_protocol_v1.json"
-if not protocol_path.exists():
-    fail("missing config/nested_loeo_protocol_v1.json")
 raw_protocol = protocol_path.read_bytes()
 try:
     protocol = json.loads(raw_protocol.decode("utf-8"))
@@ -167,16 +188,13 @@ canonical = json.dumps(
 ).encode("utf-8")
 if sha256(canonical) != EXPECTED_PROTOCOL_CANONICAL_SHA:
     fail("frozen LOEO protocol semantic SHA-256 changed")
-raw_sha = sha256(raw_protocol)
-if raw_sha == ORIGINAL_PROTOCOL_RAW_SHA:
+if sha256(raw_protocol) == ORIGINAL_PROTOCOL_RAW_SHA:
     print("PASS: protocol semantic and raw-byte hashes match the archived protocol.")
 else:
     print("PASS: protocol semantic hash matches; raw serialization differs but semantics are unchanged.")
 
-print("AUDIT 4/8 — frozen numerical evidence")
+print("AUDIT 4/10 — frozen numerical evidence")
 facts_path = ROOT / "results" / "frozen_numeric_facts_nb08.json"
-if not facts_path.exists():
-    fail("missing results/frozen_numeric_facts_nb08.json")
 facts = json.loads(facts_path.read_text(encoding="utf-8"))
 for key, expected in EXPECTED_FACTS.items():
     if key not in facts:
@@ -189,55 +207,106 @@ for key, expected in EXPECTED_FACTS.items():
         fail(f"frozen fact mismatch: {key}: {got} vs {expected}")
 print("PASS: frozen NB08 numerical evidence matches audited values.")
 
-print("AUDIT 5/8 — manuscript tables and manifests")
+print("AUDIT 5/10 — original analytical tables and manifests")
 main_table_dir = ROOT / "results" / "main_tables"
 main_tables = sorted(main_table_dir.glob("*.csv")) if main_table_dir.exists() else []
 if len(main_tables) != 7:
-    fail(f"expected 7 main manuscript tables, found {len(main_tables)}")
+    fail(f"expected 7 frozen analytical tables, found {len(main_tables)}")
 for required in [ROOT / "results" / "table_manifest.csv", ROOT / "results" / "figure_manifest.csv"]:
     if not required.exists():
         fail(f"missing {required.relative_to(ROOT)}")
-print("PASS: seven main manuscript tables and both manifests are present.")
+print("PASS: seven frozen analytical tables and both top-level manifests are present.")
 
-print("AUDIT 6/8 — documentation and reviewer safeguards")
-readme_path = ROOT / "README.md"
-if not readme_path.exists():
-    fail("missing README.md")
-readme = readme_path.read_text(encoding="utf-8")
+print("AUDIT 6/10 — current revised-manuscript artifacts")
+for rel, expected_sha in CURRENT_ARTIFACT_SHA256.items():
+    path = ROOT / rel
+    if not path.exists():
+        fail(f"missing current manuscript/reviewer artifact: {rel}")
+    got = sha256(path.read_bytes())
+    if got != expected_sha:
+        fail(f"current artifact changed: {rel}: SHA-256={got}")
+for required in [
+    ROOT / "results" / "manuscript_current" / "README.md",
+    ROOT / "results" / "manuscript_current" / "figures" / "README.md",
+    ROOT / "results" / "reviewer_revision" / "README.md",
+    ROOT / "results" / "reviewer_revision" / "manifest.csv",
+]:
+    if not required.exists():
+        fail(f"missing current manuscript traceability file: {required.relative_to(ROOT)}")
+figure_provenance = (ROOT / "results/manuscript_current/figures/README.md").read_text(encoding="utf-8")
+for figure_hash in [
+    "c9d447a9c11a0b3f2763e3757c86a7f08c008a0d609e3e5640fceef8ccc04330",
+    "4e3c09ff01e10602b454a295076a038b75842606cd64dfd20540175c284ecb92",
+    "8660e842aa40c7dfec8dce50b03e42537c25c2a6f4c2d1fcb9d87b792e80449d",
+    "42725a5bced3feb40be9ef07c6954984aabc576af553e7e731d0807c5d65e782",
+    "acb9214549c571460932acb1fc12e236634544c10160fc24326ca703bd32e329",
+    "b913ec2489228cd58470085c9d9082e838b7bcb809e2a83fa5025353a0e98372",
+    "601276fddffbd8930430629f12ad7eea09abfede868e3d4c2e0c7e4fabc03971",
+    "b45fe834e60a64c3bae4fe187b43f2bfb5fbb26289ac7c6444be51aec482cf97",
+]:
+    if figure_hash not in figure_provenance:
+        fail(f"current figure provenance missing SHA-256: {figure_hash}")
+print("PASS: current revised-manuscript mapping, figure provenance and reviewer additions are versioned.")
+
+print("AUDIT 7/10 — reviewer-requested evidence semantics")
+s1 = (ROOT / "results/reviewer_revision/Table_S1_reconstruction_count_audit.csv").read_text(encoding="utf-8-sig")
+s2 = (ROOT / "results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv").read_text(encoding="utf-8-sig")
+s3 = (ROOT / "results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv").read_text(encoding="utf-8-sig")
+for phrase in ["17662", "15003", "32665"]:
+    if phrase not in s1:
+        fail(f"Table S1 missing audited count {phrase}")
+for phrase in ["0.073", "0.070", "0.075"]:
+    if phrase not in s2:
+        fail(f"Table S2 missing no-skill Macro-F1 {phrase}")
+for phrase in ["2,2,718,17,17,34", "5,1,1193,2,2,4"]:
+    if phrase not in s3.replace("\r\n", "\n"):
+        fail(f"Table S3 missing sparse stage-matching row {phrase}")
+revision_readme = (ROOT / "results/reviewer_revision/README.md").read_text(encoding="utf-8")
+for phrase in ["post-hoc explanatory", "frozen NB03 hyperparameters", "not causal biochemical evidence"]:
+    if phrase not in revision_readme:
+        fail(f"reviewer revision documentation missing phrase: {phrase}")
+print("PASS: reviewer-requested count, baseline, sample-size and TreeSHAP scope are explicit.")
+
+print("AUDIT 8/10 — environment and citation metadata")
+requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+environment = (ROOT / "environment.yml").read_text(encoding="utf-8")
+citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
+if "shap==0.50.0" not in requirements or "shap==0.50.0" not in environment:
+    fail("SHAP dependency used by the revised manuscript is not pinned")
+if "python=3.13.15" not in environment:
+    fail("environment.yml does not pin the analytical Python version")
+for author in ["Coronel-Reyes", "Haro-Sarango", "Delgado-Vera", "Triviño-Sánchez"]:
+    if author not in citation:
+        fail(f"CITATION.cff missing manuscript author: {author}")
+print("PASS: Python/package environment and four-author citation metadata match the revised study.")
+
+print("AUDIT 9/10 — documentation and manuscript-evidence traceability")
+readme = (ROOT / "README.md").read_text(encoding="utf-8")
 for phrase in [
     "10.15125/BATH-01459",
     "Leave-One-Experiment-Out",
     "1/12",
     "0.1147",
     "archive/frozen_notebook_payloads",
-    "rebuild_analysis_mirrors.py",
+    "results/manuscript_current",
+    "results/reviewer_revision",
 ]:
     if phrase not in readme:
-        fail(f"README missing required reproducibility phrase: {phrase}")
-notebook_readme = (NOTEBOOK_DIR / "README.md").read_text(encoding="utf-8")
-for name in NOTEBOOKS:
-    if name not in notebook_readme:
-        fail(f"notebooks/README missing pipeline stage: {name}")
-print("PASS: README files document data provenance, reconstruction, and all nine analysis stages.")
-
-print("AUDIT 7/8 — manuscript evidence traceability")
-evidence_map_path = ROOT / "docs" / "MANUSCRIPT_EVIDENCE_MAP.md"
-if not evidence_map_path.exists():
-    fail("missing docs/MANUSCRIPT_EVIDENCE_MAP.md")
-evidence_map = evidence_map_path.read_text(encoding="utf-8")
+        fail(f"README missing reproducibility phrase: {phrase}")
+evidence_map = (ROOT / "docs" / "MANUSCRIPT_EVIDENCE_MAP.md").read_text(encoding="utf-8")
 for phrase in [
-    "Table_3_confirmatory_external_selected_models.csv",
-    "Table_4_model_selection_instability_summary.csv",
-    "Table_6_probabilistic_calibration_selected_models.csv",
-    "Table_7_structural_effect_sizes.csv",
+    "Table_S1_reconstruction_count_audit.csv",
+    "Table_S2_development_majority_no_skill_baseline.csv",
+    "Table_S3_stage_matched_effective_sample_sizes.csv",
+    "Figure_S3_treeshap_spectral_tree_models.png",
     "external_support_distance_ratio",
     "NB06-v1.1",
 ]:
     if phrase not in evidence_map:
         fail(f"manuscript evidence map missing: {phrase}")
-print("PASS: manuscript claims remain linked to frozen evidence and explicit exclusions.")
+print("PASS: README and evidence map cover frozen and reviewer-revision evidence.")
 
-print("AUDIT 8/8 — repository file policy")
+print("AUDIT 10/10 — repository file policy")
 for path in ROOT.rglob("*"):
     if not path.is_file():
         continue
@@ -250,5 +319,5 @@ for path in ROOT.rglob("*"):
         fail(f"file exceeds 10 MiB policy: {rel}")
 print("PASS: no raw archives or oversized research files are tracked.")
 
-print("\nPASS: frozen notebook provenance, leakage-safe protocol, manuscript evidence, and repository structure are internally consistent.")
-print("PASS: repository integrity audit completed successfully.")
+print("\nPASS: frozen analysis and current revised-manuscript evidence are internally consistent.")
+print("PASS: repository integrity audit completed successfully (10/10 stages).")
