@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated study and this software release."
+title: "Banana Ripeness Experiment Shift: Leakage-Safe Multisensor Evaluation"
+type: software
+authors:
+  - family-names: "Coronel-Reyes"
+    given-names: "Julián"
+repository-code: "https://github.com/Julians30/banana-ripeness-experiment-shift"
+license: MIT
+version: "0.1.0"
+date-released: 2026-08-23
+keywords:
+  - banana ripeness
+  - multisensor
+  - experiment shift
+  - domain shift
+  - model-selection instability
+  - probabilistic calibration
+  - trustworthy machine learning
+  - leakage-safe validation
+preferred-citation:
+  type: article
+  title: "Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"
+  authors:
+    - family-names: "Coronel-Reyes"
+      given-names: "Julián"
+  year: 2026
+  notes: "Manuscript in preparation; update with journal DOI after publication."
