@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.13'
 
       - name: Show audit context
         run: |
@@ -27,5 +28,5 @@ jobs:
           git rev-parse --short HEAD
           find notebooks notebooks_packed config results/main_tables scripts -maxdepth 2 -type f | sort
 
-      - name: Run reproducibility audit
+      - name: Run repository integrity audit
         run: python scripts/audit_repository.py
