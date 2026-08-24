@@ -2,7 +2,7 @@
 
 [![repository-audit](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml/badge.svg)](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml)
 
-Reproducible code and frozen manuscript evidence for:
+Reproducible code, frozen analytical evidence, and reviewer-facing presentation artifacts for:
 
 **Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation**
 
@@ -12,19 +12,33 @@ To what extent do machine-learning models for multisensor banana-ripeness classi
 
 ## Data source
 
-The study uses the University of Bath public dataset **Dataset for “Low-Cost, Multi-Sensor Non-Destructive Banana Ripeness Estimation Using Machine Learning”**.
+University of Bath Research Data Archive:
+
+**Dataset for “Low-Cost, Multi-Sensor Non-Destructive Banana Ripeness Estimation Using Machine Learning”**
 
 - DOI: `10.15125/BATH-01459`
 - License: CC BY 4.0
 - Raw data are not redistributed in this repository.
 
-The primary four-experiment analysis uses the TPHiS data and three sensor representations: **TPH**, **Spectral**, and **TPH + Spectral**.
+The primary analysis uses the TPHiS release because it provides the common four-experiment basis required for nested Leave-One-Experiment-Out validation.
 
 ## Leakage-safe design
 
-The confirmatory evaluation uses nested **Leave-One-Experiment-Out (LOEO)** validation. In every outer fold, one complete experiment is excluded from preprocessing, hyperparameter selection, algorithm selection, resampling and calibration fitting until the final external evaluation.
+The confirmatory evaluation uses nested **Leave-One-Experiment-Out (LOEO)** validation. For each outer fold, one complete experiment is excluded from preprocessing, hyperparameter selection, algorithm selection, resampling and calibration fitting until final external evaluation.
 
-Five algorithms are studied: Ordinal Logistic Regression, PLS-DA, SVM-RBF, Random Forest and XGBoost.
+Five algorithms are evaluated:
+
+- Ordinal Logistic Regression
+- PLS-DA
+- SVM-RBF
+- Random Forest
+- XGBoost
+
+Three sensor representations are evaluated:
+
+- TPH
+- Spectral
+- TPH + Spectral
 
 ## Frozen analytical pipeline
 
@@ -45,120 +59,155 @@ Five algorithms are studied: Ordinal Logistic Regression, PLS-DA, SVM-RBF, Rando
         ↓
 07 Final statistical inference
         ↓
-08 Final manuscript tables and figures
+08 Final frozen manuscript-evidence packaging
 ```
 
-NB06-v1.1 supersedes NB06 **only for final temperature-scaling values**. The original NB06 is retained for provenance.
+NB06-v1.1 supersedes NB06 **only for final temperature-scaling values**. NB06 is retained for provenance.
 
 ## Frozen main results
 
-Across **17,662** original TPHiS observations, four independent external experiments, three sensor modalities and five algorithms:
+Across **17,662** inferred-original TPHiS observations, four independent external experiments, three modalities and five algorithms:
 
 - external model cells: **60**;
-- outer-experiment × modality model-selection scenarios: **12**;
+- outer experiment × modality model-selection scenarios: **12**;
 - internal winner = external winner: **1/12 (8.3%)**;
 - mean selection loss: **0.1147 Macro-F1**;
 - maximum selection loss: **0.2148 Macro-F1**;
 - mean inner-vs-external Spearman rank correlation: **−0.0754**;
 - partial η² for held-out experiment on external Macro-F1: **0.4661**;
 - partial η² for algorithm: **0.0531**;
-- mean ECE of internally selected models: **0.4387 → 0.2568** after development-only temperature scaling;
+- mean selected-model ECE: **0.4387 → 0.2568** after development-only temperature scaling;
 - class weighting and training-only SMOTE each changed Macro-F1 by only about **+0.004 on average**, with heterogeneous effects across experiments.
 
-The central result is therefore not a universal winning classifier. Experiment-specific distribution shift can dominate algorithm choice, destabilize model selection and reduce the transportability of probability estimates.
+The central result is not a universal winning classifier. Experiment-specific distribution shift can dominate algorithm choice, destabilize model selection and reduce probability transportability.
 
 ## Statistical scope
 
-Only the **four held-out experiments** are treated as independent generalization units. Row-level bootstrap intervals quantify uncertainty conditional on each held-out experiment and are not interpreted as confidence intervals over a population of independent experiments.
+Only the **four held-out experiments** are independent generalization units.
 
-The factorial ANOVA in NB07 is used for **descriptive structural effect-size decomposition**. Conventional ANOVA p-values are not used as confirmatory population inference.
+Row-level paired/bootstrap intervals quantify uncertainty conditional on a held-out experiment and are not interpreted as confidence intervals over a population of independent experiments.
+
+The factorial OLS/ANOVA representation is used for **descriptive structural effect-size decomposition**. Conventional ANOVA p-values are not used as confirmatory population inference.
+
+## Two evidence layers
+
+The repository separates the frozen confirmatory pipeline from presentation/reviewer additions.
+
+### 1. Frozen analytical evidence
+
+- frozen notebook provenance: `archive/frozen_notebook_payloads/`;
+- frozen validation protocol: `config/nested_loeo_protocol_v1.json`;
+- frozen analytical tables: `results/main_tables/`;
+- frozen numerical facts: `results/frozen_numeric_facts_nb08.json`;
+- executed/source-clean notebook linkage: `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`.
+
+### 2. Current revised-manuscript evidence
+
+- revised-manuscript figure provenance (logical filenames, exact manuscript-embedded SHA-256 values and analytical sources): `results/manuscript_current/figures/README.md`;
+- reviewer-requested Tables S1–S3: `results/reviewer_revision/`;
+
+Reviewer-requested additions include repeated-CV uncertainty for domain AUC, direct selection-loss visualization, the reconstruction-count audit, a development-majority no-skill baseline, explicit stage-matched sample sizes, and post-hoc TreeSHAP explanation. These additions **do not modify frozen outer predictions, model rankings, calibration fits, or confirmatory numerical estimates**.
 
 ## Reviewer-facing reproducibility
 
-The repository separates **human-readable project files** from **immutable notebook provenance**.
+NB01 is directly browsable in `notebooks/`. Exact source-clean NB02–NB08 bytes are preserved as immutable base85+gzip provenance payloads in `archive/frozen_notebook_payloads/`.
 
-- `notebooks/01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb` is directly browsable.
-- The exact frozen source-clean bytes for NB02–NB08 are preserved under `archive/frozen_notebook_payloads/` as base85+gzip payloads.
-- `scripts/rebuild_analysis_mirrors.py` verifies the frozen SHA-256 values, materializes all nine notebooks locally, and generates readable Python mirrors.
-- `scripts/audit_repository.py` is **read-only**: CI decodes the archived payloads in memory and verifies notebook bytes, Python syntax, the frozen LOEO protocol, manuscript numerical evidence, table inventory, documented safeguards, and repository file policy.
-- GitHub Actions never rewrites the repository and never pushes generated commits back to `main`.
+To materialize all nine notebooks and readable Python mirrors locally:
 
-The archive representation exists only to preserve the exact frozen notebook bytes while keeping the repository root uncluttered. It is not an alternative analysis.
+```bash
+python scripts/rebuild_analysis_mirrors.py
+```
+
+To regenerate the reviewer-requested Tables S1–S3 from the original TPHiS archive:
+
+```bash
+python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
+  --tphis-zip /path/to/TPHiS.zip \
+  --output-dir results/reviewer_revision
+```
+
+The repository audit is read-only:
+
+```bash
+python scripts/audit_repository.py
+```
+
+It uses only the Python standard library and verifies frozen notebook provenance, LOEO semantics, key numerical evidence, current manuscript tables/figures, reviewer additions, environment metadata, citation metadata, evidence traceability and repository file policy.
 
 ## Repository structure
 
 ```text
-.github/workflows/                read-only CI integrity audit
+.github/workflows/               read-only CI integrity audit
 archive/
-  README.md
-  frozen_notebook_payloads/      immutable NB02–NB08 provenance payloads
-config/                           frozen nested-LOEO protocol
-docs/                             data, statistics, provenance and reproducibility documentation
+  frozen_notebook_payloads/     immutable NB02–NB08 source-clean provenance
+config/                          frozen nested-LOEO protocol
+docs/                            data, statistics, provenance and evidence maps
 notebooks/
   01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb
-  README.md                       nine-stage notebook inventory and frozen hashes
+  README.md
 results/
-  main_tables/                    seven frozen manuscript tables
-  figure_manifest.csv
-  table_manifest.csv
+  main_tables/                   original frozen analytical evidence
+  manuscript_current/
+    README.md                    mapping from frozen evidence to revised manuscript
+    figures/README.md           hashes/sources for figures embedded in the revised manuscript
+  reviewer_revision/             reviewer-requested Tables S1–S3 and scope notes
   frozen_numeric_facts_nb08.json
+  table_manifest.csv
+  figure_manifest.csv
 scripts/
-  audit_repository.py             side-effect-free CI/local integrity audit
-  rebuild_analysis_mirrors.py     local notebook + Python-mirror materializer
+  audit_repository.py
+  rebuild_analysis_mirrors.py
+  09_REVIEWER_REQUESTED_AUDITS.py
 requirements.txt
 environment.yml
 CITATION.cff
 LICENSE
 ```
 
-## Fast integrity check
-
-A reviewer can verify the frozen analytical record without installing the modelling stack:
-
-```bash
-python scripts/audit_repository.py
-```
-
-This uses only the Python standard library.
-
-## Materialize all notebooks for inspection
-
-```bash
-python scripts/rebuild_analysis_mirrors.py
-```
-
-This reconstructs NB02–NB08 byte-for-byte under `notebooks/`, verifies all nine frozen notebook SHA-256 values, and writes matching `.py` mirrors under `scripts/`.
-
-Generated notebooks and mirrors are local convenience files; the immutable provenance payloads remain the source used by the repository audit.
-
 ## Reproduce the analysis
 
 1. Download the original Bath dataset using DOI `10.15125/BATH-01459`.
-2. Place the source archives documented in `docs/REPRODUCIBILITY.md` under the expected raw-data folder.
+2. Place the four source archives documented in `docs/REPRODUCIBILITY.md` under the expected raw-data folder.
 3. Run `python scripts/audit_repository.py`.
 4. Run `python scripts/rebuild_analysis_mirrors.py`.
-5. Install the environment from `requirements.txt` or `environment.yml`.
-6. Execute the notebooks in the order listed above.
-7. Compare generated results with `results/main_tables/`, `results/frozen_numeric_facts_nb08.json`, and the evidence map in `docs/MANUSCRIPT_EVIDENCE_MAP.md`.
+5. Install the pinned environment from `requirements.txt` or `environment.yml`.
+6. Execute the notebooks in the documented order.
+7. Compare generated evidence with `results/main_tables/`, `results/frozen_numeric_facts_nb08.json`, and `docs/MANUSCRIPT_EVIDENCE_MAP.md`.
+8. Reproduce reviewer-requested Tables S1–S3 with `scripts/09_REVIEWER_REQUESTED_AUDITS.py`.
 
 ## Important exclusions and safeguards
 
-- The known NB02 `external_support_distance_ratio` diagnostic is **not used as manuscript evidence** because exact duplicate spectral feature vectors produced a zero denominator in several scenarios.
-- External post-hoc best models are descriptive and are never presented as leakage-safe deployment selections.
+- `external_support_distance_ratio` from exploratory NB02 work is **excluded from manuscript evidence** because duplicate spectral vectors produced a zero denominator in several scenarios.
+- External post-hoc best models are descriptive comparators and are never presented as leakage-safe deployment selections.
 - SMOTE is applied only inside training data.
 - Calibration is learned from development-only cross-fitted predictions.
-- Raw data archives and large row-level prediction dumps are intentionally not committed to Git.
-- NB06-v1.1 supersedes NB06 only for the final temperature-scaling values.
-- The archive payloads and notebook SHA-256 values are frozen provenance checks; unintended analytical-code changes therefore fail CI.
+- Raw archives and large row-level prediction dumps are intentionally not committed to Git.
+- TreeSHAP is post-hoc explanatory evidence and is not interpreted causally.
+- NB06-v1.1 supersedes NB06 only for final temperature-scaling values.
+- NB08's corrected source-clean serialization provenance is documented in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`.
+
+## Environment
+
+The final analytical environment used Python **3.13.15**. Package versions are pinned in `requirements.txt` and `environment.yml`; `shap==0.50.0` is included for the reviewer-requested explanatory analysis.
 
 ## Data and code availability
 
-See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md`, `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`, `docs/MANUSCRIPT_EVIDENCE_MAP.md`, and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
+See:
+
+- `docs/DATASET.md`
+- `docs/DATA_AVAILABILITY.md`
+- `docs/REPRODUCIBILITY.md`
+- `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`
+- `docs/STATISTICAL_ANALYSIS.md`
+- `docs/MANUSCRIPT_EVIDENCE_MAP.md`
+- `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`
 
 ## Citation
 
-Citation metadata are provided in `CITATION.cff`. A versioned release and archival DOI can be added before journal submission.
+`CITATION.cff` contains all four manuscript authors and the current repository/software metadata. Update the preferred citation with the journal DOI after publication.
 
 ## License
 
-The analysis code is distributed under the MIT License. The source dataset retains its original CC BY 4.0 license and is not relicensed by this repository.
+Analysis code: **MIT License**.
+
+Source dataset: **CC BY 4.0**, retained under the original University of Bath terms and not relicensed by this repository.
