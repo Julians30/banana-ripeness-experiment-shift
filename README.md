@@ -1,32 +1,30 @@
 # Banana Ripeness Experiment Shift
 
-Reproducible code and frozen evidence for the study:
+[![repository-audit](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml/badge.svg)](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml)
+
+Reproducible code and frozen manuscript evidence for:
 
 **Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation**
 
 ## Research question
 
-To what extent do machine-learning models for multisensor banana-ripeness classification preserve predictive performance, model-selection decisions, and probabilistic reliability when evaluated on acquisition experiments that were completely excluded from model development?
+To what extent do machine-learning models for multisensor banana-ripeness classification preserve predictive performance, model-selection decisions, and probabilistic reliability when evaluated on acquisition experiments completely excluded from model development?
 
-## Study design
+## Data source
 
-The analysis uses the University of Bath public dataset **Dataset for “Low-Cost, Multi-Sensor Non-Destructive Banana Ripeness Estimation Using Machine Learning”** (DOI: `10.15125/BATH-01459`, CC BY 4.0).
+The study uses the University of Bath public dataset **Dataset for “Low-Cost, Multi-Sensor Non-Destructive Banana Ripeness Estimation Using Machine Learning”**.
 
-The primary four-experiment analysis uses the TPHiS data and evaluates three sensor representations:
+- DOI: `10.15125/BATH-01459`
+- License: CC BY 4.0
+- Raw data are not redistributed in this repository.
 
-- TPH
-- Spectral
-- TPH + Spectral
+The primary four-experiment analysis uses the TPHiS data and three sensor representations: **TPH**, **Spectral**, and **TPH + Spectral**.
 
-Five machine-learning algorithms are evaluated:
+## Leakage-safe design
 
-- Ordinal Logistic Regression
-- PLS-DA
-- SVM-RBF
-- Random Forest
-- XGBoost
+The confirmatory evaluation uses nested **Leave-One-Experiment-Out (LOEO)** validation. In every outer fold, one complete experiment is excluded from preprocessing, hyperparameter selection, algorithm selection, resampling and calibration fitting until the final external evaluation.
 
-The confirmatory design is a nested **Leave-One-Experiment-Out (LOEO)** framework. For each outer fold, one complete experiment is held out from all preprocessing, hyperparameter selection, model selection, calibration fitting, and resampling decisions.
+Five algorithms are studied: Ordinal Logistic Regression, PLS-DA, SVM-RBF, Random Forest and XGBoost.
 
 ## Frozen analytical pipeline
 
@@ -43,68 +41,78 @@ The confirmatory design is a nested **Leave-One-Experiment-Out (LOEO)** framewor
         ↓
 06 Probabilistic reliability and ordinal analysis
         ↓
-06-v1.1 Wide-range temperature scaling correction
+06-v1.1 Wide-range temperature-scaling correction
         ↓
 07 Final statistical inference
         ↓
 08 Final manuscript tables and figures
 ```
 
-NB06-v1.1 supersedes NB06 only for the **final temperature-scaling values**. NB06 is retained for auditability and provenance.
+NB06-v1.1 supersedes NB06 **only for final temperature-scaling values**. The original NB06 is retained for provenance.
 
 ## Frozen main results
 
-Across 17,662 original TPHiS observations, four independent external experiments, three sensor modalities, and five algorithms:
+Across **17,662** original TPHiS observations, four independent external experiments, three sensor modalities and five algorithms:
 
-- External model cells: **60**
-- Frozen outer-experiment × modality selection scenarios: **12**
-- Internal winner = external winner: **1/12 (8.3%)**
-- Mean model-selection loss: **0.1147 Macro-F1**
-- Maximum model-selection loss: **0.2148 Macro-F1**
-- Mean inner-vs-external Spearman rank correlation: **−0.0754**
-- Partial η² for held-out experiment on external Macro-F1: **0.4661**
-- Partial η² for algorithm: **0.0531**
-- Mean ECE of internally selected models: **0.4387 → 0.2568** after development-only temperature scaling
-- Mean imbalance-related Macro-F1 change: approximately **+0.004** for both class weighting and training-only SMOTE, with heterogeneous effects across experiments
+- external model cells: **60**;
+- outer-experiment × modality model-selection scenarios: **12**;
+- internal winner = external winner: **1/12 (8.3%)**;
+- mean selection loss: **0.1147 Macro-F1**;
+- maximum selection loss: **0.2148 Macro-F1**;
+- mean inner-vs-external Spearman rank correlation: **−0.0754**;
+- partial η² for held-out experiment on external Macro-F1: **0.4661**;
+- partial η² for algorithm: **0.0531**;
+- mean ECE of internally selected models: **0.4387 → 0.2568** after development-only temperature scaling;
+- class weighting and training-only SMOTE each changed Macro-F1 by only about **+0.004 on average**, with heterogeneous effects across experiments.
 
-These results indicate that experiment identity and distribution shift can dominate algorithm choice, destabilize model selection, and reduce the transportability of probabilistic confidence.
+The central result is therefore not a universal winning classifier. Experiment-specific distribution shift can dominate algorithm choice, destabilize model selection and reduce the transportability of probability estimates.
 
 ## Statistical scope
 
-Only the **four held-out experiments** are treated as independent generalization units. Row-level bootstrap intervals quantify uncertainty conditional on each experiment and must not be interpreted as population-level confidence intervals over independent experiments.
+Only the **four held-out experiments** are treated as independent generalization units. Row-level bootstrap intervals quantify uncertainty conditional on each held-out experiment and are not interpreted as confidence intervals over a population of independent experiments.
 
-The factorial ANOVA in NB07 is used for **descriptive structural effect-size decomposition**. Its conventional p-values are not treated as confirmatory population inference.
+The factorial ANOVA in NB07 is used for **descriptive structural effect-size decomposition**. Conventional ANOVA p-values are not used as confirmatory population inference.
 
 ## Repository structure
 
 ```text
-notebooks/       Executable analysis notebooks
-config/          Frozen LOEO protocol and analysis configuration
-docs/            Dataset, reproducibility, statistical and data-availability notes
-results/         Frozen manuscript-facing numerical results
-.github/         Automated repository audit
+notebooks/                  source-clean executable notebooks
+config/                     frozen nested-LOEO protocol
+results/main_tables/        frozen manuscript tables
+results/supplementary_tables/ selected complete supplementary evidence
+docs/                       data, statistics and reproducibility documentation
+scripts/                    automated repository audit
+.github/workflows/          CI reproducibility audit
 ```
 
-## Data availability
+The GitHub notebooks are source-clean copies with bulky execution outputs removed; analytical code is unchanged. Hashes linking them to the executed project notebooks are documented in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`.
 
-The raw dataset is **not redistributed in this repository**. Obtain it from the original University of Bath record:
+## Reproduce the analysis
 
-- DOI: https://doi.org/10.15125/BATH-01459
+1. Download the original Bath dataset using DOI `10.15125/BATH-01459`.
+2. Reconstruct the project folders described in `docs/REPRODUCIBILITY.md`.
+3. Verify the master-data and frozen-protocol hashes documented in `docs/DATA_AVAILABILITY.md`.
+4. Install the environment from `requirements.txt` or `environment.yml`.
+5. Execute the notebooks in the order shown above.
+6. Run `python scripts/audit_repository.py`.
 
-The repository records the frozen analysis protocol, source provenance and key result artifacts required to reproduce the reported workflow.
+A matching GitHub Actions workflow executes the structural audit on every push and pull request.
 
-## Known excluded diagnostic
+## Important exclusions and safeguards
 
-The NB02 variable `external_support_distance_ratio` is intentionally excluded from manuscript evidence because exact duplicate Spectral feature vectors caused the development second-nearest-neighbor median to equal zero in several scenarios. PCA, UMAP, stage-matched domain-classifier AUC and MMD diagnostics are unaffected and retained.
+- The known NB02 `external_support_distance_ratio` diagnostic is **not used as manuscript evidence** because exact duplicate spectral feature vectors produced a zero denominator in several scenarios.
+- External post-hoc best models are descriptive and are never presented as leakage-safe deployment selections.
+- SMOTE is applied only inside training data.
+- Raw data archives and large row-level prediction dumps are intentionally not committed to Git.
 
-## Reproducibility
+## Data and code availability
 
-Run notebooks in numerical order. See [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for the exact execution hierarchy and methodological guardrails.
-
-## License
-
-Code in this repository is released under the MIT License. The original dataset retains its own CC BY 4.0 license and is not relicensed by this repository.
+See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md` and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
 
 ## Citation
 
-Citation metadata is provided in [`CITATION.cff`](CITATION.cff). A versioned release and archival DOI can be added when the manuscript is frozen for submission.
+Citation metadata are provided in `CITATION.cff`. A versioned release and archival DOI can be added before journal submission.
+
+## License
+
+The analysis code is distributed under the MIT License. The source dataset retains its original CC BY 4.0 license and is not relicensed by this repository.
