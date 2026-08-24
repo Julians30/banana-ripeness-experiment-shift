@@ -1,6 +1,5 @@
 name: repository-audit
 
-# Reviewer-facing normalization is deterministic and does not alter scientific results.
 on:
   push:
     branches: [main]
@@ -9,44 +8,28 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  normalize-and-audit:
+  repository-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
-      - name: Normalize reviewer-facing analysis mirrors
-        run: python scripts/rebuild_analysis_mirrors.py
-
       - name: Show audit context
         run: |
           python --version
           git rev-parse --short HEAD
-          find notebooks config results/main_tables scripts -maxdepth 2 -type f | sort
+          find archive notebooks config results docs scripts -maxdepth 3 -type f | sort
 
-      - name: Run repository integrity audit
+      - name: Run read-only repository integrity audit
         run: python scripts/audit_repository.py
-
-      - name: Commit normalized representation when needed
-        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -A
-            git commit -m "Normalize notebooks and analysis script mirrors"
-            git push origin HEAD:${{ github.head_ref || github.ref_name }}
-          else
-            echo "Repository already normalized; no commit required."
-          fi
