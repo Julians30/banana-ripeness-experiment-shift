@@ -18,6 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -37,15 +38,15 @@ jobs:
       - name: Run repository integrity audit
         run: python scripts/audit_repository.py
 
-      - name: Commit normalized representation
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Commit normalized representation when needed
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
             git commit -m "Normalize notebooks and analysis script mirrors"
-            git push
+            git push origin HEAD:${{ github.head_ref || github.ref_name }}
           else
             echo "Repository already normalized; no commit required."
           fi
