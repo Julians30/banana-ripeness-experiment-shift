@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Normalize the reviewer-facing analysis representation.
+"""Materialize frozen notebooks and readable Python mirrors for local review.
 
-This utility has two deterministic jobs:
+This utility is intentionally NOT run by CI. It reconstructs NB02–NB08 from the
+immutable provenance payloads under archive/frozen_notebook_payloads/, verifies
+all nine frozen notebook SHA-256 values, and writes readable .py mirrors.
 
-1. During the one-time repository migration, reconstruct the frozen source-clean
-   notebooks from the historical ``notebooks_packed/*.ipynb.b85gz`` files.
-2. Regenerate one readable ``scripts/<notebook>.py`` mirror per authoritative
-   notebook by extracting code cells verbatim, while commenting notebook-only
-   shell/magic lines so the mirror remains valid Python syntax.
-
-The scientific notebooks are authoritative. This utility never changes notebook
-analysis code, parameters, results, or frozen evidence.
+It never changes model logic, parameters, predictions, tables, or scientific
+results. Generated notebooks/scripts can be deleted and regenerated at any time.
 """
 from __future__ import annotations
 
@@ -18,12 +14,11 @@ import base64
 import gzip
 import hashlib
 import json
-import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
-PACKED_DIR = ROOT / "notebooks_packed"
+ARCHIVE_DIR = ROOT / "archive" / "frozen_notebook_payloads"
 SCRIPT_DIR = ROOT / "scripts"
 
 NOTEBOOKS = [
@@ -50,42 +45,36 @@ EXPECTED_SOURCE = {
     "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb": ("8efd3456de3bf2ee2eb6c78a2a60721c582937232b1fe8e2b8363e5a601f32d3", 47560),
 }
 
-
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
+def verify(name: str, data: bytes) -> None:
+    expected_hash, expected_size = EXPECTED_SOURCE[name]
+    if len(data) != expected_size or sha256(data) != expected_hash:
+        raise SystemExit(
+            f"Frozen notebook mismatch for {name}: "
+            f"sha256={sha256(data)}, bytes={len(data)}; "
+            f"expected sha256={expected_hash}, bytes={expected_size}"
+        )
+    json.loads(data.decode("utf-8"))
 
-def restore_missing_notebooks() -> None:
+def materialize_notebooks() -> None:
     NOTEBOOK_DIR.mkdir(exist_ok=True)
-    for name in NOTEBOOKS:
-        direct = NOTEBOOK_DIR / name
-        if direct.exists():
-            continue
-        packed = PACKED_DIR / f"{name}.b85gz"
-        if not packed.exists():
-            raise SystemExit(f"Missing authoritative notebook and packed migration source: {name}")
-        data = gzip.decompress(base64.b85decode(packed.read_bytes()))
-        direct.write_bytes(data)
-        print(f"Restored {direct.relative_to(ROOT)}")
+    first = NOTEBOOK_DIR / NOTEBOOKS[0]
+    if not first.exists():
+        raise SystemExit(f"Missing canonical NB01: {first}")
+    verify(NOTEBOOKS[0], first.read_bytes())
 
-
-def verify_frozen_notebooks() -> None:
-    for name in NOTEBOOKS:
-        path = NOTEBOOK_DIR / name
-        if not path.exists():
-            raise SystemExit(f"Missing notebook: {name}")
-        data = path.read_bytes()
-        expected_hash, expected_bytes = EXPECTED_SOURCE[name]
-        got_hash = sha256(data)
-        if got_hash != expected_hash or len(data) != expected_bytes:
-            raise SystemExit(
-                f"Frozen notebook mismatch for {name}: "
-                f"sha256={got_hash}, bytes={len(data)}; "
-                f"expected sha256={expected_hash}, bytes={expected_bytes}"
-            )
-        json.loads(data.decode("utf-8"))
-    print(f"Verified {len(NOTEBOOKS)} frozen source-clean notebooks byte-for-byte.")
-
+    for name in NOTEBOOKS[1:]:
+        payload = ARCHIVE_DIR / f"{name}.b85gz"
+        if not payload.exists():
+            raise SystemExit(f"Missing provenance payload: {payload}")
+        data = gzip.decompress(base64.b85decode(payload.read_bytes()))
+        verify(name, data)
+        target = NOTEBOOK_DIR / name
+        target.write_bytes(data)
+        print(f"Materialized {target.relative_to(ROOT)}")
+    print("Verified all nine frozen notebook sources.")
 
 def notebook_to_script(name: str) -> str:
     nb = json.loads((NOTEBOOK_DIR / name).read_text(encoding="utf-8"))
@@ -120,35 +109,20 @@ def notebook_to_script(name: str) -> str:
                 out.append(line)
     return "".join(out)
 
-
-def rebuild_script_mirrors() -> None:
+def rebuild_scripts() -> None:
     SCRIPT_DIR.mkdir(exist_ok=True)
     for name in NOTEBOOKS:
         script_name = name.removesuffix(".ipynb") + ".py"
         text = notebook_to_script(name)
+        compile(text, script_name, "exec")
         path = SCRIPT_DIR / script_name
         path.write_text(text, encoding="utf-8", newline="\n")
-        compile(text, str(path), "exec")
         print(f"Wrote {path.relative_to(ROOT)}")
 
-
-def remove_historical_packing_layer() -> None:
-    old_unpack = SCRIPT_DIR / "unpack_notebooks.py"
-    if old_unpack.exists():
-        old_unpack.unlink()
-        print("Removed scripts/unpack_notebooks.py")
-    if PACKED_DIR.exists():
-        shutil.rmtree(PACKED_DIR)
-        print("Removed notebooks_packed/")
-
-
 def main() -> None:
-    restore_missing_notebooks()
-    verify_frozen_notebooks()
-    rebuild_script_mirrors()
-    remove_historical_packing_layer()
-    print("Repository analysis representation is normalized.")
-
+    materialize_notebooks()
+    rebuild_scripts()
+    print("Local reviewer-facing analysis materialization completed successfully.")
 
 if __name__ == "__main__":
     main()
