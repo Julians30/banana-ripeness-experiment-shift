@@ -73,30 +73,44 @@ Only the **four held-out experiments** are treated as independent generalization
 
 The factorial ANOVA in NB07 is used for **descriptive structural effect-size decomposition**. Conventional ANOVA p-values are not used as confirmatory population inference.
 
+## Reviewer-facing code
+
+The repository now exposes the complete analytical sequence without a packing/unpacking step:
+
+- **nine directly browsable source-clean notebooks** in `notebooks/`;
+- **one deterministic Python script mirror per notebook** in `scripts/`;
+- frozen hashes linking the source-clean notebooks to the executed Colab files in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`;
+- an automated integrity audit that verifies notebook bytes, script–notebook equivalence, frozen protocol content, manuscript evidence, and repository cleanliness.
+
+The notebooks remain the canonical execution record. The `.py` mirrors are mechanically generated from notebook code cells to make code searching, static review, and text-based diffing easier.
+
 ## Repository structure
 
 ```text
-notebooks/                  source-clean executable notebooks
+notebooks/                  9 directly browsable source-clean notebooks
+scripts/                    9 deterministic Python mirrors + audit/rebuild utilities
 config/                     frozen nested-LOEO protocol
 results/main_tables/        frozen manuscript tables
 results/supplementary_tables/ selected complete supplementary evidence
-docs/                       data, statistics and reproducibility documentation
-scripts/                    automated repository audit
-.github/workflows/          CI reproducibility audit
+docs/                       data, statistics, provenance and reproducibility documentation
+.github/workflows/          CI repository-integrity audit
 ```
 
-The GitHub notebooks are source-clean copies with bulky execution outputs removed; analytical code is unchanged. Hashes linking them to the executed project notebooks are documented in `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`.
+The historical `notebooks_packed/` layer is intentionally removed after normalization. Reviewers do not need to decode or reconstruct notebooks before reading the analysis.
 
-## Reproduce the analysis
+## Reproduce or inspect the analysis
 
 1. Download the original Bath dataset using DOI `10.15125/BATH-01459`.
 2. Reconstruct the project folders described in `docs/REPRODUCIBILITY.md`.
 3. Verify the master-data and frozen-protocol hashes documented in `docs/DATA_AVAILABILITY.md`.
 4. Install the environment from `requirements.txt` or `environment.yml`.
 5. Execute the notebooks in the order shown above.
-6. Run `python scripts/audit_repository.py`.
+6. For text-based code review, inspect the matching files in `scripts/`.
+7. Run `python scripts/audit_repository.py`.
 
-A matching GitHub Actions workflow executes the structural audit on every push and pull request.
+`python scripts/rebuild_analysis_mirrors.py` deterministically regenerates the `.py` mirrors from the frozen notebooks after verifying the expected notebook SHA-256 values.
+
+A matching GitHub Actions workflow executes normalization checks and the structural audit on every push and pull request.
 
 ## Important exclusions and safeguards
 
@@ -104,10 +118,11 @@ A matching GitHub Actions workflow executes the structural audit on every push a
 - External post-hoc best models are descriptive and are never presented as leakage-safe deployment selections.
 - SMOTE is applied only inside training data.
 - Raw data archives and large row-level prediction dumps are intentionally not committed to Git.
+- The repository audit treats the nine source-clean notebook SHA-256 values as frozen provenance checks; an unintended analytical-code change therefore fails CI.
 
 ## Data and code availability
 
-See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md` and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
+See `docs/DATASET.md`, `docs/DATA_AVAILABILITY.md`, `docs/REPRODUCIBILITY.md`, `docs/EXECUTED_NOTEBOOK_PROVENANCE.md` and `docs/REVIEWER_REPRODUCIBILITY_CHECKLIST.md`.
 
 ## Citation
 

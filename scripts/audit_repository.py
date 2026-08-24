@@ -1,43 +1,60 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import base64, gzip, hashlib, json, math, pathlib, sys
+
+import hashlib
+import json
+import math
+import pathlib
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+NOTEBOOK_DIR = ROOT / "notebooks"
+SCRIPT_DIR = ROOT / "scripts"
+
 REQUIRED_NOTEBOOKS = [
-    '01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb',
-    '02_PCA_UMAP_DOMAIN_SHIFT.ipynb',
-    '03_INNER_LOEO_MODEL_SELECTION.ipynb',
-    '04_OUTER_LOEO_EVALUATION.ipynb',
-    '05_BALANCING_SENSITIVITY_CLASSWEIGHT_SMOTE.ipynb',
-    '06_CALIBRATION_RELIABILITY_ORDINAL.ipynb',
-    '06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb',
-    '07_FINAL_STATISTICAL_INFERENCE.ipynb',
-    '08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb',
+    "01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb",
+    "02_PCA_UMAP_DOMAIN_SHIFT.ipynb",
+    "03_INNER_LOEO_MODEL_SELECTION.ipynb",
+    "04_OUTER_LOEO_EVALUATION.ipynb",
+    "05_BALANCING_SENSITIVITY_CLASSWEIGHT_SMOTE.ipynb",
+    "06_CALIBRATION_RELIABILITY_ORDINAL.ipynb",
+    "06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb",
+    "07_FINAL_STATISTICAL_INFERENCE.ipynb",
+    "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb",
 ]
 
-# The scientific protocol is frozen semantically. This canonical hash is
-# invariant to whitespace/indentation while still changing if any key/value,
-# fold, or rule changes.
-EXPECTED_PROTOCOL_CANONICAL_SHA = 'df508d709559fa48c28e580329b1dfe2790251183a176897fc4ced708a808f42'
-ORIGINAL_PROTOCOL_RAW_SHA = '86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930'
+EXPECTED_NOTEBOOK_SOURCE = {
+    "01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb": ("02356fe8a51e6ae61b93b5289f1becbdbd99021418922a287a8df2a6776c75a8", 9170),
+    "02_PCA_UMAP_DOMAIN_SHIFT.ipynb": ("4c18bdc8ed0cf39afc474e72f1237a4017bb4996bb3811bcd3cf916db7240f9c", 36504),
+    "03_INNER_LOEO_MODEL_SELECTION.ipynb": ("7b11ba55fd472c8955a1d8b3077d2a653810b5f27ffc54f98d6735fd5f86c5fe", 31265),
+    "04_OUTER_LOEO_EVALUATION.ipynb": ("29e3bcb96a4dfae3c5749f1c3e3988caf57fd7f3bee4f3bd447e3d53478c4d4e", 29995),
+    "05_BALANCING_SENSITIVITY_CLASSWEIGHT_SMOTE.ipynb": ("20c7b95995c417fc4e00f35af11fc3a11baf6cea0c127fbbee5cc6a6702383f9", 40388),
+    "06_CALIBRATION_RELIABILITY_ORDINAL.ipynb": ("21cc97bac89b13a910e5a7a4009de0a5713ed3b7364239db678edfac32484eca", 42401),
+    "06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb": ("d8999076c4c067be8aba6a83f3ad2b5351c784ac7646f879c1055aa024f496bd", 33826),
+    "07_FINAL_STATISTICAL_INFERENCE.ipynb": ("3232477307baea128472ecd12fee0346168a548cf6b117a99ca7f8e1878b674b", 35257),
+    "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb": ("8efd3456de3bf2ee2eb6c78a2a60721c582937232b1fe8e2b8363e5a601f32d3", 47560),
+}
+
+EXPECTED_PROTOCOL_CANONICAL_SHA = "df508d709559fa48c28e580329b1dfe2790251183a176897fc4ced708a808f42"
+ORIGINAL_PROTOCOL_RAW_SHA = "86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930"
 
 EXPECTED = {
-    'n_original_observations': 17662,
-    'n_outer_experiments': 4,
-    'n_modalities': 3,
-    'n_models': 5,
-    'n_outer_model_cells': 60,
-    'n_outer_modality_selection_scenarios': 12,
-    'internal_external_winner_matches': 1,
-    'internal_external_winner_agreement_rate': 1/12,
-    'mean_selection_loss_macro_f1': 0.114728,
-    'max_selection_loss_macro_f1': 0.214790,
-    'mean_inner_external_spearman': -0.075414,
+    "n_original_observations": 17662,
+    "n_outer_experiments": 4,
+    "n_modalities": 3,
+    "n_models": 5,
+    "n_outer_model_cells": 60,
+    "n_outer_modality_selection_scenarios": 12,
+    "internal_external_winner_matches": 1,
+    "internal_external_winner_agreement_rate": 1 / 12,
+    "mean_selection_loss_macro_f1": 0.114728,
+    "max_selection_loss_macro_f1": 0.214790,
+    "mean_inner_external_spearman": -0.075414,
 }
 
 
 def fail(msg: str) -> None:
-    print(f'FAIL: {msg}', file=sys.stderr)
+    print(f"FAIL: {msg}", file=sys.stderr)
     raise SystemExit(1)
 
 
@@ -45,145 +62,206 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def notebook_bytes(name: str) -> bytes:
-    direct = ROOT/'notebooks'/name
-    if direct.exists():
-        return direct.read_bytes()
-    packed = ROOT/'notebooks_packed'/f'{name}.b85gz'
-    if not packed.exists():
-        fail(f'missing notebook source or packed source: {name}')
-    try:
-        return gzip.decompress(base64.b85decode(packed.read_bytes()))
-    except Exception as exc:
-        fail(f'cannot reconstruct {name}: {exc}')
+def normalized_code(src: str) -> str:
+    return "\n".join(
+        line for line in src.splitlines()
+        if not line.lstrip().startswith(("!", "%"))
+    )
 
 
-print('AUDIT 1/6 — notebooks')
-for name in REQUIRED_NOTEBOOKS:
-    try:
-        nb = json.loads(notebook_bytes(name).decode('utf-8'))
-    except Exception as exc:
-        fail(f'invalid notebook JSON {name}: {exc}')
-    if not isinstance(nb.get('cells'), list):
-        fail(f'notebook cells missing/invalid: {name}')
-    for i, cell in enumerate(nb['cells']):
-        if cell.get('cell_type') != 'code':
+def expected_script_text(name: str, nb: dict) -> str:
+    out = [
+        "#!/usr/bin/env python3\n",
+        '"""Auto-generated readable mirror of the authoritative Jupyter notebook.\n\n',
+        f"Source: notebooks/{name}\n",
+        "The notebook is the canonical execution record. This mirror is generated\n",
+        "deterministically for code review and text-based diffing. Notebook-only\n",
+        "shell/magic lines are commented, but all other code-cell text is retained.\n",
+        'Do not edit this file manually; run scripts/rebuild_analysis_mirrors.py.\n"""\n\n',
+    ]
+    code_number = 0
+    for cell_index, cell in enumerate(nb.get("cells", [])):
+        if cell.get("cell_type") != "code":
             continue
-        src = cell.get('source', '')
+        code_number += 1
+        src = cell.get("source", "")
         if isinstance(src, list):
-            src = ''.join(src)
-        cleaned = '\n'.join(
-            line for line in src.splitlines()
-            if not line.lstrip().startswith(('!', '%'))
-        )
-        try:
-            compile(cleaned, f'{name}:cell{i}', 'exec')
-        except SyntaxError as exc:
-            fail(f'python syntax error in {name} cell {i}: {exc}')
-print(f'PASS: {len(REQUIRED_NOTEBOOKS)} notebooks reconstruct, parse and syntax-check.')
+            src = "".join(src)
+        out.append(f"\n# %% [code cell {code_number}; notebook cell index {cell_index}]\n")
+        if not src.endswith("\n"):
+            src += "\n"
+        for line in src.splitlines(keepends=True):
+            stripped = line.lstrip()
+            if stripped.startswith(("!", "%")):
+                indent = line[: len(line) - len(stripped)]
+                newline = "\n" if line.endswith("\n") else ""
+                body = stripped[:-1] if newline else stripped
+                out.append(f"{indent}# NOTEBOOK_ONLY: {body}{newline}")
+            else:
+                out.append(line)
+    return "".join(out)
 
-print('AUDIT 2/6 — frozen LOEO protocol')
-protocol_path = ROOT/'config'/'nested_loeo_protocol_v1.json'
+
+print("AUDIT 1/8 — directly browsable frozen notebooks")
+parsed_notebooks: dict[str, dict] = {}
+for name in REQUIRED_NOTEBOOKS:
+    path = NOTEBOOK_DIR / name
+    if not path.exists():
+        fail(f"missing directly browsable notebook: {name}")
+    data = path.read_bytes()
+    expected_sha, expected_size = EXPECTED_NOTEBOOK_SOURCE[name]
+    if len(data) != expected_size:
+        fail(f"notebook byte-size changed: {name}: got={len(data)}, expected={expected_size}")
+    got_sha = sha256_bytes(data)
+    if got_sha != expected_sha:
+        fail(f"frozen notebook SHA-256 changed: {name}: got={got_sha}")
+    try:
+        nb = json.loads(data.decode("utf-8"))
+    except Exception as exc:
+        fail(f"invalid notebook JSON {name}: {exc}")
+    parsed_notebooks[name] = nb
+    if not isinstance(nb.get("cells"), list):
+        fail(f"notebook cells missing/invalid: {name}")
+    for i, cell in enumerate(nb["cells"]):
+        if cell.get("cell_type") != "code":
+            continue
+        src = cell.get("source", "")
+        if isinstance(src, list):
+            src = "".join(src)
+        try:
+            compile(normalized_code(src), f"{name}:cell{i}", "exec")
+        except SyntaxError as exc:
+            fail(f"python syntax error in {name} cell {i}: {exc}")
+print(f"PASS: {len(REQUIRED_NOTEBOOKS)} notebooks are visible and byte-identical to frozen GitHub sources.")
+
+print("AUDIT 2/8 — one deterministic Python mirror per notebook")
+for name, nb in parsed_notebooks.items():
+    script_name = name.removesuffix(".ipynb") + ".py"
+    path = SCRIPT_DIR / script_name
+    if not path.exists():
+        fail(f"missing analysis script mirror: {script_name}")
+    got = path.read_text(encoding="utf-8")
+    expected = expected_script_text(name, nb)
+    if got != expected:
+        fail(f"script mirror is not an exact deterministic extraction: {script_name}")
+    try:
+        compile(got, str(path), "exec")
+    except SyntaxError as exc:
+        fail(f"script syntax error in {script_name}: {exc}")
+print(f"PASS: {len(REQUIRED_NOTEBOOKS)} script mirrors match notebook code cells exactly.")
+
+print("AUDIT 3/8 — frozen LOEO protocol")
+protocol_path = ROOT / "config" / "nested_loeo_protocol_v1.json"
 if not protocol_path.exists():
-    fail('missing frozen protocol JSON')
+    fail("missing frozen protocol JSON")
 raw_protocol = protocol_path.read_bytes()
 try:
-    protocol_obj = json.loads(raw_protocol.decode('utf-8'))
+    protocol_obj = json.loads(raw_protocol.decode("utf-8"))
 except Exception as exc:
-    fail(f'invalid frozen protocol JSON: {exc}')
+    fail(f"invalid frozen protocol JSON: {exc}")
 canonical = json.dumps(
-    protocol_obj,
-    sort_keys=True,
-    separators=(',', ':'),
-    ensure_ascii=False,
-).encode('utf-8')
+    protocol_obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+).encode("utf-8")
 canonical_sha = sha256_bytes(canonical)
 raw_sha = sha256_bytes(raw_protocol)
 if canonical_sha != EXPECTED_PROTOCOL_CANONICAL_SHA:
-    fail(
-        'frozen protocol semantic content changed: '
-        f'canonical_sha={canonical_sha}'
-    )
-print('PASS: frozen protocol semantic SHA-256 matches audited protocol.')
+    fail(f"frozen protocol semantic content changed: canonical_sha={canonical_sha}")
+print("PASS: frozen protocol semantic SHA-256 matches audited protocol.")
 if raw_sha == ORIGINAL_PROTOCOL_RAW_SHA:
-    print('PASS: frozen protocol raw-byte SHA-256 also matches original archived file.')
+    print("PASS: frozen protocol raw-byte SHA-256 also matches original archived file.")
 else:
     print(
-        'INFO: protocol raw-byte SHA differs only in serialization; '
-        f'current={raw_sha}, archived={ORIGINAL_PROTOCOL_RAW_SHA}'
+        "INFO: protocol raw-byte SHA differs only in serialization; "
+        f"current={raw_sha}, archived={ORIGINAL_PROTOCOL_RAW_SHA}"
     )
 
-print('AUDIT 3/6 — frozen numerical evidence')
-facts_path = ROOT/'results'/'frozen_numeric_facts_nb08.json'
+print("AUDIT 4/8 — frozen numerical evidence")
+facts_path = ROOT / "results" / "frozen_numeric_facts_nb08.json"
 if not facts_path.exists():
-    fail('missing frozen NB08 facts')
+    fail("missing frozen NB08 facts")
 try:
-    facts = json.loads(facts_path.read_text(encoding='utf-8'))
+    facts = json.loads(facts_path.read_text(encoding="utf-8"))
 except Exception as exc:
-    fail(f'invalid frozen facts JSON: {exc}')
+    fail(f"invalid frozen facts JSON: {exc}")
 for key, expected in EXPECTED.items():
     if key not in facts:
-        fail(f'missing frozen fact: {key}')
+        fail(f"missing frozen fact: {key}")
     got = facts[key]
     if isinstance(expected, float):
         if not math.isclose(float(got), float(expected), rel_tol=1e-4, abs_tol=1e-6):
-            fail(f'frozen fact mismatch: {key}: got={got}, expected≈{expected}')
+            fail(f"frozen fact mismatch: {key}: got={got}, expected≈{expected}")
     elif got != expected:
-        fail(f'frozen fact mismatch: {key}: got={got}, expected={expected}')
-print('PASS: frozen NB08 numerical evidence matches audited values.')
+        fail(f"frozen fact mismatch: {key}: got={got}, expected={expected}")
+print("PASS: frozen NB08 numerical evidence matches audited values.")
 
-print('AUDIT 4/6 — manuscript tables and repository policy')
-main_table_dir = ROOT/'results'/'main_tables'
+print("AUDIT 5/8 — manuscript tables")
+main_table_dir = ROOT / "results" / "main_tables"
 if not main_table_dir.exists():
-    fail('missing results/main_tables directory')
-main_tables = sorted(main_table_dir.glob('*.csv'))
+    fail("missing results/main_tables directory")
+main_tables = sorted(main_table_dir.glob("*.csv"))
 if len(main_tables) != 7:
-    fail(f'expected 7 main tables, found {len(main_tables)}')
-print('PASS: seven main manuscript tables are present.')
+    fail(f"expected 7 main tables, found {len(main_tables)}")
+print("PASS: seven main manuscript tables are present.")
 
-for path in ROOT.rglob('*'):
+print("AUDIT 6/8 — README and reviewer-facing code visibility")
+readme_path = ROOT / "README.md"
+if not readme_path.exists():
+    fail("missing README.md")
+readme = readme_path.read_text(encoding="utf-8")
+for phrase in [
+    "10.15125/BATH-01459",
+    "Leave-One-Experiment-Out",
+    "1/12",
+    "0.1147",
+    "nine directly browsable source-clean notebooks",
+    "one deterministic Python script mirror per notebook",
+]:
+    if phrase not in readme:
+        fail(f"README missing required phrase: {phrase}")
+notebook_readme = (NOTEBOOK_DIR / "README.md").read_text(encoding="utf-8")
+script_readme = (SCRIPT_DIR / "README.md").read_text(encoding="utf-8")
+for name in REQUIRED_NOTEBOOKS:
+    if name not in notebook_readme:
+        fail(f"notebooks/README missing {name}")
+    if name.removesuffix(".ipynb") + ".py" not in script_readme:
+        fail(f"scripts/README missing mirror for {name}")
+print("PASS: README files expose the complete notebook/script pipeline to reviewers.")
+
+print("AUDIT 7/8 — manuscript evidence traceability")
+evidence_map_path = ROOT / "docs" / "MANUSCRIPT_EVIDENCE_MAP.md"
+if not evidence_map_path.exists():
+    fail("missing docs/MANUSCRIPT_EVIDENCE_MAP.md")
+evidence_map = evidence_map_path.read_text(encoding="utf-8")
+for phrase in [
+    "Table_3_confirmatory_external_selected_models.csv",
+    "Table_4_model_selection_instability_summary.csv",
+    "Table_6_probabilistic_calibration_selected_models.csv",
+    "Table_7_structural_effect_sizes.csv",
+    "external_support_distance_ratio",
+    "NB06-v1.1",
+]:
+    if phrase not in evidence_map:
+        fail(f"manuscript evidence map missing required traceability phrase: {phrase}")
+print("PASS: manuscript claims are linked to frozen evidence and safeguards.")
+
+print("AUDIT 8/8 — repository cleanliness and file policy")
+if (ROOT / "notebooks_packed").exists():
+    fail("historical notebooks_packed directory should not remain after normalization")
+if (SCRIPT_DIR / "unpack_notebooks.py").exists():
+    fail("obsolete scripts/unpack_notebooks.py should not remain after normalization")
+if list(ROOT.rglob("*.b85gz")):
+    fail("packed notebook artifacts remain in the repository")
+for path in ROOT.rglob("*"):
     if not path.is_file():
         continue
     rel = path.relative_to(ROOT)
-    if rel.parts and rel.parts[0] == '.git':
+    if rel.parts and rel.parts[0] == ".git":
         continue
-    if path.suffix.lower() in {'.zip', '.7z', '.rar'}:
-        fail(f'archive should not be tracked: {rel}')
-    if path.stat().st_size > 10*1024*1024:
-        fail(f'file exceeds 10 MiB policy: {rel}')
-print('PASS: tracked research-file policy checks passed.')
+    if path.suffix.lower() in {".zip", ".7z", ".rar"}:
+        fail(f"archive should not be tracked: {rel}")
+    if path.stat().st_size > 10 * 1024 * 1024:
+        fail(f"file exceeds 10 MiB policy: {rel}")
+print("PASS: no packed notebook layer, obsolete unpacker, archives, or oversized research files remain.")
 
-print('AUDIT 5/6 — README safeguards')
-readme_path = ROOT/'README.md'
-if not readme_path.exists():
-    fail('missing README.md')
-readme = readme_path.read_text(encoding='utf-8')
-for phrase in [
-    '10.15125/BATH-01459',
-    'Leave-One-Experiment-Out',
-    '1/12',
-    '0.1147',
-]:
-    if phrase not in readme:
-        fail(f'README missing required phrase: {phrase}')
-print('PASS: README contains dataset, validation, and frozen-result safeguards.')
-
-print('AUDIT 6/6 — manuscript evidence traceability')
-evidence_map_path = ROOT/'docs'/'MANUSCRIPT_EVIDENCE_MAP.md'
-if not evidence_map_path.exists():
-    fail('missing docs/MANUSCRIPT_EVIDENCE_MAP.md')
-evidence_map = evidence_map_path.read_text(encoding='utf-8')
-for phrase in [
-    'Table_3_confirmatory_external_selected_models.csv',
-    'Table_4_model_selection_instability_summary.csv',
-    'Table_6_probabilistic_calibration_selected_models.csv',
-    'Table_7_structural_effect_sizes.csv',
-    'external_support_distance_ratio',
-    'NB06-v1.1',
-]:
-    if phrase not in evidence_map:
-        fail(f'manuscript evidence map missing required traceability phrase: {phrase}')
-print('PASS: manuscript claims are linked to frozen evidence and safeguards.')
-
-print('\nPASS: repository structure and frozen evidence are internally consistent.')
-print('PASS: repository integrity audit completed successfully.')
+print("\nPASS: reviewer-facing code, frozen evidence, and repository structure are internally consistent.")
+print("PASS: repository integrity audit completed successfully.")

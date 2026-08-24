@@ -8,25 +8,43 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  audit:
+  normalize-and-audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
 
+      - name: Normalize reviewer-facing analysis mirrors
+        run: python scripts/rebuild_analysis_mirrors.py
+
       - name: Show audit context
         run: |
           python --version
           git rev-parse --short HEAD
-          find notebooks notebooks_packed config results/main_tables scripts -maxdepth 2 -type f | sort
+          find notebooks config results/main_tables scripts -maxdepth 2 -type f | sort
 
       - name: Run repository integrity audit
         run: python scripts/audit_repository.py
+
+      - name: Commit normalized representation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Normalize notebooks and analysis script mirrors"
+            git push
+          else
+            echo "Repository already normalized; no commit required."
+          fi
