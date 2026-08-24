@@ -1,9 +1,9 @@
-Figure,Base filename,Role,Scientific purpose
-1,Figure_1_stage_distribution_by_experiment,Main,Dataset stage-support heterogeneity
-2,Figure_2_stage_matched_domain_auc,Main,Experiment-specific sensor signatures
-3,Figure_3_selected_models_external_macro_f1,Main,Confirmatory external performance
-4,Figure_4_selected_vs_runnerup_bootstrap_forest,Main,Internal selection transportability
-5,Figure_5_ece_raw_vs_temperature_scaled,Main,Probability reliability under shift
-6,Figure_6_macro_f1_partial_eta_squared,Main,Structural effect sizes
-S1,Figure_S1_balancing_effect_by_experiment,Supplementary,Imbalance sensitivity
-S2,Figure_S2_calibration_transfer_by_experiment,Supplementary,Calibration-transfer heterogeneity
+Figure,Filename,Role,Scientific purpose,Primary evidence source
+1,Figure_1_stage_matched_domain_auc.png,Current manuscript,Stage-matched experiment discriminability with repeated-CV variability,NB02 plus reviewer-requested uncertainty visualization
+2,Figure_2_selected_models_external_macro_f1.png,Current manuscript,Confirmatory external performance of internally selected models,NB04/NB08
+3,Figure_3_model_selection_transportability.png,Current manuscript,Internal rank-1 vs rank-2 and selected vs post-hoc best transportability,NB04/NB07 plus reviewer-requested selection-loss panel
+4,Figure_4_ece_raw_vs_temperature_scaled.png,Current manuscript,Probability reliability under experiment shift,NB06-v1.1 plus near-zero visibility correction
+5,Figure_5_macro_f1_partial_eta_squared.png,Current manuscript,Descriptive structural effect sizes,NB07/NB08
+S1,Figure_S1_balancing_effect_by_experiment.png,Supplementary,Imbalance sensitivity by experiment,NB05/NB08
+S2,Figure_S2_calibration_transfer_by_experiment.png,Supplementary,Calibration-transfer heterogeneity,NB06-v1.1/NB08
+S3,Figure_S3_treeshap_spectral_tree_models.png,Reviewer-requested supplementary,Post-hoc TreeSHAP spectral attribution using frozen tree hyperparameters,Explanatory only; not used for model selection
