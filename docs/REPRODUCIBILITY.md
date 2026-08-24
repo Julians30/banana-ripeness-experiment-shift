@@ -20,6 +20,19 @@ Run the notebooks in the following order:
 
 `06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb` is the authoritative calibration version for final manuscript values. The original NB06 is retained to document the initial temperature range and the subsequent numerical correction. The correction does not alter classifier training, outer predictions, model selection, or class labels.
 
+## Source archives
+
+Download the original University of Bath dataset identified by DOI `10.15125/BATH-01459`. The frozen data-audit notebook expects the four source archives used in the study:
+
+```text
+ds_34.zip
+Spect.zip
+TPHiS.zip
+VOC.zip
+```
+
+Raw archives are intentionally not redistributed by this repository. Keep them under the project's `01_RAW_ZIPS/` directory before running NB01. NB01 records MD5/SHA-256 digests and reconstructs the frozen analysis artifacts before any predictive modelling begins.
+
 ## Leakage-safe rules
 
 For every outer LOEO fold:
@@ -64,3 +77,14 @@ The notebooks were developed in Google Colab with the project rooted at:
 `/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1`
 
 For execution outside that workspace, change the project-root variable while preserving the documented folder hierarchy and frozen protocol.
+
+## Repository integrity check
+
+After cloning the repository, verify the reviewer-facing representation with:
+
+```bash
+python scripts/rebuild_analysis_mirrors.py
+python scripts/audit_repository.py
+```
+
+The audit verifies the frozen notebook hashes, deterministic notebook-to-script mirrors, the nested-LOEO protocol, manuscript numerical evidence, table inventory, documented safeguards, and the absence of the obsolete packed-notebook layer.
