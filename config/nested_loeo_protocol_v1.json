@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "frozen_date": "2026-08-23",
+  "unit": "original recorded observation",
+  "outer_strategy": "Leave-One-Experiment-Out",
+  "outer_tests": [2, 3, 4, 5],
+  "rules": [
+    "Only inferred-original rows are eligible for the main LOEO evaluation.",
+    "The external experiment is untouched until final prediction for that outer fold.",
+    "Standardization, PCA, UMAP fitting, feature selection, resampling, hyperparameter tuning and probability calibration are fit on development data only.",
+    "If SMOTE is evaluated, it is applied only inside inner-training data; never before an outer or inner split.",
+    "Test 5 streams 1 and 2 remain grouped together as one external experiment.",
+    "Per-experiment Macro-F1 is computed on target-supported classes; pooled LOEO Macro-F1 across all out-of-experiment predictions is computed on the fixed label set 1-5.",
+    "No model is selected from outer-test performance."
+  ],
+  "outer_folds": {
+    "2": {"development_tests": [3,4,5], "external_test": [2], "inner_validation_folds": [{"inner_validation_test": 3, "inner_training_tests": [4,5]}, {"inner_validation_test": 4, "inner_training_tests": [3,5]}, {"inner_validation_test": 5, "inner_training_tests": [3,4]}]},
+    "3": {"development_tests": [2,4,5], "external_test": [3], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [4,5]}, {"inner_validation_test": 4, "inner_training_tests": [2,5]}, {"inner_validation_test": 5, "inner_training_tests": [2,4]}]},
+    "4": {"development_tests": [2,3,5], "external_test": [4], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [3,5]}, {"inner_validation_test": 3, "inner_training_tests": [2,5]}, {"inner_validation_test": 5, "inner_training_tests": [2,3]}]},
+    "5": {"development_tests": [2,3,4], "external_test": [5], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [3,4]}, {"inner_validation_test": 3, "inner_training_tests": [2,4]}, {"inner_validation_test": 4, "inner_training_tests": [2,3]}]}
+  }
+}
