@@ -21,8 +21,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Reconstruct packed notebooks
-        run: python scripts/unpack_notebooks.py
+      - name: Show audit context
+        run: |
+          python --version
+          git rev-parse --short HEAD
+          find notebooks notebooks_packed config results/main_tables scripts -maxdepth 2 -type f | sort
 
       - name: Run reproducibility audit
         run: python scripts/audit_repository.py
