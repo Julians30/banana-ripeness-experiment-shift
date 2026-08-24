@@ -16,9 +16,48 @@ Run the notebooks in the following order:
 08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb
 ```
 
-## Version hierarchy
+`06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb` is authoritative for final manuscript temperature-scaling values. The original NB06 is retained to document the initial temperature range and subsequent numerical correction. The correction does not alter classifier training, outer predictions, model selection, or class labels.
 
-`06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb` is the authoritative calibration version for final manuscript values. The original NB06 is retained to document the initial temperature range and the subsequent numerical correction. The correction does not alter classifier training, outer predictions, model selection, or class labels.
+## Source archives
+
+Download the original University of Bath dataset identified by DOI `10.15125/BATH-01459`. The frozen data-audit notebook expects the four source archives:
+
+```text
+ds_34.zip
+Spect.zip
+TPHiS.zip
+VOC.zip
+```
+
+Raw archives are intentionally not redistributed in this repository. Place them under the project's `01_RAW_ZIPS/` directory before running NB01.
+
+## Frozen notebook provenance
+
+NB01 is committed directly in `notebooks/`. The exact frozen source-clean bytes for NB02–NB08 are stored under:
+
+`archive/frozen_notebook_payloads/`
+
+Each payload is gzip-compressed and base85-encoded text. This is a provenance representation only.
+
+To materialize all nine notebooks and readable Python mirrors:
+
+```bash
+python scripts/rebuild_analysis_mirrors.py
+```
+
+The command verifies the frozen SHA-256 and byte size of every notebook before writing any generated local files.
+
+## Repository integrity audit
+
+Run:
+
+```bash
+python scripts/audit_repository.py
+```
+
+The audit is read-only and uses only the Python standard library. It verifies notebook provenance in memory, code-cell syntax, the frozen nested-LOEO protocol, frozen numerical evidence, table manifests, manuscript-evidence traceability, and repository file policy.
+
+GitHub Actions runs the same read-only audit on pushes and pull requests. The workflow does **not** create commits or push generated files back to the repository.
 
 ## Leakage-safe rules
 
