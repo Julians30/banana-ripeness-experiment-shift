@@ -10,6 +10,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
 SCRIPT_DIR = ROOT / "scripts"
+PAYLOAD_DIR = ROOT / "archive" / "frozen_notebook_payloads"
 
 REQUIRED_NOTEBOOKS = [
     "01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb",
@@ -33,6 +34,17 @@ EXPECTED_NOTEBOOK_SOURCE = {
     "06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb": ("d8999076c4c067be8aba6a83f3ad2b5351c784ac7646f879c1055aa024f496bd", 33826),
     "07_FINAL_STATISTICAL_INFERENCE.ipynb": ("3232477307baea128472ecd12fee0346168a548cf6b117a99ca7f8e1878b674b", 35257),
     "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb": ("8efd3456de3bf2ee2eb6c78a2a60721c582937232b1fe8e2b8363e5a601f32d3", 47560),
+}
+
+EXPECTED_PAYLOAD_GIT_BLOBS = {
+    "02_PCA_UMAP_DOMAIN_SHIFT.ipynb.b85gz": "9341dcdf1f4c99105ac406da6c49f7f41ce73033",
+    "03_INNER_LOEO_MODEL_SELECTION.ipynb.b85gz": "e3c99cc16892c938fa65ded968df033d37729a75",
+    "04_OUTER_LOEO_EVALUATION.ipynb.b85gz": "90712a56f078a0927ab40f47ee716f1537ecc2ef",
+    "05_BALANCING_SENSITIVITY_CLASSWEIGHT_SMOTE.ipynb.b85gz": "b8052a7632b7f80954c6f92137ab3289ffbbfd15",
+    "06_CALIBRATION_RELIABILITY_ORDINAL.ipynb.b85gz": "e559848f3a895c301d2ba2260920ed2c3add2727",
+    "06_v1_1_CALIBRATION_WIDE_TEMPERATURE.ipynb.b85gz": "caf7113466f936e70e5f36c4acf0fc798e48d29a",
+    "07_FINAL_STATISTICAL_INFERENCE.ipynb.b85gz": "b6ad61c3198d1b704c5d4bce6cb1efd6dabb7d4b",
+    "08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb.b85gz": "0d9a28cc71ada25e537c08ad6bce622a9718f490",
 }
 
 EXPECTED_PROTOCOL_CANONICAL_SHA = "df508d709559fa48c28e580329b1dfe2790251183a176897fc4ced708a808f42"
@@ -60,6 +72,11 @@ def fail(msg: str) -> None:
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def git_blob_sha(data: bytes) -> str:
+    header = f"blob {len(data)}\0".encode("ascii")
+    return hashlib.sha1(header + data).hexdigest()
 
 
 def normalized_code(src: str) -> str:
@@ -102,12 +119,12 @@ def expected_script_text(name: str, nb: dict) -> str:
     return "".join(out)
 
 
-print("AUDIT 1/8 — directly browsable frozen notebooks")
+print("AUDIT 1/8 — materialized frozen notebooks")
 parsed_notebooks: dict[str, dict] = {}
 for name in REQUIRED_NOTEBOOKS:
     path = NOTEBOOK_DIR / name
     if not path.exists():
-        fail(f"missing directly browsable notebook: {name}")
+        fail(f"missing materialized notebook: {name}; run scripts/rebuild_analysis_mirrors.py first")
     data = path.read_bytes()
     expected_sha, expected_size = EXPECTED_NOTEBOOK_SOURCE[name]
     if len(data) != expected_size:
@@ -132,9 +149,9 @@ for name in REQUIRED_NOTEBOOKS:
             compile(normalized_code(src), f"{name}:cell{i}", "exec")
         except SyntaxError as exc:
             fail(f"python syntax error in {name} cell {i}: {exc}")
-print(f"PASS: {len(REQUIRED_NOTEBOOKS)} notebooks are visible and byte-identical to frozen GitHub sources.")
+print(f"PASS: {len(REQUIRED_NOTEBOOKS)} notebooks are byte-identical to frozen source-clean files.")
 
-print("AUDIT 2/8 — one deterministic Python mirror per notebook")
+print("AUDIT 2/8 — deterministic Python mirrors")
 for name, nb in parsed_notebooks.items():
     script_name = name.removesuffix(".ipynb") + ".py"
     path = SCRIPT_DIR / script_name
@@ -159,9 +176,7 @@ try:
     protocol_obj = json.loads(raw_protocol.decode("utf-8"))
 except Exception as exc:
     fail(f"invalid frozen protocol JSON: {exc}")
-canonical = json.dumps(
-    protocol_obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False
-).encode("utf-8")
+canonical = json.dumps(protocol_obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 canonical_sha = sha256_bytes(canonical)
 raw_sha = sha256_bytes(raw_protocol)
 if canonical_sha != EXPECTED_PROTOCOL_CANONICAL_SHA:
@@ -170,10 +185,7 @@ print("PASS: frozen protocol semantic SHA-256 matches audited protocol.")
 if raw_sha == ORIGINAL_PROTOCOL_RAW_SHA:
     print("PASS: frozen protocol raw-byte SHA-256 also matches original archived file.")
 else:
-    print(
-        "INFO: protocol raw-byte SHA differs only in serialization; "
-        f"current={raw_sha}, archived={ORIGINAL_PROTOCOL_RAW_SHA}"
-    )
+    print("INFO: protocol raw-byte SHA differs only in serialization; " f"current={raw_sha}, archived={ORIGINAL_PROTOCOL_RAW_SHA}")
 
 print("AUDIT 4/8 — frozen numerical evidence")
 facts_path = ROOT / "results" / "frozen_numeric_facts_nb08.json"
@@ -194,16 +206,23 @@ for key, expected in EXPECTED.items():
         fail(f"frozen fact mismatch: {key}: got={got}, expected={expected}")
 print("PASS: frozen NB08 numerical evidence matches audited values.")
 
-print("AUDIT 5/8 — manuscript tables")
+print("AUDIT 5/8 — manuscript tables and supplementary inventory")
 main_table_dir = ROOT / "results" / "main_tables"
 if not main_table_dir.exists():
     fail("missing results/main_tables directory")
 main_tables = sorted(main_table_dir.glob("*.csv"))
 if len(main_tables) != 7:
     fail(f"expected 7 main tables, found {len(main_tables)}")
-print("PASS: seven main manuscript tables are present.")
+supp_manifest = ROOT / "results" / "SUPPLEMENTARY_EVIDENCE_MANIFEST.md"
+if not supp_manifest.exists():
+    fail("missing supplementary evidence manifest")
+supp_text = supp_manifest.read_text(encoding="utf-8")
+for marker in ["Table_S1_", "Table_S7_", "Table_S10_", "Table_S14_", "SHA-256"]:
+    if marker not in supp_text:
+        fail(f"supplementary evidence manifest missing marker: {marker}")
+print("PASS: seven main manuscript tables and the S1–S14 evidence inventory are present.")
 
-print("AUDIT 6/8 — README and reviewer-facing code visibility")
+print("AUDIT 6/8 — README and reviewer reconstruction path")
 readme_path = ROOT / "README.md"
 if not readme_path.exists():
     fail("missing README.md")
@@ -213,8 +232,9 @@ for phrase in [
     "Leave-One-Experiment-Out",
     "1/12",
     "0.1147",
-    "nine directly browsable source-clean notebooks",
-    "one deterministic Python script mirror per notebook",
+    "immutable provenance payloads",
+    "python scripts/rebuild_analysis_mirrors.py",
+    "SUPPLEMENTARY_EVIDENCE_MANIFEST.md",
 ]:
     if phrase not in readme:
         fail(f"README missing required phrase: {phrase}")
@@ -225,7 +245,7 @@ for name in REQUIRED_NOTEBOOKS:
         fail(f"notebooks/README missing {name}")
     if name.removesuffix(".ipynb") + ".py" not in script_readme:
         fail(f"scripts/README missing mirror for {name}")
-print("PASS: README files expose the complete notebook/script pipeline to reviewers.")
+print("PASS: reviewer reconstruction and complete notebook/script pipeline are documented.")
 
 print("AUDIT 7/8 — manuscript evidence traceability")
 evidence_map_path = ROOT / "docs" / "MANUSCRIPT_EVIDENCE_MAP.md"
@@ -244,13 +264,24 @@ for phrase in [
         fail(f"manuscript evidence map missing required traceability phrase: {phrase}")
 print("PASS: manuscript claims are linked to frozen evidence and safeguards.")
 
-print("AUDIT 8/8 — repository cleanliness and file policy")
+print("AUDIT 8/8 — immutable payload archive and file policy")
 if (ROOT / "notebooks_packed").exists():
-    fail("historical notebooks_packed directory should not remain after normalization")
+    fail("legacy notebooks_packed directory must not exist at repository root")
 if (SCRIPT_DIR / "unpack_notebooks.py").exists():
-    fail("obsolete scripts/unpack_notebooks.py should not remain after normalization")
-if list(ROOT.rglob("*.b85gz")):
-    fail("packed notebook artifacts remain in the repository")
+    fail("obsolete scripts/unpack_notebooks.py must not remain")
+if not PAYLOAD_DIR.exists():
+    fail("missing immutable frozen-notebook payload archive")
+payloads = sorted(PAYLOAD_DIR.glob("*.b85gz"))
+if {p.name for p in payloads} != set(EXPECTED_PAYLOAD_GIT_BLOBS):
+    fail("frozen notebook payload inventory changed")
+for path in payloads:
+    got = git_blob_sha(path.read_bytes())
+    expected = EXPECTED_PAYLOAD_GIT_BLOBS[path.name]
+    if got != expected:
+        fail(f"immutable payload changed: {path.name}: got git blob {got}, expected {expected}")
+for path in ROOT.rglob("*.b85gz"):
+    if path.parent != PAYLOAD_DIR:
+        fail(f"packed payload exists outside immutable archive: {path.relative_to(ROOT)}")
 for path in ROOT.rglob("*"):
     if not path.is_file():
         continue
@@ -261,7 +292,7 @@ for path in ROOT.rglob("*"):
         fail(f"archive should not be tracked: {rel}")
     if path.stat().st_size > 10 * 1024 * 1024:
         fail(f"file exceeds 10 MiB policy: {rel}")
-print("PASS: no packed notebook layer, obsolete unpacker, archives, or oversized research files remain.")
+print("PASS: provenance payloads are immutable, isolated, and no oversized research archives are tracked.")
 
 print("\nPASS: reviewer-facing code, frozen evidence, and repository structure are internally consistent.")
 print("PASS: repository integrity audit completed successfully.")
