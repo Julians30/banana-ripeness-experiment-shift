@@ -3,7 +3,12 @@
   "frozen_date": "2026-08-23",
   "unit": "original recorded observation",
   "outer_strategy": "Leave-One-Experiment-Out",
-  "outer_tests": [2, 3, 4, 5],
+  "outer_tests": [
+    2,
+    3,
+    4,
+    5
+  ],
   "rules": [
     "Only inferred-original rows are eligible for the main LOEO evaluation.",
     "The external experiment is untouched until final prediction for that outer fold.",
@@ -14,9 +19,137 @@
     "No model is selected from outer-test performance."
   ],
   "outer_folds": {
-    "2": {"development_tests": [3,4,5], "external_test": [2], "inner_validation_folds": [{"inner_validation_test": 3, "inner_training_tests": [4,5]}, {"inner_validation_test": 4, "inner_training_tests": [3,5]}, {"inner_validation_test": 5, "inner_training_tests": [3,4]}]},
-    "3": {"development_tests": [2,4,5], "external_test": [3], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [4,5]}, {"inner_validation_test": 4, "inner_training_tests": [2,5]}, {"inner_validation_test": 5, "inner_training_tests": [2,4]}]},
-    "4": {"development_tests": [2,3,5], "external_test": [4], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [3,5]}, {"inner_validation_test": 3, "inner_training_tests": [2,5]}, {"inner_validation_test": 5, "inner_training_tests": [2,3]}]},
-    "5": {"development_tests": [2,3,4], "external_test": [5], "inner_validation_folds": [{"inner_validation_test": 2, "inner_training_tests": [3,4]}, {"inner_validation_test": 3, "inner_training_tests": [2,4]}, {"inner_validation_test": 4, "inner_training_tests": [2,3]}]}
+    "2": {
+      "development_tests": [
+        3,
+        4,
+        5
+      ],
+      "external_test": [
+        2
+      ],
+      "inner_validation_folds": [
+        {
+          "inner_validation_test": 3,
+          "inner_training_tests": [
+            4,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 4,
+          "inner_training_tests": [
+            3,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 5,
+          "inner_training_tests": [
+            3,
+            4
+          ]
+        }
+      ]
+    },
+    "3": {
+      "development_tests": [
+        2,
+        4,
+        5
+      ],
+      "external_test": [
+        3
+      ],
+      "inner_validation_folds": [
+        {
+          "inner_validation_test": 2,
+          "inner_training_tests": [
+            4,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 4,
+          "inner_training_tests": [
+            2,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 5,
+          "inner_training_tests": [
+            2,
+            4
+          ]
+        }
+      ]
+    },
+    "4": {
+      "development_tests": [
+        2,
+        3,
+        5
+      ],
+      "external_test": [
+        4
+      ],
+      "inner_validation_folds": [
+        {
+          "inner_validation_test": 2,
+          "inner_training_tests": [
+            3,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 3,
+          "inner_training_tests": [
+            2,
+            5
+          ]
+        },
+        {
+          "inner_validation_test": 5,
+          "inner_training_tests": [
+            2,
+            3
+          ]
+        }
+      ]
+    },
+    "5": {
+      "development_tests": [
+        2,
+        3,
+        4
+      ],
+      "external_test": [
+        5
+      ],
+      "inner_validation_folds": [
+        {
+          "inner_validation_test": 2,
+          "inner_training_tests": [
+            3,
+            4
+          ]
+        },
+        {
+          "inner_validation_test": 3,
+          "inner_training_tests": [
+            2,
+            4
+          ]
+        },
+        {
+          "inner_validation_test": 4,
+          "inner_training_tests": [
+            2,
+            3
+          ]
+        }
+      ]
+    }
   }
 }
