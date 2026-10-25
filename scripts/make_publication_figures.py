@@ -21,7 +21,7 @@ os.makedirs(OUT, exist_ok=True)
 N14 = str(ROOT / 'results/post_hoc/nb14_prospective_domain_z') + '/'
 N15 = str(ROOT / 'results/post_hoc/nb15_spectral_error_audit') + '/'
 
-plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 8, 'axes.titlesize': 8.5, 'axes.labelsize': 8,
+plt.rcParams.update({'font.family': 'DejaVu Sans', 'text.hinting': 'no_hinting', 'font.size': 8, 'axes.titlesize': 8.5, 'axes.labelsize': 8,
     'xtick.labelsize': 7.5, 'ytick.labelsize': 7.5, 'legend.fontsize': 7, 'axes.spines.top': False,
     'axes.spines.right': False, 'axes.linewidth': 0.7, 'lines.linewidth': 1.2, 'pdf.fonttype': 42,
     'savefig.bbox': 'tight', 'savefig.pad_inches': 0.03})
