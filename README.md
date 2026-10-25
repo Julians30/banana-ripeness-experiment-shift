@@ -102,6 +102,8 @@ The ECE above averages all 12 selected models, including softmax surrogates; the
 - Estimated prospectively from the first 25 unique spectra, it raised Macro-F1 only from **0.125 to 0.175**, improving 2 of 4 experiments; window sizes 10 and 50 gave no consistent improvement.
 - Acquisition order followed ripening, so initial windows contained almost only unripe fruit; the stage composition of the calibration window alone changed Macro-F1 by up to **0.19**.
 - Raw spectral PC1 is a nearly uniform intensity/baseline axis (92.6% of variance in the Test 3 fold); experiment-wise z-scoring removes between-experiment offsets only.
+- Positive control (NB17): the same model families reach Macro-F1 **0.962–0.995** under pooled random 5-fold CV and **0.958–0.994** within single experiments, versus **0.108–0.158** under nested LOEO.
+- MSC (0.203) behaves like SNV (0.211); vector scaling and isotonic calibration do not transfer better than temperature scaling.
 
 The central result is not a universal winning classifier. Experiment-specific distribution shift can dominate algorithm choice, destabilize model selection and reduce probability transportability.
 

@@ -335,6 +335,8 @@ for required in [
     ROOT / "results" / "chemolab_submission" / "figure_provenance.csv",
     ROOT / "scripts" / "make_publication_figures.py",
     ROOT / "notebooks" / "post_hoc" / "17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb",
+    ROOT / "results" / "post_hoc" / "nb17_reviewer_shield" / "A_summary.csv",
+    ROOT / "results" / "post_hoc" / "nb17_reviewer_shield" / "C_calibrators.csv",
 ]:
     if not required.exists():
         fail(f"missing post-hoc/current-submission file: {required.relative_to(ROOT)}")

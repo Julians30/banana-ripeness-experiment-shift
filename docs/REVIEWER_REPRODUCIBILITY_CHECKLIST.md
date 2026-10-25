@@ -49,5 +49,5 @@
 - [x] Feature displacement, PCA loadings, projections and error localization (NB15) are versioned in `results/post_hoc/nb15_spectral_error_audit/`.
 - [x] Every figure of the current submission is mapped to its source and SHA-256 in `results/chemolab_submission/`.
 - [x] Figures 1, 2, 7–11, S8–S10 and S12–S15 are regenerated from tracked files by `scripts/make_publication_figures.py`.
-- [x] The NB17 reviewer-requested sensitivity notebook is included in `notebooks/post_hoc/`.
+- [x] The NB17 notebook (positive control, MSC, alternative calibrators) and its outputs are included (`notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/`).
 - [ ] NB09–NB12 and NB14–NB16 notebook sources to be added.

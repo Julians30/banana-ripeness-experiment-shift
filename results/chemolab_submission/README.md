@@ -5,7 +5,7 @@ This directory maps every table and figure of the manuscript **"Experiment Shift
 Layers:
 
 - **Frozen confirmatory evidence** — NB01–NB08, `../main_tables/`, `../frozen_numeric_facts_nb08.json`.
-- **Post-hoc robustness evidence** — NB09–NB12 (random references, spectral normalization, duplicate-aware and shared-signature analyses), NB14 (prospective initial-window normalization and composition stress), NB15 (feature displacement, loadings, projections, error localization), NB16 (reliability diagrams), NB17 (reviewer-requested sensitivity analyses). Exported tables are in `../post_hoc/`.
+- **Post-hoc robustness evidence** — NB09–NB12 (random references, spectral normalization, duplicate-aware and shared-signature analyses), NB14 (prospective initial-window normalization and composition stress), NB15 (feature displacement, loadings, projections, error localization), NB16 (reliability diagrams), NB17 (positive control, MSC and alternative calibrators; Section 2.13). Exported tables are in `../post_hoc/`.
 
 None of the post-hoc layers modifies frozen outer predictions, model rankings, calibration fits or confirmatory estimates.
 
@@ -17,13 +17,15 @@ None of the post-hoc layers modifies frozen outer predictions, model rankings, c
 | Table 2 | Candidate models and frozen grids | `../../config/PROTOCOL_V1.md`; NB03 |
 | Table 3 | Stage-matched experiment-shift diagnostics | `../main_tables/Table_2_experiment_shift_diagnostics.csv` |
 | Table 4 | External performance of internally selected models | `../main_tables/Table_3_confirmatory_external_selected_models.csv`; `../main_tables/Table_4_model_selection_instability_summary.csv` |
-| Table 5 | Integrated synthesis | `../main_tables/Table_4`–`Table_7`; NB09–NB12 values; `../post_hoc/nb14_prospective_domain_z/`; `../post_hoc/nb15_spectral_error_audit/` |
+| Table 5 | Integrated synthesis | `../main_tables/Table_4`–`Table_7`; NB09–NB12 values; NB17; `../post_hoc/nb14_prospective_domain_z/`; `../post_hoc/nb15_spectral_error_audit/` |
 | Table 6 | Prospective initial-window DOMAIN_Z (N = 25) | NB14 `08_source_order_prefix_vs_raw_and_oracle.csv`, `03_prefix_and_future_stage_composition.csv`, `paired_error_summary_by_experiment.csv`; NB15 `feature_displacement.csv` |
+| Table 7 | Positive control (random, within-experiment and nested LOEO splits) | NB17 `../post_hoc/nb17_reviewer_shield/A_*.csv` |
 | Table S1 | Balancing-tail count audit | `../reviewer_revision/Table_S1_reconstruction_count_audit.csv` |
 | Table S2 | Stage-matched effective sample sizes | `../reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv` |
 | Table S3 | Development-majority no-skill baseline | `../reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` |
 | Table S4 | Window-size sensitivity (N = 10, 25, 50) | NB14 `08_source_order_prefix_vs_raw_and_oracle.csv`, `09_source_order_summary_by_window.csv` |
 | Table S5 | Calibration-window composition stress | NB14 `11_stage_composition_stress_summary.csv` (replicates: `10_stage_composition_stress_replicates.csv.gz`) |
+| Table S6 | Alternative calibrators | NB17 `../post_hoc/nb17_reviewer_shield/C_calibrators.csv` |
 
 ## Figures
 
