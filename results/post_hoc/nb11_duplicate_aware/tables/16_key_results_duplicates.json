@@ -1,0 +1,26 @@
+{
+  "spectral_duplicate_fraction_by_test": {
+    "2": 0.9215116279069767,
+    "3": 0.8620473100272137,
+    "4": 0.939996738953204,
+    "5": 0.864268680445151
+  },
+  "tph_spectral_duplicate_fraction_by_test": {
+    "2": 0.0005813953488371659,
+    "3": 0.0004186728072012036,
+    "4": 0.0006522093592042921,
+    "5": 0.0
+  },
+  "cross_experiment_shared_spectral_groups": 2,
+  "rows_in_cross_experiment_shared_groups": 278,
+  "cross_experiment_shared_groups_with_label_conflict": 1,
+  "original_rows": 17662,
+  "dedup_vector_stage_rows": 1900,
+  "selected_duplicate_aware_mean_macro_f1": {
+    "RAW_DEDUP": 0.17738623180594948,
+    "SNV_DEDUP": 0.17925008337708703,
+    "DOMAIN_Z_ROW_DEDUP": 0.3888508180740258,
+    "DOMAIN_Z_UNIQUE_DEDUP": 0.43984058373246027
+  },
+  "domain_z_unique_minus_row_mean_delta": 0.050989765658434535
+}

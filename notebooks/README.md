@@ -21,3 +21,7 @@ The repository audit decodes the archived notebooks in memory and verifies their
 | 08 | `08_FINAL_MANUSCRIPT_TABLES_FIGURES.ipynb` | `59b4f7e2dcc6cfb214536cf31736b50a2af9666b207387eb897ff6f994d58c9e` |
 
 NB08's source-clean hash reflects the canonical output-stripped compact serialization preserved by the immutable archive payload; no analytical code or manuscript values were changed. NB06-v1.1 supersedes NB06 **only for the final temperature-scaling values**. NB06 remains part of the provenance chain.
+
+## Post-hoc notebooks
+
+Post-hoc robustness notebooks run after the frozen pipeline are documented in [`post_hoc/README.md`](post_hoc/README.md). All of them (NB09–NB12, NB14–NB17) are included; their exported evidence is in `../results/post_hoc/`.

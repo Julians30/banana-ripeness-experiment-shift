@@ -5,16 +5,20 @@ type: software
 authors:
   - family-names: "Coronel-Reyes"
     given-names: "Julián"
+    affiliation: "Facultad de Ciencias Agropecuarias, Universidad Técnica de Machala, Machala, Ecuador"
+    email: "jcoronel1@utmachala.edu.ec"
   - family-names: "Haro-Sarango"
     given-names: "Alexander"
-  - family-names: "Delgado-Vera"
-    given-names: "Carlota"
-  - family-names: "Triviño-Sánchez"
-    given-names: "Johnny"
+    affiliation: "Escuela Profesional de Contabilidad, Universidad Peruana Unión, Lima, Peru"
+    email: "alexander.haro32@upeu.edu.pe"
+  - family-names: "Triviño Sanchez"
+    given-names: "Johnny Javier"
+    affiliation: "Instituto Superior Universitario Bolivariano de Tecnología (ITB), Guayaquil, Ecuador"
+    email: "jjtrivino2@itb.edu.ec"
 repository-code: "https://github.com/Julians30/banana-ripeness-experiment-shift"
 license: MIT
-version: "0.1.1"
-date-released: 2026-08-24
+version: "0.2.0"
+date-released: 2026-10-25
 keywords:
   - banana ripeness
   - multisensor
@@ -22,19 +26,25 @@ keywords:
   - domain shift
   - model-selection instability
   - probabilistic calibration
+  - domain normalization
+  - chemometrics
   - trustworthy machine learning
   - leakage-safe validation
 preferred-citation:
   type: article
-  title: "Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"
+  title: "Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"
   authors:
     - family-names: "Coronel-Reyes"
       given-names: "Julián"
+      affiliation: "Facultad de Ciencias Agropecuarias, Universidad Técnica de Machala, Machala, Ecuador"
+      email: "jcoronel1@utmachala.edu.ec"
     - family-names: "Haro-Sarango"
       given-names: "Alexander"
-    - family-names: "Delgado-Vera"
-      given-names: "Carlota"
-    - family-names: "Triviño-Sánchez"
-      given-names: "Johnny"
+      affiliation: "Escuela Profesional de Contabilidad, Universidad Peruana Unión, Lima, Peru"
+      email: "alexander.haro32@upeu.edu.pe"
+    - family-names: "Triviño Sanchez"
+      given-names: "Johnny Javier"
+      affiliation: "Instituto Superior Universitario Bolivariano de Tecnología (ITB), Guayaquil, Ecuador"
+      email: "jjtrivino2@itb.edu.ec"
   year: 2026
-  notes: "Manuscript under journal review; update with journal DOI after publication."
+  notes: "Manuscript submitted to Chemometrics and Intelligent Laboratory Systems; update with the journal DOI after publication."

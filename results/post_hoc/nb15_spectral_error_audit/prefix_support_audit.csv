@@ -1,0 +1,5 @@
+test_id,prefix_n,evaluated_n,prefix_max_index,prefix_stage_1,prefix_stage_2,prefix_stage_3,prefix_stage_4,prefix_stage_5
+2,25,112,105.0,25,0,0,0,0
+3,25,666,1777.0,25,0,0,0,0
+4,25,351,5094.0,25,0,0,0,0
+5,25,666,6699.0,1,14,10,0,0

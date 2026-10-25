@@ -1,0 +1,13 @@
+modality,outer_test,model,macro_f1,table4_macro_f1
+Spectral,2,RandomForest,0.1132897603485838,0.003
+Spectral,3,OrdinalLogistic,0.2304198143917583,0.23
+Spectral,4,OrdinalLogistic,0.2892538006808494,0.289
+Spectral,5,OrdinalLogistic,0.0001626016260162,0.0
+TPH,2,RandomForest,0.1797808609050945,0.167
+TPH,3,OrdinalLogistic,0.0932243758582652,0.093
+TPH,4,OrdinalLogistic,0.1310912026100062,0.131
+TPH,5,OrdinalLogistic,0.193144478608174,0.193
+TPH + Spectral,2,OrdinalLogistic,0.0009372071227741,0.001
+TPH + Spectral,3,OrdinalLogistic,0.2172155883546902,0.217
+TPH + Spectral,4,SVM-RBF,0.213316155013011,0.213
+TPH + Spectral,5,SVM-RBF,0.0001589193484306,0.0

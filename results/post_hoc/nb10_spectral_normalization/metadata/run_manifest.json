@@ -1,0 +1,136 @@
+{
+  "project": "BANANA_RIPENESS_MULTISENSOR_Q1",
+  "notebook": "10_SPECTRAL_NORMALIZATION_SENSITIVITY",
+  "run_id": "20260928_020934",
+  "created_utc": "2026-09-28T02:46:12.918658+00:00",
+  "seed": 2026,
+  "source_master": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/02_EXTRACTED_DATA/06_master_original_multisensor.csv",
+  "source_protocol": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/04_FROZEN_SPLITS/nested_loeo_protocol_v1.json",
+  "source_hashes": [
+    {
+      "artifact": "06_master_original_multisensor.csv",
+      "sha256": "0a06fb3773f85dacee42e18eecf17e5e2a8e7f5e9508cd3d60bd4b66757e8ea8",
+      "bytes": 8210545
+    },
+    {
+      "artifact": "nested_loeo_protocol_v1.json",
+      "sha256": "86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930",
+      "bytes": 3311
+    }
+  ],
+  "raw_baseline_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101",
+  "methods": {
+    "SNV": "row-wise standard normal variate on 18 spectral bands",
+    "DOMAIN_Z": "per-experiment unlabeled feature z-score; transductive diagnostic"
+  },
+  "modalities": {
+    "Spectral": [
+      "SpA410",
+      "SpB435",
+      "SpC460",
+      "SpD485",
+      "SpE510",
+      "SpF535",
+      "SpG560",
+      "SpH585",
+      "SpR610",
+      "SpI645",
+      "SpS680",
+      "SpJ705",
+      "SpT730",
+      "SpU760",
+      "SpV810",
+      "SpW860",
+      "SpK900",
+      "SpL940"
+    ],
+    "TPH_Spectral": [
+      "Temp-int",
+      "Press-int",
+      "Humid-int",
+      "SpA410",
+      "SpB435",
+      "SpC460",
+      "SpD485",
+      "SpE510",
+      "SpF535",
+      "SpG560",
+      "SpH585",
+      "SpR610",
+      "SpI645",
+      "SpS680",
+      "SpJ705",
+      "SpT730",
+      "SpU760",
+      "SpV810",
+      "SpW860",
+      "SpK900",
+      "SpL940"
+    ]
+  },
+  "models": [
+    "OrdinalLogistic",
+    "PLSDA",
+    "SVM_RBF",
+    "RandomForest",
+    "XGBoost"
+  ],
+  "selection_rule": [
+    "maximize mean observed-label Macro-F1 across 3 inner experiment folds",
+    "maximize worst inner-fold observed-label Macro-F1",
+    "maximize mean QWK",
+    "minimize mean ordinal MAE"
+  ],
+  "inner_fits": 912,
+  "outer_fits": 80,
+  "outer_label_use_for_preprocessing": false,
+  "domain_z_target_feature_use": "yes; unlabeled target-batch features only",
+  "elapsed_minutes": 36.64406678423334,
+  "versions": {
+    "python": "3.13.15",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "matplotlib": "3.10.0",
+    "scikit_learn": "1.6.1",
+    "mord": "0.7",
+    "xgboost": "3.4.1"
+  },
+  "key_results": {
+    "SNV": {
+      "mean_delta_macro_f1_all_8_scenarios": 0.08927305969329738,
+      "median_delta_macro_f1_all_8_scenarios": 0.09607917695558074,
+      "n_improved_of_8": 6,
+      "max_improvement": 0.28153852635751103,
+      "max_degradation": -0.08052255771687478,
+      "mean_macro_f1": 0.20854029510941907
+    },
+    "DOMAIN_Z": {
+      "mean_delta_macro_f1_all_8_scenarios": 0.2758918160709576,
+      "median_delta_macro_f1_all_8_scenarios": 0.28985124654426786,
+      "n_improved_of_8": 8,
+      "max_improvement": 0.3367905186863853,
+      "max_degradation": 0.1962522619861196,
+      "mean_macro_f1": 0.3951590514870793
+    },
+    "RAW": {
+      "mean_selected_macro_f1_8_scenarios": 0.11926723541612169
+    },
+    "PC1": {
+      "DOMAIN_Z": {
+        "mean": 0.6398122970927639,
+        "min": 0.5433901620339286,
+        "max": 0.6900900467594503
+      },
+      "RAW": {
+        "mean": 0.8254571130871188,
+        "min": 0.5498114331292463,
+        "max": 0.9213384886252304
+      },
+      "SNV": {
+        "mean": 0.4038687507873418,
+        "min": 0.3182758382788699,
+        "max": 0.520436100972697
+      }
+    }
+  }
+}

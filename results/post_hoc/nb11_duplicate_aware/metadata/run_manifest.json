@@ -1,0 +1,101 @@
+{
+  "project": "BANANA_RIPENESS_MULTISENSOR_Q1",
+  "notebook": "11_DUPLICATE_AWARE_SPECTRAL_SENSITIVITY",
+  "run_id": "20260928_030710",
+  "created_utc": "2026-09-28T03:15:28.292185+00:00",
+  "seed": 2026,
+  "source_hashes": [
+    {
+      "artifact": "02_EXTRACTED_DATA/06_master_original_multisensor.csv",
+      "sha256": "0a06fb3773f85dacee42e18eecf17e5e2a8e7f5e9508cd3d60bd4b66757e8ea8",
+      "bytes": 8210545
+    },
+    {
+      "artifact": "04_FROZEN_SPLITS/nested_loeo_protocol_v1.json",
+      "sha256": "86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930",
+      "bytes": 3311
+    },
+    {
+      "artifact": "06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101/predictions/outer_predictions_all_models.csv.gz",
+      "sha256": "24cdcd3ccab7003c1733bbb3fabae379eb92e6cbe6790d68f24bb25d4908b1a7",
+      "bytes": 7077780
+    },
+    {
+      "artifact": "06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101/tables/outer_loeo_metrics_all_models.csv",
+      "sha256": "7e8eeb4781dc8d2d7b5b712d0f6d2c135450b1744ec5ef6c9255cc48d2258609",
+      "bytes": 22084
+    },
+    {
+      "artifact": "06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101/tables/inner_vs_outer_model_ranking.csv",
+      "sha256": "a4dc544e1cf95af7ddb2f654a32c92c63ea606efa18c489594c40b31d8cbf55a",
+      "bytes": 24768
+    },
+    {
+      "artifact": "06_RESULTS/NB10_SPECTRAL_NORMALIZATION_20260928_020934/tables/09_selected_model_performance_raw_snv_domainz.csv",
+      "sha256": "b6549949692d39452a2d39a8d7f6fe6e8f7bd991e329e5e655e1c3f9b311f499",
+      "bytes": 4560
+    }
+  ],
+  "raw_baseline_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101",
+  "normalization_sensitivity_reference_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB10_SPECTRAL_NORMALIZATION_20260928_020934",
+  "dedup_rule": "one row per experiment + exact 18-band spectral vector + observed stage; conflicts retained",
+  "methods": [
+    "RAW_DEDUP",
+    "SNV_DEDUP",
+    "DOMAIN_Z_ROW_DEDUP",
+    "DOMAIN_Z_UNIQUE_DEDUP"
+  ],
+  "models": [
+    "OrdinalLogistic",
+    "PLSDA",
+    "SVM_RBF",
+    "RandomForest",
+    "XGBoost"
+  ],
+  "selection_rule": [
+    "maximize mean observed-label Macro-F1 across 3 inner experiment folds",
+    "maximize worst inner-fold observed-label Macro-F1",
+    "maximize mean QWK",
+    "minimize mean ordinal MAE"
+  ],
+  "inner_fits": 912,
+  "outer_fits": 80,
+  "outer_label_use_for_preprocessing": false,
+  "domain_z_unique_target_use": "unlabeled unique target-domain spectral vectors only",
+  "elapsed_minutes": 8.301964850966666,
+  "versions": {
+    "python": "3.13.15",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "matplotlib": "3.10.0",
+    "scikit_learn": "1.6.1",
+    "mord": "0.7",
+    "xgboost": "3.4.1"
+  },
+  "key_results": {
+    "spectral_duplicate_fraction_by_test": {
+      "2": 0.9215116279069767,
+      "3": 0.8620473100272137,
+      "4": 0.939996738953204,
+      "5": 0.864268680445151
+    },
+    "tph_spectral_duplicate_fraction_by_test": {
+      "2": 0.0005813953488371659,
+      "3": 0.0004186728072012036,
+      "4": 0.0006522093592042921,
+      "5": 0.0
+    },
+    "cross_experiment_shared_spectral_groups": 2,
+    "rows_in_cross_experiment_shared_groups": 278,
+    "cross_experiment_shared_groups_with_label_conflict": 1,
+    "original_rows": 17662,
+    "dedup_vector_stage_rows": 1900,
+    "selected_duplicate_aware_mean_macro_f1": {
+      "RAW_DEDUP": 0.17738623180594948,
+      "SNV_DEDUP": 0.17925008337708703,
+      "DOMAIN_Z_ROW_DEDUP": 0.3888508180740258,
+      "DOMAIN_Z_UNIQUE_DEDUP": 0.43984058373246027
+    },
+    "domain_z_unique_minus_row_mean_delta": 0.050989765658434535
+  }
+}

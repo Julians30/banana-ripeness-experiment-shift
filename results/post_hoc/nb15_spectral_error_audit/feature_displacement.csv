@@ -1,0 +1,17 @@
+external_test,arm,mean_standardized_displacement,scope
+2,RAW,2.8982649665168707,future-row development-standardized feature space
+2,SNV,7.108519164907019,future-row development-standardized feature space
+2,PREFIX,7.225098399293657,future-row development-standardized feature space
+2,FULL_TARGET,0.8213925071087792,future-row development-standardized feature space
+3,RAW,3.9790717672796627,future-row development-standardized feature space
+3,SNV,2.859500039191836,future-row development-standardized feature space
+3,PREFIX,4.976784047119345,future-row development-standardized feature space
+3,FULL_TARGET,0.16148663164919416,future-row development-standardized feature space
+4,RAW,3.623145758963109,future-row development-standardized feature space
+4,SNV,3.6241885447532898,future-row development-standardized feature space
+4,PREFIX,3.4527201934602862,future-row development-standardized feature space
+4,FULL_TARGET,0.22494145875398064,future-row development-standardized feature space
+5,RAW,39.214531704740786,future-row development-standardized feature space
+5,SNV,5.536157390120699,future-row development-standardized feature space
+5,PREFIX,56.87028819146924,future-row development-standardized feature space
+5,FULL_TARGET,0.23747471938405423,future-row development-standardized feature space

@@ -1,9 +1,27 @@
-Figure,Filename,Role,Scientific purpose,Primary evidence source
-1,Figure_1_stage_matched_domain_auc.png,Current manuscript,Stage-matched experiment discriminability with repeated-CV variability,NB02 plus reviewer-requested uncertainty visualization
-2,Figure_2_selected_models_external_macro_f1.png,Current manuscript,Confirmatory external performance of internally selected models,NB04/NB08
-3,Figure_3_model_selection_transportability.png,Current manuscript,Internal rank-1 vs rank-2 and selected vs post-hoc best transportability,NB04/NB07 plus reviewer-requested selection-loss panel
-4,Figure_4_ece_raw_vs_temperature_scaled.png,Current manuscript,Probability reliability under experiment shift,NB06-v1.1 plus near-zero visibility correction
-5,Figure_5_macro_f1_partial_eta_squared.png,Current manuscript,Descriptive structural effect sizes,NB07/NB08
-S1,Figure_S1_balancing_effect_by_experiment.png,Supplementary,Imbalance sensitivity by experiment,NB05/NB08
-S2,Figure_S2_calibration_transfer_by_experiment.png,Supplementary,Calibration-transfer heterogeneity,NB06-v1.1/NB08
-S3,Figure_S3_treeshap_spectral_tree_models.png,Reviewer-requested supplementary,Post-hoc TreeSHAP spectral attribution using frozen tree hyperparameters,Explanatory only; not used for model selection
+Figure,Filename,Role,Primary evidence source,Production
+1,Figure_1.png,Main text,design schematic,script
+2,Figure_2.png,Main text,main_tables/Table_2,script
+3,Figure_3.png,Main text,NB04/NB07,post-processed
+4,Figure_4.png,Main text,NB16,post-processed
+5,Figure_5.png,Main text,NB16,post-processed
+6,Figure_6.png,Main text,NB10,post-processed
+7,Figure_7.png,Main text,NB15,script
+8,Figure_8.png,Main text,NB14+NB15,script
+9,Figure_9.png,Main text,NB14,script
+10,Figure_10.png,Main text,NB15,script
+11,Figure_11.png,Main text,NB14,script
+S1,Figure_S1.png,Supplementary,TreeSHAP post hoc,post-processed
+S2,Figure_S2.png,Supplementary,NB05/NB08,post-processed
+S3,Figure_S3.png,Supplementary,NB06-v1.1/NB08,post-processed
+S4,Figure_S4.png,Supplementary,NB16,post-processed
+S5,Figure_S5.png,Supplementary,NB16,post-processed
+S6,Figure_S6.png,Supplementary,NB16,post-processed
+S7,Figure_S7.png,Supplementary,NB16,post-processed
+S8,Figure_S8.png,Supplementary,NB15,script
+S9,Figure_S9.png,Supplementary,NB15,script
+S10,Figure_S10.png,Supplementary,NB15,script
+S11,Figure_S11.png,Supplementary,NB11/NB12,post-processed
+S12,Figure_S12.png,Supplementary,NB15,script
+S13,Figure_S13.png,Supplementary,NB15,script
+S14,Figure_S14.png,Supplementary,NB15,script
+S15,Figure_S15.png,Supplementary,NB15,script

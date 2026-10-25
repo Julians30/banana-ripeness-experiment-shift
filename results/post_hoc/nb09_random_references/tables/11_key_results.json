@@ -1,0 +1,30 @@
+{
+  "uniform_reference_macro_f1_observed": {
+    "2": 0.17298141407481293,
+    "3": 0.16699620775219326,
+    "4": 0.1761661382005374,
+    "5": 0.15635588190542743
+  },
+  "all_models_mean_macro_f1_observed": {
+    "2": 0.10183727174731676,
+    "3": 0.22845306105528423,
+    "4": 0.2173013880189797,
+    "5": 0.054082640002117974
+  },
+  "selected_native_probability_scenarios": 10,
+  "selected_diagnostic_softmax_scenarios": 2,
+  "native_selected_nll_cal_mean": 1.7997904973096386,
+  "native_selected_nll_cal_median": 1.5923177984081818,
+  "native_selected_brier_cal_mean": 0.8679928287148184,
+  "native_selected_brier_cal_median": 0.7934474611646101,
+  "native_selected_ece_cal_mean": 0.2568163089954941,
+  "native_selected_ece_cal_median": 0.2398417549018142,
+  "selection_observed_mean_loss_vs_best": 0.1147282930057585,
+  "selection_null_mean_loss_vs_best": 0.09258852390254706,
+  "selection_null_p_loss_ge_observed": 0.12094939525302373,
+  "selection_observed_mean_loss_vs_model_mean": 0.022186124505236517,
+  "selection_observed_winner_matches": 1,
+  "selection_null_expected_winner_matches": 2.395985,
+  "selection_null_p_matches_le_observed": 0.2758286208568957,
+  "nll_epsilon_nb06_v1_1": 1e-12
+}

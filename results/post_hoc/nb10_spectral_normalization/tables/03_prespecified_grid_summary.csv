@@ -1,0 +1,11 @@
+modality,model,candidate_count
+Spectral,OrdinalLogistic,4
+Spectral,PLSDA,3
+Spectral,SVM_RBF,4
+Spectral,RandomForest,4
+Spectral,XGBoost,4
+TPH_Spectral,OrdinalLogistic,4
+TPH_Spectral,PLSDA,3
+TPH_Spectral,SVM_RBF,4
+TPH_Spectral,RandomForest,4
+TPH_Spectral,XGBoost,4
