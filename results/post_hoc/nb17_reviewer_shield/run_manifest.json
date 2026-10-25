@@ -1,5 +1,5 @@
 {
  "seed": 2026,
- "master": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/02_EXTRACTED_DATA/06_master_original_multisensor.csv",
+ "master": "06_master_original_multisensor.csv (NB01 output; SHA-256 in docs/DATASET.md)",
  "n": 17662
 }
