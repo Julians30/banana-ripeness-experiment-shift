@@ -21,7 +21,7 @@ Submitted to *Chemometrics and Intelligent Laboratory Systems*.
 | check a specific claim and its interpretation limits | [`docs/MANUSCRIPT_EVIDENCE_MAP.md`](docs/MANUSCRIPT_EVIDENCE_MAP.md) |
 | see the exact validation design, leakage rules and candidate grids (Table 2) | [`config/PROTOCOL_V1.md`](config/PROTOCOL_V1.md), `config/nested_loeo_protocol_v1.json` |
 | inspect the submitted figures | [`results/chemolab_submission/figures/`](results/chemolab_submission/figures/) (byte-identical to the images in the Word files) |
-| read the analysis code | NB01 in `notebooks/`; NB02–NB08 via `python scripts/rebuild_analysis_mirrors.py`; NB17 in `notebooks/post_hoc/` |
+| read the analysis code | NB01 in `notebooks/`; NB02–NB08 via `python scripts/rebuild_analysis_mirrors.py`; post-hoc NB09–NB12 and NB14–NB17 in `notebooks/post_hoc/` |
 | verify integrity in one command | `python scripts/audit_repository.py` (standard library only; also run by CI) |
 | regenerate all 26 figures | `pip install -r requirements-figures.txt`, then the commands under [Regenerate the figures](#regenerate-the-figures) |
 | see what is confirmatory and what is post-hoc | [Evidence layers](#evidence-layers) below |
@@ -114,7 +114,7 @@ Read-only, standard library only. It checks the frozen notebook hashes and synta
 3. Materialize NB02–NB08 and readable Python mirrors: `python scripts/rebuild_analysis_mirrors.py`.
 4. Run NB01–NB08 in order and compare with `results/main_tables/` and `results/frozen_numeric_facts_nb08.json`.
 5. Tables S1–S3: `python scripts/09_REVIEWER_REQUESTED_AUDITS.py --tphis-zip /path/to/TPHiS.zip --output-dir results/reviewer_revision`.
-6. NB17: `notebooks/post_hoc/17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb` (Colab or local; CPU, about 4 h).
+6. Post-hoc notebooks: `notebooks/post_hoc/` (NB09–NB12 and NB14–NB16 read frozen outputs or the master file; NB17 runs in Colab or locally, CPU, about 4 h).
 
 ### Regenerate the figures
 
@@ -136,12 +136,12 @@ config/                        frozen nested-LOEO protocol and exact candidate g
 docs/                          dataset, data availability, reproducibility, statistics, evidence map, checklist
 notebooks/
   01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb
-  post_hoc/                    NB17 (positive control, MSC, alternative calibrators)
+  post_hoc/                    NB09–NB12, NB14–NB17 post-hoc notebooks + notebook_provenance.csv
 results/
   main_tables/                 frozen analytical tables (NB08)
   frozen_numeric_facts_nb08.json
   reviewer_revision/           Tables S1–S3
-  post_hoc/                    NB14, NB15, NB16 and NB17 exported evidence
+  post_hoc/                    NB09–NB12 and NB14–NB17 exported evidence
   chemolab_submission/         table/figure map, figures/, figure_sources/, figure_provenance.csv
   manuscript_current/          previous-submission numbering (superseded, provenance only)
   table_manifest.csv, figure_manifest.csv

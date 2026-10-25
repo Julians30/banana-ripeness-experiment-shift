@@ -4,16 +4,20 @@ These analyses were run **after** the frozen confirmatory pipeline (NB01–NB08)
 
 | Notebook | Question | Manuscript | Exported evidence |
 |---|---|---|---|
-| NB09 | Uniform and development-prevalence references; random-selection null for model ranking | 2.11, 3.2, Table 5 | values reported in the manuscript |
-| NB10 | Spectral normalization (SNV, complete-target DOMAIN_Z) under nested LOEO | 2.11, 3.7, Fig. 6 | values reported in the manuscript |
-| NB11 | Duplicate-aware analysis (unique spectral vectors) | 2.11, 3.7 | values reported in the manuscript |
-| NB12 | Removal of spectral signatures shared across experiments | 2.11, 3.7, Fig. S11 | values reported in the manuscript |
+| NB09 | Uniform and development-prevalence references; calibration skill; random-selection null for model ranking | 2.11, 3.2, Table 5 | `nb09_random_references/` |
+| NB10 | Spectral normalization (SNV, complete-target DOMAIN_Z) under nested LOEO | 2.11, 3.7, Fig. 6 | `nb10_spectral_normalization/` |
+| NB11 | Duplicate-aware analysis (unique spectral vectors) | 2.11, 3.7, Fig. S11 | `nb11_duplicate_aware/` |
+| NB12 | Removal of spectral signatures shared across experiments | 2.11, 3.7, Fig. S11 | `nb12_shared_signature_removal/` |
 | NB14 | Prospective initial-window DOMAIN_Z (N = 10, 25, 50), paired ordinal errors, composition stress | 2.12, 3.8, Table 6, Figs. 8–9, 11, Tables S4–S5 | `nb14_prospective_domain_z/` |
 | NB15 | Feature displacement, PCA loadings, PCA/UMAP projections, error localization, leave-one-experiment-out and conditional resampling | 2.12, 3.7–3.8, Figs. 7–8, 10, S8–S10, S12–S15 | `nb15_spectral_error_audit/` |
 | NB16 | Reliability diagrams with bin support (no refitting) | 3.5, Figs. 4–5, S4–S7 | `nb16_reliability_diagrams/` |
-| NB17 | Positive control (random vs experiment-disjoint splits), MSC sensitivity, alternative calibrators | 2.13, 3.9, Table 7, Table S6 | `nb17_reviewer_shield/`; notebook in `../../notebooks/post_hoc/` |
+| NB17 | Positive control (random vs experiment-disjoint splits), MSC sensitivity, alternative calibrators | 2.13, 3.9, Table 7, Table S6 | `nb17_reviewer_shield/` |
+
+All eight notebooks are in [`../../notebooks/post_hoc/`](../../notebooks/post_hoc/README.md), with the SHA-256 of each executed notebook in `notebook_provenance.csv`.
 
 ## Files
+
+`nb09_random_references/`, `nb10_spectral_normalization/`, `nb11_duplicate_aware/`, `nb12_shared_signature_removal/` — the `tables/`, `metadata/` and `README_RESULTS.md` exported by each run (run IDs `20260928_015307`, `…_020934`, `…_030710`, `…_032519`). Key values are in the numbered `*_key_results*.json` file of each folder: NB09 `11_key_results_reviewer1.json` (random-selection null: observed mean selection loss 0.1147 vs null 0.0926, p = 0.12; winner agreement 1 vs 2.4 expected, p = 0.28); NB10 `09_selected_model_performance_raw_snv_domainz.csv` (Spectral: RAW 0.131, complete-target DOMAIN_Z 0.418); NB11 `16_key_results_reviewer2_duplicates.json` (DOMAIN_Z with unique-signature statistics 0.440); NB12 `14_key_results_reviewer2_remove_shared.json` (0.439 after removing the 278 rows in the two shared signatures). NB12's list of removed rows (`02_removed_shared_spectral_rows.csv.gz`) is omitted because it contains raw spectral values; it is reproduced by running NB12. The notebook figures of these runs were presentation drafts and are not included; the corresponding manuscript figures are Figure 6 and Figure S11.
 
 `nb14_prospective_domain_z/` — numbered tables `01`–`12` follow the NB14 execution order; `paired_error_outcomes.csv.gz` and `selected_predictions_paired_diagnostics.csv.gz` hold record-level paired predictions on duplicate-collapsed spectral records (no raw sensor values); `NB14_run_manifest.json` records seed, windows, fit counts, package versions and key results.
 

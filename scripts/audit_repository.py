@@ -377,15 +377,45 @@ for row in provenance_rows:
         fail(f"submitted figure file missing: {png.relative_to(ROOT)} ({item})")
     if hashlib.sha256(png.read_bytes()).hexdigest() != expected_sha:
         fail(f"submitted figure does not match the SHA-256 embedded in the manuscript: {filename}")
-parse_and_compile_post_hoc = json.loads((ROOT / "notebooks/post_hoc/17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb").read_text(encoding="utf-8"))
-for idx, cell in enumerate(parse_and_compile_post_hoc["cells"]):
-    if cell.get("cell_type") == "code":
-        src = cell["source"] if isinstance(cell["source"], str) else "".join(cell["source"])
-        try:
-            compile(normalized_code(src), f"NB17:cell{idx}", "exec")
-        except SyntaxError as exc:
-            fail(f"NB17: Python syntax error in code cell {idx}: {exc}")
-print("PASS: NB14/NB15 evidence, NB17 notebook and all 26 submitted figures (byte-identical to the manuscript/supplementary embeds) are versioned and consistent.")
+import csv as _csv
+post_hoc_nb = ROOT / "notebooks" / "post_hoc"
+nb_rows = list(_csv.DictReader((post_hoc_nb / "notebook_provenance.csv").open(encoding="utf-8")))
+expected_nbs = {"09", "10", "11", "12", "14", "15", "16", "17"}
+if {r["repository_notebook"][:2] for r in nb_rows} != expected_nbs:
+    fail("notebook_provenance.csv must list NB09-NB12 and NB14-NB17")
+for r in nb_rows:
+    path = post_hoc_nb / r["repository_notebook"]
+    if not path.exists():
+        fail(f"post-hoc notebook missing: {path.relative_to(ROOT)}")
+    data = path.read_bytes()
+    if hashlib.sha256(data).hexdigest() != r["source_sha256"] or len(data) != int(r["source_bytes"]):
+        fail(f"post-hoc notebook differs from notebook_provenance.csv: {r['repository_notebook']}")
+    nbj = json.loads(data.decode("utf-8"))
+    for idx, cell in enumerate(nbj["cells"]):
+        if cell.get("cell_type") == "code":
+            src = cell["source"] if isinstance(cell["source"], str) else "".join(cell["source"])
+            try:
+                compile(normalized_code(src), f"{r['repository_notebook']}:cell{idx}", "exec")
+            except SyntaxError as exc:
+                fail(f"{r['repository_notebook']}: Python syntax error in code cell {idx}: {exc}")
+ph = ROOT / "results" / "post_hoc"
+nb10 = list(_csv.DictReader((ph / "nb10_spectral_normalization/tables/09_selected_model_performance_raw_snv_domainz.csv").open(encoding="utf-8")))
+for prep, expected in {"RAW": 0.1306, "DOMAIN_Z": 0.4180}.items():
+    vals = [float(r["macro_f1_observed"]) for r in nb10 if r["preprocessing"] == prep and r["modality"] == "Spectral"]
+    if len(vals) != 4 or not math.isclose(sum(vals) / 4, expected, abs_tol=5e-4):
+        fail(f"NB10 Spectral {prep} mean Macro-F1 does not match the manuscript ({expected})")
+nb11 = json.loads((ph / "nb11_duplicate_aware/tables/16_key_results_reviewer2_duplicates.json").read_text(encoding="utf-8"))
+if not math.isclose(nb11["selected_duplicate_aware_mean_macro_f1"]["DOMAIN_Z_UNIQUE_DEDUP"], 0.4398, abs_tol=5e-4):
+    fail("NB11 unique-signature DOMAIN_Z value does not match the manuscript (0.440)")
+nb12 = json.loads((ph / "nb12_shared_signature_removal/tables/14_key_results_reviewer2_remove_shared.json").read_text(encoding="utf-8"))
+if not math.isclose(nb12["mean_selected_macro_f1_nb12"]["DOMAIN_Z_UNIQUE_NOSHARED_DEDUP"], 0.4388, abs_tol=5e-4):
+    fail("NB12 shared-signature-removal value does not match the manuscript (0.439)")
+if (ph / "nb12_shared_signature_removal/tables/02_removed_shared_spectral_rows.csv.gz").exists():
+    fail("raw spectral rows must not be redistributed")
+nb09 = list(_csv.DictReader((ph / "nb09_random_references/tables/08_selection_null_summary.csv").open(encoding="utf-8")))[0]
+if not (math.isclose(float(nb09["observed_mean_loss_vs_external_best"]), 0.1147, abs_tol=5e-4) and float(nb09["p_null_loss_ge_observed"]) > 0.05):
+    fail("NB09 random-selection null summary does not match the manuscript")
+print("PASS: NB09-NB12 and NB14-NB17 notebooks (hash- and syntax-checked) and evidence, and all 26 submitted figures (byte-identical to the manuscript/supplementary embeds) are versioned and consistent.")
 
 print("\nPASS: frozen analysis and current revised-manuscript evidence are internally consistent.")
 print("PASS: repository integrity audit completed successfully (11/11 stages).")

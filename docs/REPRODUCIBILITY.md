@@ -112,15 +112,15 @@ The previous-submission numbering is preserved, for provenance only, in `results
 
 | Notebook | Analysis (manuscript section) | Evidence in this repository |
 |---|---|---|
-| NB09 | uniform/development-prevalence references; random-selection null (2.11) | values in the manuscript |
-| NB10 | SNV and complete-target DOMAIN_Z under nested LOEO (2.11, 3.7) | Figure 6 |
-| NB11–NB12 | duplicate-aware statistics; removal of shared spectral signatures (2.11, 3.7) | Figure S11 |
+| NB09 | uniform/development-prevalence references; random-selection null (2.11) | `results/post_hoc/nb09_random_references/` |
+| NB10 | SNV and complete-target DOMAIN_Z under nested LOEO (2.11, 3.7) | `results/post_hoc/nb10_spectral_normalization/`; Figure 6 |
+| NB11–NB12 | duplicate-aware statistics; removal of shared spectral signatures (2.11, 3.7) | `results/post_hoc/nb11_duplicate_aware/`, `results/post_hoc/nb12_shared_signature_removal/`; Figure S11 |
 | NB14 | prospective initial-window DOMAIN_Z, window sensitivity, composition stress (2.12, 3.8) | `results/post_hoc/nb14_prospective_domain_z/` |
 | NB15 | feature displacement, PCA loadings, PCA/UMAP projections, error localization (2.12, 3.7–3.8) | `results/post_hoc/nb15_spectral_error_audit/` |
 | NB16 | reliability diagrams with bin support, no refitting (3.5) | `results/post_hoc/nb16_reliability_diagrams/` |
 | NB17 | positive control, MSC, alternative calibrators (2.13, 3.9) | `notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/` |
 
-NB17 is included as an executable notebook (Colab or local; set `NB17_MASTER_CSV`). NB17 coded its own candidate grid; its tree-ensemble candidates differ from NB03 (see `config/PROTOCOL_V1.md`), which explains the two scenarios in which it does not reproduce manuscript Table 4 exactly. Notebook sources for NB09–NB12 and NB14–NB16 are not yet included; their exported evidence is.
+All post-hoc notebooks (NB09–NB12, NB14–NB17) are in `notebooks/post_hoc/`, linked to the executed notebooks by SHA-256 in `notebooks/post_hoc/notebook_provenance.csv`. NB17 runs in Colab or locally (set `NB17_MASTER_CSV`). NB17 coded its own candidate grid; its tree-ensemble candidates differ from NB03 (see `config/PROTOCOL_V1.md`), which explains the two scenarios in which it does not reproduce manuscript Table 4 exactly.
 
 ## Publication figures
 

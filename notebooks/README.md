@@ -24,4 +24,4 @@ NB08's source-clean hash reflects the canonical output-stripped compact serializ
 
 ## Post-hoc notebooks
 
-Post-hoc robustness notebooks run after the frozen pipeline are documented in [`post_hoc/README.md`](post_hoc/README.md). NB17 (positive control, MSC, alternative calibrators) is included; exported evidence of NB09–NB16 is in `../results/post_hoc/`.
+Post-hoc robustness notebooks run after the frozen pipeline are documented in [`post_hoc/README.md`](post_hoc/README.md). All of them (NB09–NB12, NB14–NB17) are included; their exported evidence is in `../results/post_hoc/`.

@@ -1,0 +1,38 @@
+{
+  "SNV": {
+    "mean_delta_macro_f1_all_8_scenarios": 0.08927305969329738,
+    "median_delta_macro_f1_all_8_scenarios": 0.09607917695558074,
+    "n_improved_of_8": 6,
+    "max_improvement": 0.28153852635751103,
+    "max_degradation": -0.08052255771687478,
+    "mean_macro_f1": 0.20854029510941907
+  },
+  "DOMAIN_Z": {
+    "mean_delta_macro_f1_all_8_scenarios": 0.2758918160709576,
+    "median_delta_macro_f1_all_8_scenarios": 0.28985124654426786,
+    "n_improved_of_8": 8,
+    "max_improvement": 0.3367905186863853,
+    "max_degradation": 0.1962522619861196,
+    "mean_macro_f1": 0.3951590514870793
+  },
+  "RAW": {
+    "mean_selected_macro_f1_8_scenarios": 0.11926723541612169
+  },
+  "PC1": {
+    "DOMAIN_Z": {
+      "mean": 0.6398122970927639,
+      "min": 0.5433901620339286,
+      "max": 0.6900900467594503
+    },
+    "RAW": {
+      "mean": 0.8254571130871188,
+      "min": 0.5498114331292463,
+      "max": 0.9213384886252304
+    },
+    "SNV": {
+      "mean": 0.4038687507873418,
+      "min": 0.3182758382788699,
+      "max": 0.520436100972697
+    }
+  }
+}

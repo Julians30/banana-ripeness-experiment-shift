@@ -1,0 +1,117 @@
+{
+  "project": "BANANA_RIPENESS_MULTISENSOR_Q1",
+  "notebook": "12_REVIEWER2_REMOVE_CROSS_EXPERIMENT_EXACT_SPECTRAL_OVERLAP",
+  "run_id": "20260928_032519",
+  "created_utc": "2026-09-28T03:33:42.579040+00:00",
+  "seed": 2026,
+  "source_hashes": [
+    {
+      "artifact": "02_EXTRACTED_DATA/06_master_original_multisensor.csv",
+      "sha256": "0a06fb3773f85dacee42e18eecf17e5e2a8e7f5e9508cd3d60bd4b66757e8ea8",
+      "bytes": 8210545
+    },
+    {
+      "artifact": "04_FROZEN_SPLITS/nested_loeo_protocol_v1.json",
+      "sha256": "86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930",
+      "bytes": 3311
+    },
+    {
+      "artifact": "06_RESULTS/NB10_REVIEWER2_SPECTRAL_NORMALIZATION_20260928_020934/tables/09_selected_model_performance_raw_snv_domainz.csv",
+      "sha256": "b6549949692d39452a2d39a8d7f6fe6e8f7bd991e329e5e655e1c3f9b311f499",
+      "bytes": 4560
+    },
+    {
+      "artifact": "06_RESULTS/NB11_REVIEWER2_DUPLICATE_AWARE_20260928_030710/tables/12_selected_model_duplicate_aware.csv",
+      "sha256": "0645f1a3ff58f300b3cf5a263d5f97ccaf2826f95efa3d4f50b007c692de016d",
+      "bytes": 2756
+    },
+    {
+      "artifact": "06_RESULTS/NB11_REVIEWER2_DUPLICATE_AWARE_20260928_030710/tables/02_cross_experiment_exact_spectral_overlap.csv",
+      "sha256": "8aba97429b48c9ea3cd4575f0e53c2586eaa15f064b0eff78d6c06ab80d13917",
+      "bytes": 103
+    }
+  ],
+  "nb10_reference_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB10_REVIEWER2_SPECTRAL_NORMALIZATION_20260928_020934",
+  "nb11_reference_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB11_REVIEWER2_DUPLICATE_AWARE_20260928_030710",
+  "shared_group_detection": "exact equality across all 18 spectral bands; group appears in >1 test_id",
+  "n_shared_groups_removed": 2,
+  "n_original_rows_removed": 278,
+  "remaining_shared_groups": 0,
+  "dedup_rule": "one row per experiment + exact 18-band vector + observed stage; conflicts retained",
+  "methods": [
+    "RAW_NOSHARED_DEDUP",
+    "SNV_NOSHARED_DEDUP",
+    "DOMAIN_Z_ROW_NOSHARED_DEDUP",
+    "DOMAIN_Z_UNIQUE_NOSHARED_DEDUP"
+  ],
+  "models": [
+    "OrdinalLogistic",
+    "PLSDA",
+    "SVM_RBF",
+    "RandomForest",
+    "XGBoost"
+  ],
+  "selection_rule": [
+    "maximize mean observed-label Macro-F1 across 3 inner experiment folds",
+    "maximize worst inner-fold observed-label Macro-F1",
+    "maximize mean QWK",
+    "minimize mean ordinal MAE"
+  ],
+  "inner_fits": 912,
+  "outer_fits": 80,
+  "outer_label_use_for_preprocessing": false,
+  "domain_z_target_feature_use": "unlabeled target-domain features only",
+  "elapsed_minutes": 8.388840346466667,
+  "versions": {
+    "python": "3.13.15",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "matplotlib": "3.10.0",
+    "scikit_learn": "1.6.1",
+    "mord": "0.7",
+    "xgboost": "3.4.1"
+  },
+  "key_results": {
+    "n_cross_experiment_shared_groups_removed": 2,
+    "n_rows_removed": 278,
+    "n_rows_remaining_before_within_experiment_dedup": 17384,
+    "n_vector_stage_rows_after_dedup": 1895,
+    "remaining_cross_experiment_exact_spectral_groups": 0,
+    "mean_selected_macro_f1_nb12": {
+      "RAW_NOSHARED_DEDUP": 0.1440685612212348,
+      "SNV_NOSHARED_DEDUP": 0.18268267925883358,
+      "DOMAIN_Z_ROW_NOSHARED_DEDUP": 0.37300796501841366,
+      "DOMAIN_Z_UNIQUE_NOSHARED_DEDUP": 0.43884590216685826
+    },
+    "comparison_with_nb11": {
+      "DOMAIN_Z_ROW_NOSHARED_DEDUP": {
+        "mean_macro_f1_nb11": 0.3888508180740257,
+        "mean_macro_f1_nb12": 0.3730079650184137,
+        "mean_delta": -0.015842853055612005,
+        "max_abs_delta": 0.03311054767850419,
+        "selected_model_matches_of_4": 4
+      },
+      "DOMAIN_Z_UNIQUE_NOSHARED_DEDUP": {
+        "mean_macro_f1_nb11": 0.43984058373246027,
+        "mean_macro_f1_nb12": 0.43884590216685826,
+        "mean_delta": -0.0009946815656020208,
+        "max_abs_delta": 0.006786996250384425,
+        "selected_model_matches_of_4": 4
+      },
+      "RAW_NOSHARED_DEDUP": {
+        "mean_macro_f1_nb11": 0.17738623180594942,
+        "mean_macro_f1_nb12": 0.1440685612212348,
+        "mean_delta": -0.03331767058471464,
+        "max_abs_delta": 0.1363636363636363,
+        "selected_model_matches_of_4": 4
+      },
+      "SNV_NOSHARED_DEDUP": {
+        "mean_macro_f1_nb11": 0.179250083377087,
+        "mean_macro_f1_nb12": 0.18268267925883358,
+        "mean_delta": 0.003432595881746586,
+        "max_abs_delta": 0.013319194642680443,
+        "selected_model_matches_of_4": 4
+      }
+    }
+  }
+}

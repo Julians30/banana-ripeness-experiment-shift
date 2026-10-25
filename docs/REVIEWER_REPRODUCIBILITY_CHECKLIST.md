@@ -53,4 +53,4 @@
 - [x] NB16 reliability-diagram metrics and bin audit are versioned in `results/post_hoc/nb16_reliability_diagrams/`.
 - [x] Exact NB03 candidate grids (manuscript Table 2) are listed in `config/PROTOCOL_V1.md`.
 - [x] `CITATION.cff` lists exactly the three manuscript authors with affiliations.
-- [ ] NB09–NB12 and NB14–NB16 notebook sources to be added.
+- [x] All post-hoc notebooks (NB09–NB12, NB14–NB17) are included in `notebooks/post_hoc/` and linked by SHA-256 to the executed notebooks (`notebook_provenance.csv`); NB09–NB12 exported tables are in `results/post_hoc/nb09_…`–`nb12_…`.

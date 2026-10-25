@@ -8,7 +8,7 @@ Read-only integrity audit used by GitHub Actions and available locally:
 python scripts/audit_repository.py
 ```
 
-It uses only the Python standard library. It decodes the frozen NB02–NB08 provenance payloads in memory, verifies the exact notebook hashes and syntax, checks the nested-LOEO protocol and frozen numerical evidence, confirms the frozen, reviewer-revision and post-hoc evidence layers, verifies reviewer-requested Tables S1–S3, checks environment metadata and the three-author citation metadata, checks that every relative Markdown link resolves, enforces repository file policy, and verifies that all 26 submitted figures match the SHA-256 of the images embedded in the manuscript.
+It uses only the Python standard library. It decodes the frozen NB02–NB08 provenance payloads in memory, verifies the exact notebook hashes and syntax, checks the nested-LOEO protocol and frozen numerical evidence, confirms the frozen, reviewer-revision and post-hoc evidence layers, verifies reviewer-requested Tables S1–S3, checks environment metadata and the three-author citation metadata, checks that every relative Markdown link resolves, enforces repository file policy, hash- and syntax-checks the post-hoc notebooks NB09–NB12 and NB14–NB17 and their key values, and verifies that all 26 submitted figures match the SHA-256 of the images embedded in the manuscript.
 
 **CI does not modify or push repository files.**
 

@@ -38,7 +38,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 | Manuscript claim | Manuscript item | Evidence | Interpretation constraint |
 |---|---|---|---|
 | Internally selected models frequently lose external performance. | Table 4 | `results/main_tables/Table_3_confirmatory_external_selected_models.csv`; NB04 | Post-hoc external best models are descriptive comparators only. |
-| Internal winner = post-hoc external winner in 1/12 scenarios; mean selection loss 0.1147, maximum 0.2148 Macro-F1. | Table 4; Figure 3 | `results/main_tables/Table_4_model_selection_instability_summary.csv`; `frozen_numeric_facts_nb08.json` | Not independently unusual under the NB09 random-selection null. |
+| Internal winner = post-hoc external winner in 1/12 scenarios; mean selection loss 0.1147, maximum 0.2148 Macro-F1. | Table 4; Figure 3 | `results/main_tables/Table_4_model_selection_instability_summary.csv`; `frozen_numeric_facts_nb08.json` | Not independently unusual under the NB09 random-selection null (p = 0.12 and 0.28; `results/post_hoc/nb09_random_references/`). |
 | Mean inner–external rank association is approximately null (Spearman −0.075). | Table 5 | `results/main_tables/Table_4_model_selection_instability_summary.csv` | Descriptive across 12 scenarios. |
 | Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | Table S3 | `results/reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` | Majority class from development experiments only. |
 
@@ -66,7 +66,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 
 | Manuscript claim | Manuscript item | Evidence | Interpretation constraint |
 |---|---|---|---|
-| Complete-target DOMAIN_Z raises mean selected spectral Macro-F1 from 0.131 to 0.418 (0.440 unique-signature statistics; 0.439 after removing shared signatures). | Figure 6; Figure S11; Table 5 | NB10–NB12 | Transductive: uses the whole target experiment. |
+| Complete-target DOMAIN_Z raises mean selected spectral Macro-F1 from 0.131 to 0.418 (0.440 unique-signature statistics; 0.439 after removing shared signatures). | Figure 6; Figure S11; Table 5 | `results/post_hoc/nb10_spectral_normalization/`, `nb11_duplicate_aware/`, `nb12_shared_signature_removal/` | Transductive: uses the whole target experiment. |
 | Estimated prospectively from the first 25 unique spectra, DOMAIN_Z raises Macro-F1 only from 0.125 to 0.175, improving 2 of 4 experiments. | Table 6; Figure 8; Table S4 | NB14 `08_source_order_prefix_vs_raw_and_oracle.csv`, `09_source_order_summary_by_window.csv`, `12_key_results_nb14.json` | Acquisition order approximated by the source index (no timestamps released). |
 | Initial windows contain almost only unripe fruit; window composition alone changes Macro-F1 by up to 0.19. | Figures 8, 11; Table S5 | NB14 `03_prefix_and_future_stage_composition.csv`, `10_…replicates.csv.gz`, `11_stage_composition_stress_summary.csv` | The stress test uses target labels; it is a diagnostic, not a procedure. |
 | Paired ordinal errors and error localization. | Figure 9; Figures S14–S15 | NB14 `paired_error_outcomes.csv.gz`; NB15 `paired_predictions_with_signature.csv.gz` | Resampling intervals are conditional on frozen predictions. |
