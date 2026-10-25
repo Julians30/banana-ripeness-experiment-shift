@@ -1,5 +1,7 @@
 # Banana Ripeness Experiment Shift
 
+![Enviado](https://img.shields.io/badge/Enviado-Chemometrics%20and%20Intelligent%20Laboratory%20Systems-2E6DA4?style=flat-square)
+
 [![repository-audit](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml/badge.svg)](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml)
 
 Code, frozen analytical evidence, post-hoc robustness evidence and the submitted figures for:
@@ -11,7 +13,7 @@ Julián Coronel-Reyes¹ \*, Alexander Haro-Sarango², Johnny Javier Triviño San
 ¹ Facultad de Ciencias Agropecuarias, Universidad Técnica de Machala, Machala, Ecuador · ² Escuela Profesional de Contabilidad, Universidad Peruana Unión, Lima, Peru · ³ Instituto Superior Universitario Bolivariano de Tecnología (ITB), Guayaquil, Ecuador
 \* Corresponding author: jcoronel1@utmachala.edu.ec
 
-Submitted to *Chemometrics and Intelligent Laboratory Systems*.
+**Manuscript status:** Submitted to *Chemometrics and Intelligent Laboratory Systems* on **25 October 2026**.
 
 ## Reviewer quick guide
 
