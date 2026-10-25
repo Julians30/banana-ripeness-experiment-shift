@@ -1,6 +1,6 @@
 {
   "project": "BANANA_RIPENESS_MULTISENSOR_Q1",
-  "notebook": "11_REVIEWER2_DUPLICATE_AWARE_SPECTRAL_SENSITIVITY",
+  "notebook": "11_DUPLICATE_AWARE_SPECTRAL_SENSITIVITY",
   "run_id": "20260928_030710",
   "created_utc": "2026-09-28T03:15:28.292185+00:00",
   "seed": 2026,
@@ -31,13 +31,13 @@
       "bytes": 24768
     },
     {
-      "artifact": "06_RESULTS/NB10_REVIEWER2_SPECTRAL_NORMALIZATION_20260928_020934/tables/09_selected_model_performance_raw_snv_domainz.csv",
+      "artifact": "06_RESULTS/NB10_SPECTRAL_NORMALIZATION_20260928_020934/tables/09_selected_model_performance_raw_snv_domainz.csv",
       "sha256": "b6549949692d39452a2d39a8d7f6fe6e8f7bd991e329e5e655e1c3f9b311f499",
       "bytes": 4560
     }
   ],
   "raw_baseline_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB04_OUTER_LOEO_EVALUATION_20260823_170101",
-  "normalization_sensitivity_reference_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB10_REVIEWER2_SPECTRAL_NORMALIZATION_20260928_020934",
+  "normalization_sensitivity_reference_run": "/content/drive/MyDrive/Paper3_Banano/BANANA_RIPENESS_MULTISENSOR_Q1/06_RESULTS/NB10_SPECTRAL_NORMALIZATION_20260928_020934",
   "dedup_rule": "one row per experiment + exact 18-band spectral vector + observed stage; conflicts retained",
   "methods": [
     "RAW_DEDUP",

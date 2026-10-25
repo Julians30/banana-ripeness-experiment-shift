@@ -1,4 +1,4 @@
-# NB11 Reviewer 2 — duplicate-aware spectral sensitivity
+# NB11 — duplicate-aware spectral sensitivity
 
 Run ID: `20260928_030710`
 Runtime: 8.30 min

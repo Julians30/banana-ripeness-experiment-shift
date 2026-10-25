@@ -1,4 +1,4 @@
-# Versions with which scripts/make_publication_figures.py and scripts/postprocess_legacy_figures.py
+# Versions with which scripts/make_publication_figures.py and scripts/postprocess_notebook_figures.py
 # reproduce the 26 submitted figures byte-for-byte (verified with scripts/verify_figures.py, Python 3.13).
 matplotlib==3.11.2
 numpy==2.5.3

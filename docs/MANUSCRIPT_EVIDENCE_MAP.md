@@ -4,12 +4,12 @@ Claim-level traceability for the manuscript submitted to *Chemometrics and Intel
 
 **Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation**
 
-Table and figure numbers below are those of the submitted manuscript. The item-by-item source map (every table and figure, with the SHA-256 of every embedded figure) is in [`../results/chemolab_submission/README.md`](../results/chemolab_submission/README.md). The previous-submission numbering is kept only for provenance in [`../results/manuscript_current/`](../results/manuscript_current/README.md); the correspondence is given at the end of this document.
+Table and figure numbers below are those of the submitted manuscript. The item-by-item source map (every table and figure, with the SHA-256 of every embedded figure) is in [`../results/chemolab_submission/README.md`](../results/chemolab_submission/README.md).
 
 ## Evidence layers
 
 1. **Frozen confirmatory evidence**: NB01–NB08, the frozen LOEO protocol (`../config/`), `../results/main_tables/` and `../results/frozen_numeric_facts_nb08.json`.
-2. **Reviewer-requested explanatory additions**: `../results/reviewer_revision/` (Tables S1–S3) and the TreeSHAP figure (Figure S1).
+2. **Explanatory additions** (added after freezing): `../results/supplementary_tables_S1_S3/` (Tables S1–S3) and the TreeSHAP figure (Figure S1).
 3. **Post-hoc robustness evidence**: NB09–NB12, NB14–NB17; exported tables in `../results/post_hoc/`.
 
 Layers 2 and 3 never replace or modify frozen outer predictions, model rankings, calibration fits or confirmatory numerical values.
@@ -19,7 +19,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 | Manuscript claim | Manuscript item | Evidence | Interpretation constraint |
 |---|---|---|---|
 | The confirmatory analysis uses 17,662 inferred-original TPHiS observations from four experiments (Tests 2–5). | Table 1 | NB01; `results/main_tables/Table_1_dataset_stage_distribution.csv` | Counts describe the audited original block only. |
-| The inferred balancing tail fills class deficits to 6,533 per stage. | Table S1 | `results/reviewer_revision/Table_S1_reconstruction_count_audit.csv`; `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | Source ordering supports the inference but is not a time variable or an author-provided synthetic flag. |
+| The inferred balancing tail fills class deficits to 6,533 per stage. | Table S1 | `results/supplementary_tables_S1_S3/Table_S1_reconstruction_count_audit.csv`; `scripts/make_supplementary_tables_S1_S3.py` | Source ordering supports the inference but is not a time variable or an author-provided synthetic flag. |
 | Nested LOEO isolates a complete acquisition experiment from development. | Figure 1; Section 2.4 | `config/nested_loeo_protocol_v1.json`; `config/PROTOCOL_V1.md`; NB01, NB03, NB04 | External rows cannot influence preprocessing, tuning, resampling, calibration or algorithm selection. |
 | Candidate algorithms and grids. | Table 2 | NB03 `candidate_grid()`; exact configurations in `config/PROTOCOL_V1.md` | Grids are compact by design (Section 2.5). |
 
@@ -28,7 +28,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 | Manuscript claim | Manuscript item | Evidence | Interpretation constraint |
 |---|---|---|---|
 | Experiment identity remains strongly recoverable after matching on ripeness stage (domain ROC-AUC, MMD²). | Table 3; Figure 2 | NB02; `results/main_tables/Table_2_experiment_shift_diagnostics.csv` | Error bars are repeated-CV variability, not confidence intervals over independent experiments. |
-| Matched sample sizes vary substantially by stage. | Table S2 | `results/reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv` | `matched n/domain = min(n_dev, n_external, 600)`. |
+| Matched sample sizes vary substantially by stage. | Table S2 | `results/supplementary_tables_S1_S3/Table_S2_stage_matched_effective_sample_sizes.csv` | `matched n/domain = min(n_dev, n_external, 600)`. |
 | Raw spectral PC1 is a nearly uniform intensity/baseline axis (92.6% of variance in the Test 3 fold). | Figure 7; Figures S8–S10 | NB15 `pca_coefficients.csv`, `pca_explained_variance.csv` | PCA is fitted on development data only. |
 | Held-out experiments occupy displaced regions of the development PCA space; UMAP is used only for neighbourhood structure. | Figure 10; Figures S12–S13 | NB15 `projection_coordinates.csv.gz` | UMAP maps new records through development neighbours and cannot extrapolate. |
 | The NB02 nearest-neighbour support ratio is excluded. | not reported | NB02 | Duplicate spectral vectors generated zero denominators. |
@@ -40,7 +40,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 | Internally selected models frequently lose external performance. | Table 4 | `results/main_tables/Table_3_confirmatory_external_selected_models.csv`; NB04 | Post-hoc external best models are descriptive comparators only. |
 | Internal winner = post-hoc external winner in 1/12 scenarios; mean selection loss 0.1147, maximum 0.2148 Macro-F1. | Table 4; Figure 3 | `results/main_tables/Table_4_model_selection_instability_summary.csv`; `frozen_numeric_facts_nb08.json` | Not independently unusual under the NB09 random-selection null (p = 0.12 and 0.28; `results/post_hoc/nb09_random_references/`). |
 | Mean inner–external rank association is approximately null (Spearman −0.075). | Table 5 | `results/main_tables/Table_4_model_selection_instability_summary.csv` | Descriptive across 12 scenarios. |
-| Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | Table S3 | `results/reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` | Majority class from development experiments only. |
+| Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | Table S3 | `results/supplementary_tables_S1_S3/Table_S3_development_majority_no_skill_baseline.csv` | Majority class from development experiments only. |
 
 ## Imbalance sensitivity
 
@@ -54,7 +54,7 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 |---|---|---|---|
 | Development-only temperature scaling lowers mean ECE from 0.497 to 0.257 for the 10 scenarios with native probabilities. | Section 3.5; Figures 4–5, S3–S7 | `results/main_tables/Table_6_probabilistic_calibration_selected_models.csv`; NB06-v1.1; NB16 `results/post_hoc/nb16_reliability_diagrams/` | Over all 12 selected models (including softmax surrogates) the value is 0.4387 → 0.2568 (`frozen_numeric_facts_nb08.json`). Low ECE with near-uniform probabilities is not informative prediction (bin support shown). |
 | Three selected temperature fits reached the upper bound. | Section 3.5 | NB06-v1.1 | Severe calibration mismatch, not an optimization failure. |
-| Vector scaling and isotonic calibration do not transfer better than temperature scaling; none beats the uniform forecast. | Table S6; Section 3.9 | NB17 `results/post_hoc/nb17_reviewer_shield/C_calibrators.csv` | Post-hoc sensitivity analysis. |
+| Vector scaling and isotonic calibration do not transfer better than temperature scaling; none beats the uniform forecast. | Table S6; Section 3.9 | NB17 `results/post_hoc/nb17_positive_control_msc_calibrators/C_calibrators.csv` | Post-hoc sensitivity analysis. |
 
 ## Structural effect-size decomposition
 
@@ -79,25 +79,11 @@ Layers 2 and 3 never replace or modify frozen outer predictions, model rankings,
 | The same model families reach Macro-F1 0.962–0.995 under pooled random 5-fold CV and 0.958–0.994 within single experiments, versus 0.108–0.158 under nested LOEO. | Table 7; Section 3.9 | NB17 `A_*.csv`, `A_summary.csv` | Random and within-experiment splits place near-identical repeated readings in both partitions. |
 | NB17's LOEO arm reproduces the frozen selected model in 11/12 scenarios and Macro-F1 to three decimals in 10/12. | Section 2.13 | NB17 `A_check_vs_table4.csv` | NB17's tree-ensemble candidates differ from NB03 (`config/PROTOCOL_V1.md`); both differences occur where a tree ensemble was selected. |
 
-## Reviewer-requested TreeSHAP explanation
+## TreeSHAP explanation
 
 | Manuscript claim | Manuscript item | Evidence | Interpretation constraint |
 |---|---|---|---|
-| Spectral tree explanations emphasize visible-green and selected NIR bands. | Figure S1 | post-hoc TreeSHAP with frozen NB03 hyperparameters (`results/reviewer_revision/README.md`) | Explanatory only, not causal biochemical attribution. |
-
-## Correspondence with the previous submission
-
-| Previous submission | Current submission |
-|---|---|
-| Figure 1 (domain AUC) | Figure 2 (AUC and MMD²) |
-| Figure 2 (selected-model heatmap) | removed; values in Table 4 |
-| Figure 3 | Figure 3 |
-| Figure 4 (ECE) | Figures 4–5 (reliability diagrams with bin support) |
-| Figure 5 (partial η²) | removed; values in Table 5 |
-| Figure S1 / S2 / S3 | Figure S2 / S3 / S1 |
-| Table S2 (no-skill baseline) | Table S3 |
-| Table S3 (stage-matched n) | Table S2 |
-| — | Figures 1, 6–11, S4–S15; Tables 6, 7, S4–S6 (post-hoc layer) |
+| Spectral tree explanations emphasize visible-green and selected NIR bands. | Figure S1 | post-hoc TreeSHAP with frozen NB03 hyperparameters (`results/supplementary_tables_S1_S3/README.md`) | Explanatory only, not causal biochemical attribution. |
 
 ## Evidence exclusions and safeguards
 

@@ -85,9 +85,9 @@ The manuscript uses per-experiment observed-class Macro-F1 as its primary fold-s
 
 Do not use `external_support_distance_ratio` in the manuscript. Exact duplicate spectral feature vectors caused a zero denominator in several folds. PCA, UMAP, stage-matched domain AUC and MMD remain valid.
 
-## Reviewer-requested post-freeze additions
+## Explanatory additions after freezing
 
-Peer-review/audit requests produced a separate explanatory layer without modifying the frozen confirmatory pipeline (numbering of the current submission):
+The following explanatory items were added after the confirmatory pipeline was frozen, without modifying it:
 
 - reconstruction count audit (Table S1);
 - explicit stage-matched effective sample sizes (Table S2);
@@ -96,17 +96,15 @@ Peer-review/audit requests produced a separate explanatory layer without modifyi
 - direct selected-vs-post-hoc-best selection-loss panel (Figure 3);
 - post-hoc TreeSHAP explanation of frozen spectral tree-model fits (Figure S1).
 
-Tables S1–S3 are in `results/reviewer_revision/` and can be regenerated directly from the original TPHiS archive with:
+Tables S1–S3 are in `results/supplementary_tables_S1_S3/` and can be regenerated directly from the original TPHiS archive with:
 
 ```bash
-python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
+python scripts/make_supplementary_tables_S1_S3.py \
   --tphis-zip /path/to/TPHiS.zip \
-  --output-dir results/reviewer_revision
+  --output-dir results/supplementary_tables_S1_S3
 ```
 
 TreeSHAP is explanatory only and uses already-frozen NB03 spectral Random Forest/XGBoost hyperparameters; it has no role in preprocessing, tuning, model selection, calibration or confirmatory external performance estimation.
-
-The previous-submission numbering is preserved, for provenance only, in `results/manuscript_current/`.
 
 ## Post-hoc robustness layer (NB09–NB17)
 
@@ -118,7 +116,7 @@ The previous-submission numbering is preserved, for provenance only, in `results
 | NB14 | prospective initial-window DOMAIN_Z, window sensitivity, composition stress (2.12, 3.8) | `results/post_hoc/nb14_prospective_domain_z/` |
 | NB15 | feature displacement, PCA loadings, PCA/UMAP projections, error localization (2.12, 3.7–3.8) | `results/post_hoc/nb15_spectral_error_audit/` |
 | NB16 | reliability diagrams with bin support, no refitting (3.5) | `results/post_hoc/nb16_reliability_diagrams/` |
-| NB17 | positive control, MSC, alternative calibrators (2.13, 3.9) | `notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/` |
+| NB17 | positive control, MSC, alternative calibrators (2.13, 3.9) | `notebooks/post_hoc/`, `results/post_hoc/nb17_positive_control_msc_calibrators/` |
 
 All post-hoc notebooks (NB09–NB12, NB14–NB17) are in `notebooks/post_hoc/`, linked to the executed notebooks by SHA-256 in `notebooks/post_hoc/notebook_provenance.csv`. NB17 runs in Colab or locally (set `NB17_MASTER_CSV`). NB17 coded its own candidate grid; its tree-ensemble candidates differ from NB03 (see `config/PROTOCOL_V1.md`), which explains the two scenarios in which it does not reproduce manuscript Table 4 exactly.
 
@@ -129,11 +127,11 @@ All 26 figures embedded in the submitted manuscript and supplementary file are i
 ```bash
 pip install -r requirements-figures.txt
 python scripts/make_publication_figures.py --out figures_out      # Figs. 1, 2, 7-11, S8-S10, S12-S15
-python scripts/postprocess_legacy_figures.py --out figures_out    # Figs. 3-6, S1-S7, S11
+python scripts/postprocess_notebook_figures.py --out figures_out    # Figs. 3-6, S1-S7, S11
 python scripts/verify_figures.py figures_out
 ```
 
-With the versions in `requirements-figures.txt` all 26 PNGs are byte-identical to the submitted files; other matplotlib/Pillow versions may change PNG encoding or anti-aliasing. `postprocess_legacy_figures.py` only removes in-figure titles and re-typesets labels of figures produced by the analytical notebooks (inputs in `results/chemolab_submission/figure_sources/`); plot pixels are not modified.
+With the versions in `requirements-figures.txt` all 26 PNGs are byte-identical to the submitted files; other matplotlib/Pillow versions may change PNG encoding or anti-aliasing. `postprocess_notebook_figures.py` only removes in-figure titles and re-typesets labels of figures produced by the analytical notebooks (inputs in `results/chemolab_submission/figure_sources/`); plot pixels are not modified.
 
 ## Repository integrity audit
 
@@ -149,8 +147,7 @@ The audit is read-only and uses only the Python standard library. It verifies:
 - frozen nested-LOEO semantic hash;
 - frozen numerical evidence;
 - analytical table inventory;
-- previous-submission table mappings and figure SHA-256 provenance (kept for provenance);
-- reviewer-requested Tables S1–S3 and explanatory-scope documentation;
+- Tables S1–S3 (hashes and audited values) and explanatory-scope documentation;
 - pinned Python/package metadata and the three-author `CITATION.cff`;
 - manuscript-evidence traceability;
 - repository file policy;
@@ -162,7 +159,7 @@ GitHub Actions runs the same read-only audit, and a second job that regenerates 
 
 Final analytical runs used **Python 3.13.15** in Google Colab.
 
-Pinned package versions are recorded in `requirements.txt` and `environment.yml`. `shap==0.50.0` is included for the reviewer-requested explanatory analysis.
+Pinned package versions are recorded in `requirements.txt` and `environment.yml`. `shap==0.50.0` is included for the explanatory TreeSHAP analysis.
 
 ## Data path adaptation
 

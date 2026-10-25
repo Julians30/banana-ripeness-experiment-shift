@@ -1,14 +1,14 @@
-"""Post-processing of figures carried over from the previous submission (Figs. 3, 6, S1-S3, S11) and of the NB16
+"""Post-processing of notebook-produced figures (Figs. 3, 6, S1-S3, S11) and of the NB16
 reliability diagrams (Figs. 4, 5, S4-S7) for the Chemometrics and Intelligent Laboratory Systems submission.
 
-Inputs (tracked): results/chemolab_submission/figure_sources/previous_submission/ (figures exactly as produced by
-NB04/NB07, NB05/NB08, NB06-v1.1/NB08, the TreeSHAP analysis and NB10-NB12 for the previous submission) and
+Inputs (tracked): results/chemolab_submission/figure_sources/notebook_figures/ (figures exactly as produced by
+NB04/NB07, NB05/NB08, NB06-v1.1/NB08, the TreeSHAP analysis and NB10-NB12) and
 results/chemolab_submission/figure_sources/nb16_reliability/ (NB16 outputs).
 
-Usage:  python scripts/postprocess_legacy_figures.py --out figures_out
+Usage:  python scripts/postprocess_notebook_figures.py --out figures_out
         python scripts/verify_figures.py figures_out          # byte/pixel comparison with the submitted figures
 
-Legacy figures: remove the in-figure title (journal rule) and replace
+Notebook figures: remove the in-figure title (journal rule) and replace
 notebook-style labels (snake_case, notebook IDs, 'A.' panel labels) with publication labels. Pixel data of the plots
 are untouched; text is re-typeset in DejaVu Sans (matplotlib's default font, used to draw the originals).
 NB16 reliability PDFs are cropped through the PDF CropBox, so they remain vector."""
@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'results' / 'chemolab_submission' / 'figure_sources'
 ap = argparse.ArgumentParser(); ap.add_argument('--out', default='figures_out'); OUT = ap.parse_args().out
 os.makedirs(OUT, exist_ok=True)
-P3 = str(SRC / 'previous_submission') + '/'
+P3 = str(SRC / 'notebook_figures') + '/'
 P16 = str(SRC / 'nb16_reliability') + '/'
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 if not os.path.exists(FONT):
@@ -73,7 +73,7 @@ legacy('Figure_S2.png', 'Figure_S2', 162, [
     ((3255, 245, 4140, 330), 'class_weight_balanced', 'Class weighting', 'left'),
     ((3255, 357, 4140, 440), 'smote_training_only', 'Training-only SMOTE', 'left')])
 legacy('Figure_S3.png', 'Figure_S3', 162, [])
-legacy('Figure_S4.png', 'Figure_S11', 190, [
+legacy('Figure_S11.png', 'Figure_S11', 190, [
     ((0, 200, 1785, 250), 'RAW', '(a) RAW'), ((1785, 200, 3570, 250), 'SNV', '(b) SNV'),
     ((0, 1352, 1785, 1412), 'DOMAIN_Z_ROW', '(c) DOMAIN_Z, row-level statistics'),
     ((1785, 1352, 3570, 1412), 'DOMAIN_Z_UNIQUE', '(d) DOMAIN_Z, unique-signature statistics'),

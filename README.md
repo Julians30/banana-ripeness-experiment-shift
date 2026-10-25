@@ -50,11 +50,11 @@ The confirmatory evaluation uses nested **Leave-One-Experiment-Out (LOEO)** vali
 | Layer | What it contains | Where |
 |---|---|---|
 | **1. Frozen confirmatory pipeline** (NB01–NB08) | data audit and LOEO protocol, experiment-shift diagnostics, inner selection, outer evaluation, imbalance sensitivity, calibration (NB06-v1.1 authoritative), statistical inference, table packaging | `notebooks/01_…ipynb`, `archive/frozen_notebook_payloads/`, `config/`, `results/main_tables/`, `results/frozen_numeric_facts_nb08.json` |
-| **2. Reviewer-requested additions** | count audit, stage-matched n, no-skill baseline (Tables S1–S3); TreeSHAP (Figure S1) | `results/reviewer_revision/` |
+| **2. Explanatory additions** (after freezing) | count audit, stage-matched n, no-skill baseline (Tables S1–S3); TreeSHAP (Figure S1) | `results/supplementary_tables_S1_S3/` |
 | **3. Post-hoc robustness** (NB09–NB12, NB14–NB17) | random references; SNV and DOMAIN_Z; duplicate-aware and shared-signature analyses; prospective initial-window normalization and composition stress; displacement, loadings, projections, error localization; reliability diagrams; positive control, MSC, alternative calibrators | `results/post_hoc/`, `notebooks/post_hoc/` |
 | **Submission package** | table/figure map, the 26 submitted figures, their SHA-256 and their sources | `results/chemolab_submission/` |
 
-Layers 2 and 3 never modify frozen outer predictions, model rankings, calibration fits or confirmatory estimates. The previous submission's numbering is retained for provenance in `results/manuscript_current/` (superseded).
+Layers 2 and 3 never modify frozen outer predictions, model rankings, calibration fits or confirmatory estimates.
 
 ```text
 Frozen pipeline
@@ -105,7 +105,7 @@ Only the **four held-out experiments** are independent generalization units. Row
 python scripts/audit_repository.py
 ```
 
-Read-only, standard library only. It checks the frozen notebook hashes and syntax, the LOEO protocol, frozen numerical evidence, all evidence tables, reviewer additions, post-hoc evidence, citation metadata (three authors), Markdown links, file policy, and that each of the 26 submitted figures is byte-identical to the image embedded in the manuscript.
+Read-only, standard library only. It checks the frozen notebook hashes and syntax, the LOEO protocol, frozen numerical evidence, all evidence tables, Tables S1–S3, post-hoc notebooks and evidence, citation metadata (three authors), Markdown links, file policy, and that each of the 26 submitted figures is byte-identical to the image embedded in the manuscript.
 
 ### Analysis notebooks
 
@@ -113,7 +113,7 @@ Read-only, standard library only. It checks the frozen notebook hashes and synta
 2. Install `requirements.txt` or `environment.yml` (Python 3.13.15).
 3. Materialize NB02–NB08 and readable Python mirrors: `python scripts/rebuild_analysis_mirrors.py`.
 4. Run NB01–NB08 in order and compare with `results/main_tables/` and `results/frozen_numeric_facts_nb08.json`.
-5. Tables S1–S3: `python scripts/09_REVIEWER_REQUESTED_AUDITS.py --tphis-zip /path/to/TPHiS.zip --output-dir results/reviewer_revision`.
+5. Tables S1–S3: `python scripts/make_supplementary_tables_S1_S3.py --tphis-zip /path/to/TPHiS.zip --output-dir results/supplementary_tables_S1_S3`.
 6. Post-hoc notebooks: `notebooks/post_hoc/` (NB09–NB12 and NB14–NB16 read frozen outputs or the master file; NB17 runs in Colab or locally, CPU, about 4 h).
 
 ### Regenerate the figures
@@ -121,7 +121,7 @@ Read-only, standard library only. It checks the frozen notebook hashes and synta
 ```bash
 pip install -r requirements-figures.txt
 python scripts/make_publication_figures.py --out figures_out     # Figs. 1, 2, 7-11, S8-S10, S12-S15
-python scripts/postprocess_legacy_figures.py --out figures_out   # Figs. 3-6, S1-S7, S11
+python scripts/postprocess_notebook_figures.py --out figures_out   # Figs. 3-6, S1-S7, S11
 python scripts/verify_figures.py figures_out                     # compare with the submitted figures
 ```
 
@@ -140,17 +140,16 @@ notebooks/
 results/
   main_tables/                 frozen analytical tables (NB08)
   frozen_numeric_facts_nb08.json
-  reviewer_revision/           Tables S1–S3
+  supplementary_tables_S1_S3/  Tables S1–S3
   post_hoc/                    NB09–NB12 and NB14–NB17 exported evidence
   chemolab_submission/         table/figure map, figures/, figure_sources/, figure_provenance.csv
-  manuscript_current/          previous-submission numbering (superseded, provenance only)
   table_manifest.csv, figure_manifest.csv
 scripts/
   audit_repository.py          read-only integrity audit
   rebuild_analysis_mirrors.py  materialize NB02–NB08 and Python mirrors
-  09_REVIEWER_REQUESTED_AUDITS.py  Tables S1–S3 from TPHiS.zip
+  make_supplementary_tables_S1_S3.py  Tables S1–S3 from TPHiS.zip
   make_publication_figures.py  Figs. 1, 2, 7–11, S8–S10, S12–S15
-  postprocess_legacy_figures.py  Figs. 3–6, S1–S7, S11
+  postprocess_notebook_figures.py  Figs. 3–6, S1–S7, S11
   verify_figures.py            compare regenerated and submitted figures
 requirements.txt, environment.yml, requirements-figures.txt, CITATION.cff, LICENSE
 ```

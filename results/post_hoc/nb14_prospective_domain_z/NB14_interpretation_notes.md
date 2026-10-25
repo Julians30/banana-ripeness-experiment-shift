@@ -1,4 +1,4 @@
-# NB14 — prospective DOMAIN_Z reviewer analysis
+# NB14 — prospective DOMAIN_Z analysis
 
 ## Data chronology
 - No timestamp/date fields exist in the released raw feature CSV files.

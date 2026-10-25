@@ -1,4 +1,4 @@
-# NB10 Reviewer 2 — spectral normalization sensitivity
+# NB10 — spectral normalization sensitivity
 
 Run ID: `20260928_020934`
 Runtime: 36.64 min

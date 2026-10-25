@@ -54,7 +54,7 @@ jobs:
       - name: Regenerate all 26 submitted figures from tracked files
         run: |
           python scripts/make_publication_figures.py --out figures_out
-          python scripts/postprocess_legacy_figures.py --out figures_out
+          python scripts/postprocess_notebook_figures.py --out figures_out
 
       - name: Compare with the figures embedded in the submitted manuscript
         run: python scripts/verify_figures.py figures_out

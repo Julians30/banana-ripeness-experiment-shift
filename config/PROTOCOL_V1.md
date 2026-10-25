@@ -45,7 +45,7 @@ Exact candidate configurations of NB03 (`candidate_grid()`; reconstruct NB03 wit
 
 Within each outer fold and modality, the configuration of each algorithm is chosen by mean inner-validation Macro-F1 over the three inner folds (ties broken by worst-fold Macro-F1, mean QWK, mean ordinal MAE, candidate order); the five algorithms are then ranked by the same criterion and the rank-1 algorithm is the internally selected model.
 
-**NB17 re-implementation.** The post-hoc NB17 notebook (positive control, MSC, alternative calibrators) was coded independently. It uses the same algorithms, preprocessing and ordinal-logistic, PLS-DA and SVM candidates, but its tree-ensemble candidates differ: random forest uses the full 2 × 2 × 2 factorial of the values above (8 configurations) and XGBoost uses (250, 2, 0.10), (250, 3, 0.05), (500, 4, 0.03), (500, 5, 0.05). Its nested LOEO arm reproduced the frozen selected model in 11/12 scenarios and the external Macro-F1 to three decimals in 10/12 (`results/post_hoc/nb17_reviewer_shield/A_check_vs_table4.csv`); both differences (Test 2 with TPH and with Spectral) are scenarios in which a tree ensemble was selected. NB17 results are therefore reported as sensitivity analyses; confirmatory values come only from NB03/NB04.
+**NB17 re-implementation.** The post-hoc NB17 notebook (positive control, MSC, alternative calibrators) was coded independently. It uses the same algorithms, preprocessing and ordinal-logistic, PLS-DA and SVM candidates, but its tree-ensemble candidates differ: random forest uses the full 2 × 2 × 2 factorial of the values above (8 configurations) and XGBoost uses (250, 2, 0.10), (250, 3, 0.05), (500, 4, 0.03), (500, 5, 0.05). Its nested LOEO arm reproduced the frozen selected model in 11/12 scenarios and the external Macro-F1 to three decimals in 10/12 (`results/post_hoc/nb17_positive_control_msc_calibrators/A_check_vs_table4.csv`); both differences (Test 2 with TPH and with Spectral) are scenarios in which a tree ensemble was selected. NB17 results are therefore reported as sensitivity analyses; confirmatory values come only from NB03/NB04.
 
 ## Exploratory structure
 
@@ -55,7 +55,7 @@ PCA and UMAP are descriptive. For held-out projections, the embedding/preprocess
 
 Added after the confirmatory pipeline, without altering frozen outer predictions, model rankings, calibration fits or confirmatory numerical evidence:
 
-- reviewer-requested count audit, development-majority no-skill baseline, stage-matched sample sizes, repeated-CV uncertainty for domain AUC, selection-loss panel and TreeSHAP explanation (current Tables S1–S3, Figures 2, 3 and S1);
+- count audit, development-majority no-skill baseline, stage-matched sample sizes, repeated-CV uncertainty for domain AUC, selection-loss panel and TreeSHAP explanation (Tables S1–S3, Figures 2, 3 and S1);
 - post-hoc robustness notebooks NB09–NB12 (random references, spectral normalization, duplicate-aware and shared-signature analyses), NB14–NB15 (prospective initial-window DOMAIN_Z, composition stress, feature displacement, loadings, projections), NB16 (reliability diagrams) and NB17 (positive control, MSC, alternative calibrators). Evidence: `results/post_hoc/`; map: `results/chemolab_submission/README.md`.
 
 **Status:** validation design frozen before confirmatory model comparison. The explanatory clarifications above document how the frozen outputs map to the manuscript; they do not change `nested_loeo_protocol_v1.json`.

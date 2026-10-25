@@ -1,10 +1,11 @@
 # Chemometrics and Intelligent Laboratory Systems submission — evidence map
 
-This directory maps every table and figure of the manuscript **"Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"** to its source in this repository. It supersedes the numbering of the previous submission documented in `../manuscript_current/` (kept for provenance).
+This directory maps every table and figure of the manuscript **"Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"** to its source in this repository.
 
 Layers:
 
 - **Frozen confirmatory evidence** — NB01–NB08, `../main_tables/`, `../frozen_numeric_facts_nb08.json`.
+- **Explanatory additions** — Tables S1–S3 (`../supplementary_tables_S1_S3/`) and the TreeSHAP figure (Figure S1), added after the confirmatory pipeline was frozen.
 - **Post-hoc robustness evidence** — NB09–NB12 (random references, spectral normalization, duplicate-aware and shared-signature analyses), NB14 (prospective initial-window normalization and composition stress), NB15 (feature displacement, loadings, projections, error localization), NB16 (reliability diagrams), NB17 (positive control, MSC and alternative calibrators; Section 2.13). Notebooks are in `../../notebooks/post_hoc/`; exported tables are in `../post_hoc/`.
 
 None of the post-hoc layers modifies frozen outer predictions, model rankings, calibration fits or confirmatory estimates.
@@ -17,21 +18,21 @@ None of the post-hoc layers modifies frozen outer predictions, model rankings, c
 | Table 2 | Candidate models and frozen grids | exact configurations in `../../config/PROTOCOL_V1.md`; NB03 `candidate_grid()` |
 | Table 3 | Stage-matched experiment-shift diagnostics | `../main_tables/Table_2_experiment_shift_diagnostics.csv` |
 | Table 4 | External performance of internally selected models | `../main_tables/Table_3_confirmatory_external_selected_models.csv`; `../main_tables/Table_4_model_selection_instability_summary.csv` |
-| Table 5 | Integrated synthesis | `../main_tables/Table_4`–`Table_7`; `../post_hoc/nb09_random_references/`–`nb12_shared_signature_removal/`; `../post_hoc/nb14_prospective_domain_z/`; `../post_hoc/nb15_spectral_error_audit/`; `../post_hoc/nb17_reviewer_shield/` |
+| Table 5 | Integrated synthesis | `../main_tables/Table_4`–`Table_7`; `../post_hoc/nb09_random_references/`–`nb12_shared_signature_removal/`; `../post_hoc/nb14_prospective_domain_z/`; `../post_hoc/nb15_spectral_error_audit/`; `../post_hoc/nb17_positive_control_msc_calibrators/` |
 | Table 6 | Prospective initial-window DOMAIN_Z (N = 25) | NB14 `08_source_order_prefix_vs_raw_and_oracle.csv`, `03_prefix_and_future_stage_composition.csv`, `paired_error_summary_by_experiment.csv`; NB15 `feature_displacement.csv` |
-| Table 7 | Positive control (random, within-experiment and nested LOEO splits) | NB17 `../post_hoc/nb17_reviewer_shield/A_*.csv` |
-| Table S1 | Balancing-tail count audit | `../reviewer_revision/Table_S1_reconstruction_count_audit.csv` |
-| Table S2 | Stage-matched effective sample sizes | `../reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv` |
-| Table S3 | Development-majority no-skill baseline | `../reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` |
+| Table 7 | Positive control (random, within-experiment and nested LOEO splits) | NB17 `../post_hoc/nb17_positive_control_msc_calibrators/A_*.csv` |
+| Table S1 | Balancing-tail count audit | `../supplementary_tables_S1_S3/Table_S1_reconstruction_count_audit.csv` |
+| Table S2 | Stage-matched effective sample sizes | `../supplementary_tables_S1_S3/Table_S2_stage_matched_effective_sample_sizes.csv` |
+| Table S3 | Development-majority no-skill baseline | `../supplementary_tables_S1_S3/Table_S3_development_majority_no_skill_baseline.csv` |
 | Table S4 | Window-size sensitivity (N = 10, 25, 50) | NB14 `08_source_order_prefix_vs_raw_and_oracle.csv`, `09_source_order_summary_by_window.csv` |
 | Table S5 | Calibration-window composition stress | NB14 `11_stage_composition_stress_summary.csv` (replicates: `10_stage_composition_stress_replicates.csv.gz`) |
-| Table S6 | Alternative calibrators | NB17 `../post_hoc/nb17_reviewer_shield/C_calibrators.csv` |
+| Table S6 | Alternative calibrators | NB17 `../post_hoc/nb17_positive_control_msc_calibrators/C_calibrators.csv` |
 
 ## Figures
 
 All 26 submitted figures are in [`figures/`](figures/) (PNG exactly as embedded in the Word files; vector PDF where available). The audit checks each PNG against the SHA-256 in `figure_provenance.csv`.
 
-Figures marked **script** are regenerated from tracked files (pixel-identical PNGs; verified for the submitted version) with `python scripts/make_publication_figures.py --out <folder>`. Figures marked **post-processed** were produced by NB04/NB07/NB10–NB12 or NB16 and only had their in-figure title removed or labels corrected with `scripts/postprocess_legacy_figures.py` (plot pixels unchanged; inputs in [`figure_sources/`](figure_sources/): `previous_submission/` holds the notebook-produced figures of the previous submission, where `Figure_S4.png` is the current Figure S11, and `nb16_reliability/` holds the NB16 outputs). `python scripts/verify_figures.py <folder>` compares regenerated PNGs with the submitted ones; with `requirements-figures.txt` all 26 are byte-identical.
+Figures marked **script** are regenerated from tracked files (pixel-identical PNGs; verified for the submitted manuscript) with `python scripts/make_publication_figures.py --out <folder>`. Figures marked **post-processed** were produced by NB04/NB07/NB10–NB12 or NB16 and only had their in-figure title removed or labels corrected with `scripts/postprocess_notebook_figures.py` (plot pixels unchanged; inputs in [`figure_sources/`](figure_sources/): `notebook_figures/` holds the figures as written by the analytical notebooks and `nb16_reliability/` holds the NB16 outputs). `python scripts/verify_figures.py <folder>` compares regenerated PNGs with the submitted ones; with `requirements-figures.txt` all 26 are byte-identical.
 
 | Manuscript | Content | Source | Production |
 |---|---|---|---|
@@ -45,7 +46,7 @@ Figures marked **script** are regenerated from tracked files (pixel-identical PN
 | Figure 9 | Paired ordinal errors | NB14 `paired_error_outcomes.csv.gz` | script |
 | Figure 10 | PCA projections, Test 5 | NB15 `projection_coordinates.csv.gz` | script |
 | Figure 11 | Composition stress | NB14 `10_stage_composition_stress_replicates.csv.gz` | script |
-| Figure S1 | TreeSHAP spectral attribution | reviewer-requested post-hoc analysis (frozen NB03 hyperparameters) | post-processed |
+| Figure S1 | TreeSHAP spectral attribution | post-hoc TreeSHAP analysis (frozen NB03 hyperparameters) | post-processed |
 | Figure S2 | Imbalance sensitivity by experiment | NB05/NB08 | post-processed |
 | Figure S3 | Calibration transfer by experiment | NB06-v1.1/NB08 | post-processed |
 | Figures S4–S7 | TPH and fused reliability diagrams | NB16 | post-processed |

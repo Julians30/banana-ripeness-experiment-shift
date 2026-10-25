@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Regenerate reviewer-requested count, no-skill, and stage-matching audits.
+"""Regenerate supplementary Tables S1-S3 (count audit, stage-matched sample sizes, no-skill baseline).
 
 This script does not train or select manuscript classifiers. It reconstructs
-three reviewer-requested supplementary tables directly from the original TPHiS
+the three supplementary tables directly from the original TPHiS
 release while preserving the frozen experiment boundaries used in NB01.
 
 Usage:
-    python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
+    python scripts/make_supplementary_tables_S1_S3.py \
         --tphis-zip /path/to/TPHiS.zip \
-        --output-dir results/reviewer_revision
+        --output-dir results/supplementary_tables_S1_S3
 
 The script requires pandas, numpy and scikit-learn from requirements.txt.
 """
@@ -149,7 +149,7 @@ def stage_match_sizes(original: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tphis-zip", type=Path, required=True)
-    parser.add_argument("--output-dir", type=Path, default=Path("results/reviewer_revision"))
+    parser.add_argument("--output-dir", type=Path, default=Path("results/supplementary_tables_S1_S3"))
     args = parser.parse_args()
 
     released, original = load_original_tphis(args.tphis_zip)
@@ -173,7 +173,7 @@ def main() -> None:
     assert int(t3.query("Outer == 2 and Stage == 2")["Matched n / domain"].item()) == 17
     assert int(t3.query("Outer == 5 and Stage == 1")["Matched n / domain"].item()) == 2
 
-    print("PASS: reviewer-requested Tables S1-S3 regenerated.")
+    print("PASS: supplementary Tables S1-S3 regenerated.")
     print(f"Wrote outputs to {args.output_dir.resolve()}")
 
 

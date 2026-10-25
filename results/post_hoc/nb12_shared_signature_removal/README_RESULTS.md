@@ -1,4 +1,4 @@
-# NB12 Reviewer 2 — remove cross-experiment exact spectral overlap
+# NB12 — remove cross-experiment exact spectral overlap
 
 Run ID: `20260928_032519`
 Runtime: 8.39 min
