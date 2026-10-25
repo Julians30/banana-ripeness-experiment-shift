@@ -11,7 +11,8 @@ The audit is side-effect free. It verifies:
 7) reviewer-requested revision evidence;
 8) environment/citation metadata;
 9) manuscript-evidence traceability and documentation;
-10) repository file policy.
+10) repository file policy;
+11) post-hoc robustness evidence and current-submission traceability.
 
 CI never rewrites notebooks, commits generated files, or pushes to the repository.
 """
@@ -84,8 +85,8 @@ EXPECTED_FACTS = {
 
 CURRENT_ARTIFACT_SHA256 = {
     "results/reviewer_revision/Table_S1_reconstruction_count_audit.csv": "d0897be3128e001d7a91b313097d6e99b4319680b7660c25a7d88fe80e8bcc70",
-    "results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv": "df88ec28798fa8b19442d18deb1d6308dce31aebb90088b46ca9f8c70b41dbf3",
-    "results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv": "dab5bf76b28bef36dd97a2454b46747b093a40f5cbe888a776e0cfa5cd68a349",
+    "results/reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv": "df88ec28798fa8b19442d18deb1d6308dce31aebb90088b46ca9f8c70b41dbf3",
+    "results/reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv": "dab5bf76b28bef36dd97a2454b46747b093a40f5cbe888a776e0cfa5cd68a349",
 }
 
 
@@ -136,7 +137,7 @@ def parse_and_compile_notebook(name: str, data: bytes) -> dict:
     return nb
 
 
-print("AUDIT 1/10 — frozen notebook provenance")
+print("AUDIT 1/11 — frozen notebook provenance")
 nb01 = NOTEBOOK_DIR / NOTEBOOKS[0]
 if not nb01.exists():
     fail("missing directly browsable NB01 notebook")
@@ -161,7 +162,7 @@ for name in NOTEBOOKS[1:]:
     parse_and_compile_notebook(name, notebook_bytes)
 print("PASS: NB01 and eight immutable payloads reproduce all nine frozen notebook sources.")
 
-print("AUDIT 2/10 — repository layout")
+print("AUDIT 2/11 — repository layout")
 if (ROOT / "notebooks_packed").exists():
     fail("obsolete notebooks_packed/ directory is present at repository root")
 if (SCRIPT_DIR / "unpack_notebooks.py").exists():
@@ -176,7 +177,7 @@ for required in [
         fail(f"missing reviewer-facing file: {required.relative_to(ROOT)}")
 print("PASS: provenance archive and reviewer-facing utilities are present.")
 
-print("AUDIT 3/10 — frozen LOEO protocol")
+print("AUDIT 3/11 — frozen LOEO protocol")
 protocol_path = ROOT / "config" / "nested_loeo_protocol_v1.json"
 raw_protocol = protocol_path.read_bytes()
 try:
@@ -193,7 +194,7 @@ if sha256(raw_protocol) == ORIGINAL_PROTOCOL_RAW_SHA:
 else:
     print("PASS: protocol semantic hash matches; raw serialization differs but semantics are unchanged.")
 
-print("AUDIT 4/10 — frozen numerical evidence")
+print("AUDIT 4/11 — frozen numerical evidence")
 facts_path = ROOT / "results" / "frozen_numeric_facts_nb08.json"
 facts = json.loads(facts_path.read_text(encoding="utf-8"))
 for key, expected in EXPECTED_FACTS.items():
@@ -207,7 +208,7 @@ for key, expected in EXPECTED_FACTS.items():
         fail(f"frozen fact mismatch: {key}: {got} vs {expected}")
 print("PASS: frozen NB08 numerical evidence matches audited values.")
 
-print("AUDIT 5/10 — original analytical tables and manifests")
+print("AUDIT 5/11 — original analytical tables and manifests")
 main_table_dir = ROOT / "results" / "main_tables"
 main_tables = sorted(main_table_dir.glob("*.csv")) if main_table_dir.exists() else []
 if len(main_tables) != 7:
@@ -217,7 +218,7 @@ for required in [ROOT / "results" / "table_manifest.csv", ROOT / "results" / "fi
         fail(f"missing {required.relative_to(ROOT)}")
 print("PASS: seven frozen analytical tables and both top-level manifests are present.")
 
-print("AUDIT 6/10 — current revised-manuscript artifacts")
+print("AUDIT 6/11 — current revised-manuscript artifacts")
 for rel, expected_sha in CURRENT_ARTIFACT_SHA256.items():
     path = ROOT / rel
     if not path.exists():
@@ -248,26 +249,26 @@ for figure_hash in [
         fail(f"current figure provenance missing SHA-256: {figure_hash}")
 print("PASS: current revised-manuscript mapping, figure provenance and reviewer additions are versioned.")
 
-print("AUDIT 7/10 — reviewer-requested evidence semantics")
+print("AUDIT 7/11 — reviewer-requested evidence semantics")
 s1 = (ROOT / "results/reviewer_revision/Table_S1_reconstruction_count_audit.csv").read_text(encoding="utf-8-sig")
-s2 = (ROOT / "results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv").read_text(encoding="utf-8-sig")
-s3 = (ROOT / "results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv").read_text(encoding="utf-8-sig")
+s3 = (ROOT / "results/reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv").read_text(encoding="utf-8-sig")
+s2 = (ROOT / "results/reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv").read_text(encoding="utf-8-sig")
 for phrase in ["17662", "15003", "32665"]:
     if phrase not in s1:
         fail(f"Table S1 missing audited count {phrase}")
-for phrase in ["0.073", "0.070", "0.075"]:
-    if phrase not in s2:
-        fail(f"Table S2 missing no-skill Macro-F1 {phrase}")
 for phrase in ["2,2,718,17,17,34", "5,1,1193,2,2,4"]:
-    if phrase not in s3.replace("\r\n", "\n"):
-        fail(f"Table S3 missing sparse stage-matching row {phrase}")
+    if phrase not in s2.replace("\r\n", "\n"):
+        fail(f"Table S2 missing sparse stage-matching row {phrase}")
+for phrase in ["0.073", "0.070", "0.075"]:
+    if phrase not in s3:
+        fail(f"Table S3 missing no-skill Macro-F1 {phrase}")
 revision_readme = (ROOT / "results/reviewer_revision/README.md").read_text(encoding="utf-8")
 for phrase in ["post-hoc explanatory", "frozen NB03 hyperparameters", "not causal biochemical evidence"]:
     if phrase not in revision_readme:
         fail(f"reviewer revision documentation missing phrase: {phrase}")
 print("PASS: reviewer-requested count, baseline, sample-size and TreeSHAP scope are explicit.")
 
-print("AUDIT 8/10 — environment and citation metadata")
+print("AUDIT 8/11 — environment and citation metadata")
 requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
 environment = (ROOT / "environment.yml").read_text(encoding="utf-8")
 citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
@@ -280,7 +281,7 @@ for author in ["Coronel-Reyes", "Haro-Sarango", "Delgado-Vera", "Triviño-Sánch
         fail(f"CITATION.cff missing manuscript author: {author}")
 print("PASS: Python/package environment and four-author citation metadata match the revised study.")
 
-print("AUDIT 9/10 — documentation and manuscript-evidence traceability")
+print("AUDIT 9/11 — documentation and manuscript-evidence traceability")
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
 for phrase in [
     "10.15125/BATH-01459",
@@ -296,8 +297,8 @@ for phrase in [
 evidence_map = (ROOT / "docs" / "MANUSCRIPT_EVIDENCE_MAP.md").read_text(encoding="utf-8")
 for phrase in [
     "Table_S1_reconstruction_count_audit.csv",
-    "Table_S2_development_majority_no_skill_baseline.csv",
-    "Table_S3_stage_matched_effective_sample_sizes.csv",
+    "Table_S3_development_majority_no_skill_baseline.csv",
+    "Table_S2_stage_matched_effective_sample_sizes.csv",
     "Figure_S3_treeshap_spectral_tree_models.png",
     "external_support_distance_ratio",
     "NB06-v1.1",
@@ -306,7 +307,7 @@ for phrase in [
         fail(f"manuscript evidence map missing: {phrase}")
 print("PASS: README and evidence map cover frozen and reviewer-revision evidence.")
 
-print("AUDIT 10/10 — repository file policy")
+print("AUDIT 10/11 — repository file policy")
 for path in ROOT.rglob("*"):
     if not path.is_file():
         continue
@@ -319,5 +320,47 @@ for path in ROOT.rglob("*"):
         fail(f"file exceeds 10 MiB policy: {rel}")
 print("PASS: no raw archives or oversized research files are tracked.")
 
+print("AUDIT 11/11 — post-hoc robustness evidence and current-submission traceability")
+nb14 = ROOT / "results" / "post_hoc" / "nb14_prospective_domain_z"
+nb15 = ROOT / "results" / "post_hoc" / "nb15_spectral_error_audit"
+for required in [
+    nb14 / "08_source_order_prefix_vs_raw_and_oracle.csv",
+    nb14 / "09_source_order_summary_by_window.csv",
+    nb14 / "11_stage_composition_stress_summary.csv",
+    nb14 / "12_key_results_nb14.json",
+    nb15 / "feature_displacement.csv",
+    nb15 / "pca_coefficients.csv",
+    nb15 / "projection_coordinates.csv.gz",
+    ROOT / "results" / "chemolab_submission" / "README.md",
+    ROOT / "results" / "chemolab_submission" / "figure_provenance.csv",
+    ROOT / "scripts" / "make_publication_figures.py",
+    ROOT / "notebooks" / "post_hoc" / "17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb",
+]:
+    if not required.exists():
+        fail(f"missing post-hoc/current-submission file: {required.relative_to(ROOT)}")
+key = json.loads((nb14 / "12_key_results_nb14.json").read_text(encoding="utf-8"))
+for name, expected in {
+    "primary_window_unique_spectra": 25,
+    "primary_tests_prefix_better_than_raw": 2,
+    "primary_mean_raw_future_macro_f1": 0.125482,
+    "primary_mean_domainz_prefix_macro_f1": 0.175465,
+    "minimum_two_sided_exact_sign_p_for_4_of_4": 0.125,
+}.items():
+    got = key.get(name)
+    if got is None or not math.isclose(float(got), float(expected), rel_tol=1e-4, abs_tol=1e-6):
+        fail(f"NB14 key result mismatch: {name}: {got} vs {expected}")
+provenance_rows = (ROOT / "results/chemolab_submission/figure_provenance.csv").read_text(encoding="utf-8").strip().splitlines()[1:]
+if len(provenance_rows) != 26:
+    fail(f"expected 26 current-submission figures (11 main + 15 supplementary), found {len(provenance_rows)}")
+parse_and_compile_post_hoc = json.loads((ROOT / "notebooks/post_hoc/17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb").read_text(encoding="utf-8"))
+for idx, cell in enumerate(parse_and_compile_post_hoc["cells"]):
+    if cell.get("cell_type") == "code":
+        src = cell["source"] if isinstance(cell["source"], str) else "".join(cell["source"])
+        try:
+            compile(normalized_code(src), f"NB17:cell{idx}", "exec")
+        except SyntaxError as exc:
+            fail(f"NB17: Python syntax error in code cell {idx}: {exc}")
+print("PASS: NB14/NB15 evidence, NB17 notebook and the 26-figure current-submission map are versioned and consistent.")
+
 print("\nPASS: frozen analysis and current revised-manuscript evidence are internally consistent.")
-print("PASS: repository integrity audit completed successfully (10/10 stages).")
+print("PASS: repository integrity audit completed successfully (11/11 stages).")

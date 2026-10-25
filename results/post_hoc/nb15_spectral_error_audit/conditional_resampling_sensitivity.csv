@@ -1,0 +1,25 @@
+outer_test,method,metric,point,q025,q975,B,n_signatures,scope
+2,stage_stratified_rows,delta_macro_f1,0.23093671679197994,0.15969530864704914,0.31757754915716374,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+2,stage_stratified_rows,delta_ordinal_mae,-0.11607142857142858,-0.26785714285714285,0.026785714285714284,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+2,stage_stratified_rows,delta_severe_rate,0.14285714285714288,0.0625,0.22321428571428573,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+2,signature_clusters,delta_macro_f1,0.23093671679197994,0.1493986053719079,0.31179632884982633,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+2,signature_clusters,delta_ordinal_mae,-0.11607142857142858,-0.327506716182048,0.11609757078507077,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+2,signature_clusters,delta_severe_rate,0.14285714285714288,0.035706384323640976,0.25,1000,110,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,stage_stratified_rows,delta_macro_f1,-0.14384774405506073,-0.16698113634746872,-0.12114916378611401,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,stage_stratified_rows,delta_ordinal_mae,0.9054054054054054,0.8633633633633634,0.947484984984985,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,stage_stratified_rows,delta_severe_rate,0.36786786786786785,0.34234234234234234,0.3948948948948949,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,signature_clusters,delta_macro_f1,-0.14384774405506073,-0.1721794472647782,-0.1162607483358012,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,signature_clusters,delta_ordinal_mae,0.9054054054054054,0.7643236341797743,1.0489353233830847,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+3,signature_clusters,delta_severe_rate,0.36786786786786785,0.31593843356573764,0.4181581642214606,1000,632,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,stage_stratified_rows,delta_macro_f1,-0.09706741345058485,-0.12891737668812256,-0.06500714266465654,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,stage_stratified_rows,delta_ordinal_mae,-0.39886039886039887,-0.44736467236467237,-0.34472934472934474,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,stage_stratified_rows,delta_severe_rate,-0.1225071225071225,-0.13675213675213674,-0.10541310541310542,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,signature_clusters,delta_macro_f1,-0.09706741345058485,-0.13574863424677494,-0.050534027675360305,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,signature_clusters,delta_ordinal_mae,-0.39886039886039887,-0.5000354107648726,-0.29424391233766234,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+4,signature_clusters,delta_severe_rate,-0.1225071225071225,-0.1753085815047022,-0.064946294836421,1000,341,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,stage_stratified_rows,delta_macro_f1,0.20991028744348245,0.19007118934892908,0.22831436375439934,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,stage_stratified_rows,delta_ordinal_mae,-1.6891891891891893,-1.7402402402402402,-1.6411036036036037,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,stage_stratified_rows,delta_severe_rate,-0.7267267267267268,-0.7447447447447448,-0.7102102102102102,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,signature_clusters,delta_macro_f1,0.20991028744348245,0.1875230937203779,0.2316622380690323,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,signature_clusters,delta_ordinal_mae,-1.6891891891891893,-1.7834829588942416,-1.5954686657076067,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions
+5,signature_clusters,delta_severe_rate,-0.7267267267267268,-0.7646265003725682,-0.6911428294861579,1000,658,Conditional sensitivity only; temporal/fruit dependence unresolved; fixed model predictions

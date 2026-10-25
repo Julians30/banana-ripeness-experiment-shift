@@ -161,11 +161,11 @@ def main() -> None:
 
     t1.to_csv(args.output_dir / "Table_S1_reconstruction_count_audit.csv", index=False)
     t2.to_csv(
-        args.output_dir / "Table_S2_development_majority_no_skill_baseline.csv",
+        args.output_dir / "Table_S3_development_majority_no_skill_baseline.csv",
         index=False,
         float_format="%.3f",
     )
-    t3.to_csv(args.output_dir / "Table_S3_stage_matched_effective_sample_sizes.csv", index=False)
+    t3.to_csv(args.output_dir / "Table_S2_stage_matched_effective_sample_sizes.csv", index=False)
 
     # Hard assertions for the audited public release.
     assert t1.loc[t1["Stage"] == "Total", "Inferred original block"].item() == 17662

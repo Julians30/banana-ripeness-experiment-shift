@@ -4,11 +4,13 @@
 
 Reproducible code, frozen analytical evidence, and reviewer-facing presentation artifacts for:
 
-**Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation**
+**Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation**
+
+Submitted to *Chemometrics and Intelligent Laboratory Systems*. The complete table/figure map of the submitted manuscript is in [`results/chemolab_submission/README.md`](results/chemolab_submission/README.md).
 
 ## Research question
 
-To what extent do machine-learning models for multisensor banana-ripeness classification preserve predictive performance, model-selection decisions, and probabilistic reliability when evaluated on acquisition experiments completely excluded from model development?
+To what extent do machine-learning models for multisensor banana-ripeness classification preserve predictive performance, model-selection decisions, and probabilistic reliability when evaluated on acquisition experiments completely excluded from model development, and can unlabeled domain normalization correct the shift without borrowing information from the future of the target experiment?
 
 ## Data source
 
@@ -64,6 +66,19 @@ Three sensor representations are evaluated:
 
 NB06-v1.1 supersedes NB06 **only for final temperature-scaling values**. NB06 is retained for provenance.
 
+### Post-hoc robustness layer
+
+```text
+09 Random references and random-selection null
+10 Spectral normalization (SNV, complete-target DOMAIN_Z)
+11 Duplicate-aware analysis        12 Shared-signature removal
+14 Prospective initial-window DOMAIN_Z and composition stress
+15 Feature displacement, PCA loadings, projections, error localization
+16 Reliability diagrams            17 Reviewer-requested sensitivity analyses
+```
+
+These notebooks never modify frozen outer predictions, rankings or calibration fits. Exported evidence: `results/post_hoc/`; NB17: `notebooks/post_hoc/`.
+
 ## Frozen main results
 
 Across **17,662** inferred-original TPHiS observations, four independent external experiments, three modalities and five algorithms:
@@ -78,6 +93,15 @@ Across **17,662** inferred-original TPHiS observations, four independent externa
 - partial η² for algorithm: **0.0531**;
 - mean selected-model ECE: **0.4387 → 0.2568** after development-only temperature scaling;
 - class weighting and training-only SMOTE each changed Macro-F1 by only about **+0.004 on average**, with heterogeneous effects across experiments.
+
+The ECE above averages all 12 selected models, including softmax surrogates; the manuscript reports **0.497 → 0.257** for the 10 scenarios with native probabilities.
+
+## Post-hoc results
+
+- Complete-target (transductive) DOMAIN_Z raised mean selected spectral Macro-F1 from **0.131 to 0.418** (0.440 with unique-signature statistics; 0.439 after removing shared signatures).
+- Estimated prospectively from the first 25 unique spectra, it raised Macro-F1 only from **0.125 to 0.175**, improving 2 of 4 experiments; window sizes 10 and 50 gave no consistent improvement.
+- Acquisition order followed ripening, so initial windows contained almost only unripe fruit; the stage composition of the calibration window alone changed Macro-F1 by up to **0.19**.
+- Raw spectral PC1 is a nearly uniform intensity/baseline axis (92.6% of variance in the Test 3 fold); experiment-wise z-scoring removes between-experiment offsets only.
 
 The central result is not a universal winning classifier. Experiment-specific distribution shift can dominate algorithm choice, destabilize model selection and reduce probability transportability.
 
@@ -101,10 +125,16 @@ The repository separates the frozen confirmatory pipeline from presentation/revi
 - frozen numerical facts: `results/frozen_numeric_facts_nb08.json`;
 - executed/source-clean notebook linkage: `docs/EXECUTED_NOTEBOOK_PROVENANCE.md`.
 
-### 2. Current revised-manuscript evidence
+### 2. Previous-submission presentation evidence
 
 - revised-manuscript figure provenance (logical filenames, exact manuscript-embedded SHA-256 values and analytical sources): `results/manuscript_current/figures/README.md`;
 - reviewer-requested Tables S1–S3: `results/reviewer_revision/`;
+
+### 3. Current submission (Chemometrics and Intelligent Laboratory Systems)
+
+- table/figure map and SHA-256 of every embedded figure: `results/chemolab_submission/`;
+- post-hoc exported evidence: `results/post_hoc/`;
+- publication figures: `python scripts/make_publication_figures.py --out figures_out` regenerates Figs. 1, 2, 7–11, S8–S10 and S12–S15 from tracked files.
 
 Reviewer-requested additions include repeated-CV uncertainty for domain AUC, direct selection-loss visualization, the reconstruction-count audit, a development-majority no-skill baseline, explicit stage-matched sample sizes, and post-hoc TreeSHAP explanation. These additions **do not modify frozen outer predictions, model rankings, calibration fits, or confirmatory numerical estimates**.
 
@@ -145,12 +175,15 @@ docs/                            data, statistics, provenance and evidence maps
 notebooks/
   01_DATA_AUDIT_AND_FROZEN_LOEO.ipynb
   README.md
+  post_hoc/                      NB17 reviewer-requested sensitivity notebook
 results/
   main_tables/                   original frozen analytical evidence
   manuscript_current/
     README.md                    mapping from frozen evidence to revised manuscript
     figures/README.md           hashes/sources for figures embedded in the revised manuscript
-  reviewer_revision/             reviewer-requested Tables S1–S3 and scope notes
+  reviewer_revision/             Tables S1–S3 (count audit, stage-matched n, no-skill baseline)
+  chemolab_submission/           current table/figure map and figure SHA-256
+  post_hoc/                      NB14 and NB15 exported evidence
   frozen_numeric_facts_nb08.json
   table_manifest.csv
   figure_manifest.csv
@@ -158,6 +191,8 @@ scripts/
   audit_repository.py
   rebuild_analysis_mirrors.py
   09_REVIEWER_REQUESTED_AUDITS.py
+  make_publication_figures.py
+  postprocess_legacy_figures.py
 requirements.txt
 environment.yml
 CITATION.cff
@@ -173,7 +208,8 @@ LICENSE
 5. Install the pinned environment from `requirements.txt` or `environment.yml`.
 6. Execute the notebooks in the documented order.
 7. Compare generated evidence with `results/main_tables/`, `results/frozen_numeric_facts_nb08.json`, and `docs/MANUSCRIPT_EVIDENCE_MAP.md`.
-8. Reproduce reviewer-requested Tables S1–S3 with `scripts/09_REVIEWER_REQUESTED_AUDITS.py`.
+8. Reproduce Tables S1–S3 with `scripts/09_REVIEWER_REQUESTED_AUDITS.py`.
+9. Regenerate the publication figures with `scripts/make_publication_figures.py`.
 
 ## Important exclusions and safeguards
 

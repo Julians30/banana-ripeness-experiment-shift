@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-10-25T14:00:18.473008+00:00",
+  "input_nb14_zip": "RESULTS_NB14_PROSPECTIVE_DOMAIN_Z_20261025_133148.zip",
+  "input_nb14_sha256": "4c51f5f78c95e324031d3dbb31ffc40bd673d761201193bc82d906f2785ad774",
+  "master_sha256": "0a06fb3773f85dacee42e18eecf17e5e2a8e7f5e9508cd3d60bd4b66757e8ea8",
+  "source_nb14_run": "20261025_133148",
+  "N": 25,
+  "bootstrap_draws": 1000,
+  "seed": 20261025,
+  "classifier_refits": 0,
+  "python": "3.13.16",
+  "umap": "0.5.12",
+  "n_evaluation_rows": 1795,
+  "analysis_role": "post-hoc descriptive diagnostics"
+}

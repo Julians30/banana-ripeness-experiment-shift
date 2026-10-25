@@ -1,0 +1,7 @@
+zip,member,n_columns,timestamp_like_columns,has_timestamp_like_column
+Spect.zip,Spect_x_test.csv,19,,False
+Spect.zip,Spect_x_train.csv,19,,False
+TPHiS.zip,TPHiS_x_test.csv,22,,False
+TPHiS.zip,TPHiS_x_train.csv,22,,False
+ds_34.zip,ds_34_x_test.csv,28,,False
+ds_34.zip,ds_34_x_train.csv,28,,False

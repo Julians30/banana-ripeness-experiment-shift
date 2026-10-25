@@ -1,0 +1,5 @@
+test_id,n_rows,order_proxy_source,min_order,max_order,stage_sequence_by_order
+2,1720,spect_source_index,0.0,1719.0,1-2-3-4
+3,4777,spect_source_index,1720.0,6496.0,1-2-3-4-5
+4,6133,ds34_source_index,4777.0,10909.0,1-2-3-4-5
+5,5032,spect_source_index,6497.0,11528.0,1-2-3-4-5

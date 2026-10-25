@@ -13,8 +13,8 @@ authors:
     given-names: "Johnny"
 repository-code: "https://github.com/Julians30/banana-ripeness-experiment-shift"
 license: MIT
-version: "0.1.1"
-date-released: 2026-08-24
+version: "0.2.0"
+date-released: 2026-10-25
 keywords:
   - banana ripeness
   - multisensor
@@ -22,11 +22,13 @@ keywords:
   - domain shift
   - model-selection instability
   - probabilistic calibration
+  - domain normalization
+  - chemometrics
   - trustworthy machine learning
   - leakage-safe validation
 preferred-citation:
   type: article
-  title: "Model-Selection Instability and Loss of Probabilistic Reliability under Experiment Shift in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"
+  title: "Experiment Shift, Composition-Dependent Domain Normalization, and Probabilistic Reliability in Multisensor Banana Ripeness Classification: A Leakage-Safe Evaluation"
   authors:
     - family-names: "Coronel-Reyes"
       given-names: "Julián"

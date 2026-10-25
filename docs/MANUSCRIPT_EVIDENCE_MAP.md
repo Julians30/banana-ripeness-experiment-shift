@@ -1,5 +1,25 @@
 # Manuscript evidence map
 
+## Current submission (Chemometrics and Intelligent Laboratory Systems)
+
+The table and figure numbering of the submitted manuscript, with the source file of every item and the SHA-256 of every embedded figure, is in [`../results/chemolab_submission/README.md`](../results/chemolab_submission/README.md) and `../results/chemolab_submission/figure_provenance.csv`. Key correspondences with the numbering used below:
+
+| Previous submission | Current submission |
+|---|---|
+| Figure 1 (domain AUC) | Figure 2 (AUC and MMD²) |
+| Figure 2 (selected-model heatmap) | removed; values in Table 4 |
+| Figure 3 | Figure 3 |
+| Figure 4 (ECE) | Figures 4–5 (reliability diagrams with bin support) |
+| Figure 5 (partial η²) | removed; values in Table 5 |
+| Figure S1 / S2 / S3 | Figure S2 / S3 / S1 |
+| Table S2 (no-skill baseline) | Table S3 |
+| Table S3 (stage-matched n) | Table S2 |
+| — | Figures 1, 6–11, S4–S15; Tables 6, S4, S5 (post-hoc layer, `../results/post_hoc/`) |
+
+The remainder of this document records claim-level traceability using the **previous-submission numbering** and is retained for provenance.
+
+---
+
 This document links the **current revised manuscript** to frozen analytical evidence and reviewer-requested explanatory additions. It is a traceability layer; it does not introduce new confirmatory analysis.
 
 ## Evidence layers
@@ -24,7 +44,7 @@ Reviewer-requested additions never replace or modify frozen outer predictions, m
 | Current manuscript claim | Current presentation artifact | Frozen / source evidence | Interpretation constraint |
 |---|---|---|---|
 | Experiment identity remains strongly recoverable after matching on ripeness stage. | current Table 3; mapping in `results/table_manifest.csv`; current Figure 1; checksum in `results/manuscript_current/figures/README.md` | NB02; frozen analytical `Table_2_experiment_shift_diagnostics.csv` | Error bars are repeated-CV variability, not confidence intervals over independent experiments. |
-| Actual matched sample sizes vary substantially by stage. | `results/reviewer_revision/Table_S3_stage_matched_effective_sample_sizes.csv` | source-index experiment mapping; `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | `matched n/domain = min(n_dev, n_external, 600)`; matching precedes modality construction. |
+| Actual matched sample sizes vary substantially by stage. | `results/reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv` | source-index experiment mapping; `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | `matched n/domain = min(n_dev, n_external, 600)`; matching precedes modality construction. |
 | The preliminary nearest-neighbor support-ratio diagnostic is excluded. | documentation only | NB02 | Do not use `external_support_distance_ratio` because duplicate spectral vectors generated zero denominators. |
 
 ## Confirmatory predictive transportability
@@ -40,7 +60,7 @@ Reviewer-requested additions never replace or modify frozen outer predictions, m
 
 | Current manuscript claim | Current presentation artifact | Source evidence | Interpretation constraint |
 |---|---|---|---|
-| Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | `results/reviewer_revision/Table_S2_development_majority_no_skill_baseline.csv` | `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | Majority class is determined from development experiments only; external labels are used only for scoring. |
+| Development-majority no-skill Macro-F1 is 0.000, 0.073, 0.070 and 0.075 for Tests 2–5. | `results/reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` | `scripts/09_REVIEWER_REQUESTED_AUDITS.py` | Majority class is determined from development experiments only; external labels are used only for scoring. |
 
 ## Imbalance sensitivity
 

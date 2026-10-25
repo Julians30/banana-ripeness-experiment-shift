@@ -30,8 +30,8 @@
 ## Reviewer-requested explanatory additions
 - [x] Repeated-CV AUC variability is visible in current Figure 1.
 - [x] Selection loss is directly visualized in current Figure 3.
-- [x] Development-majority no-skill baseline is versioned as current Table S2.
-- [x] Stage-matched effective n is versioned as current Table S3.
+- [x] Stage-matched effective n is versioned as Table S2.
+- [x] Development-majority no-skill baseline is versioned as Table S3.
 - [x] TreeSHAP Figure S3 is explicitly labeled post-hoc explanatory and non-causal.
 - [x] `shap==0.50.0` is pinned in the environment used for the explanatory addition.
 
@@ -43,3 +43,11 @@
 - [x] Current revised-manuscript table mappings are versioned; exact SHA-256 provenance is recorded for Figures 1–5 and Figures S1–S3.
 - [x] Reviewer-requested Tables S1–S3 are versioned and hash-checked.
 - [x] Raw archives and large prediction dumps are prohibited from the Git repository.
+
+## Post-hoc robustness layer (current submission)
+- [x] Prospective initial-window normalization (NB14) evidence is versioned in `results/post_hoc/nb14_prospective_domain_z/`.
+- [x] Feature displacement, PCA loadings, projections and error localization (NB15) are versioned in `results/post_hoc/nb15_spectral_error_audit/`.
+- [x] Every figure of the current submission is mapped to its source and SHA-256 in `results/chemolab_submission/`.
+- [x] Figures 1, 2, 7–11, S8–S10 and S12–S15 are regenerated from tracked files by `scripts/make_publication_figures.py`.
+- [x] The NB17 reviewer-requested sensitivity notebook is included in `notebooks/post_hoc/`.
+- [ ] NB09–NB12 and NB14–NB16 notebook sources to be added.

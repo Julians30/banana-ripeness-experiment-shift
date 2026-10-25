@@ -5,8 +5,8 @@ This directory contains compact evidence added in response to peer review. These
 ## Files
 
 - `Table_S1_reconstruction_count_audit.csv` — original inferred block versus balancing tail counts by stage.
-- `Table_S2_development_majority_no_skill_baseline.csv` — leakage-safe trivial baseline; the majority stage is selected from development experiments only.
-- `Table_S3_stage_matched_effective_sample_sizes.csv` — actual development/external counts and matched `n` per experiment × stage used to interpret domain discrimination.
+- `Table_S2_stage_matched_effective_sample_sizes.csv` — actual development/external counts and matched `n` per experiment × stage used to interpret domain discrimination.
+- `Table_S3_development_majority_no_skill_baseline.csv` — leakage-safe trivial baseline; the majority stage is selected from development experiments only.
 - `manifest.csv` — hashes, provenance and scope of the three reviewer-requested tables.
 
 ## Reproduction
