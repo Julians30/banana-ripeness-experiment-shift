@@ -12,7 +12,7 @@ import numpy as np, pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
+from matplotlib.patches import FancyBboxPatch, Rectangle, Circle, FancyArrowPatch
 from matplotlib.lines import Line2D
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,24 +35,163 @@ def save(fig, name):
 
 # ------------------------------------------------------------------ Fig. 1 design schematic
 def fig_design():
-    fig, ax = plt.subplots(figsize=(W2, 4.3)); ax.set_xlim(0, 100); ax.set_ylim(0, 56); ax.axis('off')
-    def box(x, y, w, h, title, body, fc, ec):
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0.4,rounding_size=1.2', fc=fc, ec=ec, lw=0.9))
-        ax.text(x + 1.2, y + h - 1.4, title, fontweight='bold', fontsize=6.8, va='top')
-        ax.text(x + 1.2, y + h - 5.0, body, fontsize=6.3, va='top', linespacing=1.35)
-    def arrow(x0, y0, x1, y1): ax.annotate('', (x1, y1), (x0, y0), arrowprops=dict(arrowstyle='-|>', lw=0.9, color='#333333', mutation_scale=9))
-    box(1, 31, 23, 23, 'Open multisensor data',
-        'Tests 2–5 (n = 17,662)\nTPH (3 variables)\nSpectral (18 channels)\nTPH + Spectral (21)\nBalancing-tail audit\nfrozen before modeling', '#F2F2F2', '#7F7F7F')
-    box(28.5, 31, 33, 23, 'Outer leave-one-experiment-out loop',
-        'Held-out experiment sealed until final scoring\n\nInner loop on the 3 development experiments:\n2 experiments fit / 1 validates (rotating)\n• scaling fitted on training data only\n• 5 algorithms × compact frozen grids\n• algorithm and hyperparameters frozen', '#E8F1F8', OI['blue'])
-    box(66, 31, 33, 23, 'Development-only sensitivities',
-        '• class weighting; training-only SMOTE\n• temperature scaling fitted on\n  cross-fitted development predictions\n• stage-matched domain classifier,\n  MMD², PCA/UMAP silhouettes', '#FDF3E1', OI['orange'])
-    box(1, 2, 39, 24, 'External evaluation (held-out experiment)',
-        '• Macro-F1, balanced accuracy, MCC\n• QWK, ordinal MAE, severe errors (≥2 stages)\n• NLL, Brier, RPS, ECE with bin support\n• uniform and prevalence no-information references\n• random-selection null for model ranking\n• exact sign-flip tests across 4 experiments', '#E6F4EF', OI['green'])
-    box(44, 2, 55, 24, 'Post-hoc spectral normalization (RAW models unchanged)',
-        'RAW  |  SNV (row-wise)  |  DOMAIN_Z (experiment-wise z-score)\n\nTransductive: statistics from the complete target experiment\n   → duplicate-aware and shared-signature controls\nProspective: statistics from the first N unique spectra (N = 10, 25, 50)\n   → scored on future-only records; window-composition stress test;\n      paired ordinal errors, feature displacement, loadings', '#F6EAF1', OI['purple'])
-    arrow(24.6, 42.5, 27.9, 42.5); arrow(61.6, 42.5, 65.4, 42.5)
-    arrow(44, 30.4, 25, 26.6); arrow(80, 30.4, 70, 26.6)
+    """Study design in black and white; millimetre coordinates on a 190 x 128 mm canvas.
+    Every label is checked to lie inside its panel and not to overlap another label."""
+    W, H = 190.0, 128.0
+    K, D, M, L = '#000000', '#404040', '#8c8c8c', '#dcdcdc'
+    FT, FB, FS = 7.6, 6.6, 6.0          # title, body, small (pt)
+
+    fig = plt.figure(figsize=(W / 25.4, H / 25.4))
+    ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(0, H); ax.set_aspect('equal'); ax.axis('off')
+    TEXTS = []
+
+    def txt(x, y, s, panel, size=FS, **kw):
+        kw.setdefault('va', 'center'); kw.setdefault('zorder', 7)
+        t = ax.text(x, y, s, fontsize=size, color=kw.pop('color', K), **kw); TEXTS.append((t, panel)); return t
+
+    def rect(x, y, w, h, fc, lw=0.6, z=4):
+        ax.add_patch(Rectangle((x, y), w, h, fc=fc, ec=K, lw=lw, zorder=z))
+
+    def panel(x, y, w, h, num, title):
+        rs = 1.6
+        ax.add_patch(FancyBboxPatch((x, y + h - 7.0), w, 7.0, boxstyle=f'round,pad=0,rounding_size={rs}', fc=L, ec='none', zorder=1))
+        ax.add_patch(Rectangle((x, y + h - 7.0), w, 3.0, fc=L, ec='none', zorder=1.1))
+        ax.plot([x, x + w], [y + h - 7.0] * 2, color=K, lw=0.6, zorder=2)
+        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle=f'round,pad=0,rounding_size={rs}', fc='none', ec=K, lw=0.85, zorder=3))
+        ax.add_patch(Circle((x + 4.3, y + h - 3.5), 2.4, fc=K, ec=K, zorder=4))
+        box = (x, y, w, h)
+        txt(x + 4.3, y + h - 3.55, str(num), box, size=FT, color='white', fontweight='bold', ha='center')
+        txt(x + 8.3, y + h - 3.5, title, box, size=FT, fontweight='bold')
+        return box
+
+    def arrow(x0, y0, x1, y1, lw=1.0, ms=10):
+        ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle='-|>', mutation_scale=ms, lw=lw, color=K, shrinkA=0, shrinkB=0, zorder=6))
+
+    def bullet(x, y, box, lines, size=FB, dy=3.5):
+        ax.add_patch(Rectangle((x, y - 0.6), 1.2, 1.2, fc=K, ec='none', zorder=5))
+        for k, s in enumerate(lines):
+            txt(x + 2.6, y - k * dy, s, box, size=size)
+
+    TOP_Y, TOP_H = 66.0, 58.0
+    BOT_Y, BOT_H = 3.0, 55.0
+    X1, W1 = 2.0, 44.0
+    X2, W2 = 52.0, 86.0
+    X3, W3 = 144.0, 44.0
+
+    # ---------------------------------------------------------------- 1 data
+    p1 = panel(X1, TOP_Y, W1, TOP_H, 1, 'Open data and audit')
+    x = X1 + 3.0
+    txt(x, TOP_Y + 45.5, 'Bath multisensor data set', p1, size=FB, fontweight='bold')
+    txt(x, TOP_Y + 41.8, 'Original observations per experiment', p1, color=D)
+    for i, (n, c) in enumerate([('Test 2', 1720), ('Test 3', 4777), ('Test 4', 6133), ('Test 5', 5032)]):
+        yy = TOP_Y + 37.0 - i * 4.3
+        txt(x, yy, n, p1)
+        bw = 19.0 * c / 6133
+        rect(x + 10.0, yy - 1.25, bw, 2.5, M, lw=0.5)
+        txt(x + 10.0 + bw + 1.0, yy, f'{c:,}', p1)
+    txt(x, TOP_Y + 18.8, 'Total 17,662 after removing the', p1)
+    txt(x, TOP_Y + 15.6, 'inferred class-balancing tail', p1)
+    ax.plot([x, X1 + W1 - 3.0], [TOP_Y + 12.6] * 2, color=M, lw=0.5, zorder=4)
+    txt(x, TOP_Y + 9.4, 'TPH (3), Spectral (18), fused (21)', p1)
+    txt(x, TOP_Y + 4.6, 'Data and protocol frozen', p1, size=FB, fontweight='bold')
+
+    # ---------------------------------------------------------------- 2 nested LOEO
+    p2 = panel(X2, TOP_Y, W2, TOP_H, 2, 'Nested leave-one-experiment-out')
+    cw, ch, gap = 7.4, 4.2, 1.0
+    gx, gy = X2 + 15.0, TOP_Y + 38.0          # outer grid: left edge, centre of row 1
+    txt(gx + 2 * cw, TOP_Y + 47.0, 'Outer loop: 4 folds', p2, color=D, ha='center')
+    for j, t in enumerate(['T2', 'T3', 'T4', 'T5']):
+        txt(gx + j * cw + cw / 2, gy + ch / 2 + 2.4, t, p2, ha='center')
+    for i in range(4):
+        yy = gy - i * (ch + gap)
+        txt(gx - 1.6, yy, f'Fold {i + 1}', p2, ha='right')
+        for j in range(4):
+            rect(gx + j * cw + 0.4, yy - ch / 2, cw - 0.8, ch, K if i == j else 'white')
+    icw = 6.6
+    ix = X2 + W2 - 4.0 - 3 * icw                # inner grid right-aligned in the panel
+    txt(ix + 1.5 * icw, TOP_Y + 47.0, 'Inner loop, fold 1', p2, color=D, ha='center')
+    for j, t in enumerate(['T3', 'T4', 'T5']):
+        txt(ix + j * icw + icw / 2, gy + ch / 2 + 2.4, t, p2, ha='center')
+    for i in range(3):
+        yy = gy - i * (ch + gap)
+        for j in range(3):
+            rect(ix + j * icw + 0.4, yy - ch / 2, icw - 0.8, ch, M if i == j else 'white')
+    arrow(gx + 4 * cw + 1.5, gy, ix - 1.5, gy, lw=0.8, ms=8)
+    txt((gx + 4 * cw + ix) / 2, gy + 2.3, 'development', p2, ha='center', color=D)
+    ax.plot([X2 + 3.0, X2 + W2 - 3.0], [TOP_Y + 18.6] * 2, color=M, lw=0.5, zorder=4)
+    for k, (fc, lab) in enumerate([(K, 'Held out until scoring'), ('white', 'Development'), (M, 'Inner validation')]):
+        yy = TOP_Y + 14.6 - k * 4.0
+        rect(X2 + 4.0, yy - 1.2, 3.6, 2.4, fc)
+        txt(X2 + 9.4, yy, lab, p2)
+    cx = X2 + 42.0
+    txt(cx, TOP_Y + 14.6, 'Inside development data only', p2, fontweight='bold')
+    txt(cx, TOP_Y + 10.6, 'scaling, 5 algorithms, compact grids,', p2)
+    txt(cx, TOP_Y + 6.6, 'model and hyperparameter selection', p2)
+    txt(cx, TOP_Y + 2.6 + 0.0, '12 frozen selection scenarios', p2)
+
+    # ---------------------------------------------------------------- 3 external evaluation
+    p3 = panel(X3, TOP_Y, W3, TOP_H, 3, 'External evaluation')
+    for i, (a, b) in enumerate([('Classification', 'Macro-F1, balanced accuracy, MCC'),
+                                ('Ordinal', 'QWK, MAE, errors of ≥ 2 stages'),
+                                ('Probabilistic', 'NLL, Brier, RPS, ECE'),
+                                ('References', 'no-skill and random selection'),
+                                ('Inference', 'exact sign-flip test, n = 4')]):
+        yy = TOP_Y + 45.6 - i * 8.9
+        txt(X3 + 3.0, yy, a, p3, fontweight='bold')
+        txt(X3 + 3.0, yy - 3.4, b, p3)
+    arrow(X1 + W1, TOP_Y + 29.0, X2, TOP_Y + 29.0)
+    arrow(X2 + W2, TOP_Y + 29.0, X3, TOP_Y + 29.0)
+
+    # ---------------------------------------------------------------- 4 development-only sensitivities
+    X4, W4 = 2.0, 76.0
+    p4 = panel(X4, BOT_Y, W4, BOT_H, 4, 'Development-only sensitivity analyses')
+    bullet(X4 + 4.0, BOT_Y + 41.0, p4, ['Class weighting and training-only SMOTE'])
+    bullet(X4 + 4.0, BOT_Y + 34.0, p4, ['Temperature scaling fitted on cross-fitted', 'development predictions'])
+    bullet(X4 + 4.0, BOT_Y + 23.5, p4, ['Stage-matched domain classifier and MMD²'])
+    bullet(X4 + 4.0, BOT_Y + 16.5, p4, ['PCA and UMAP fitted on development data;', 'held-out records projected'])
+    ax.plot([X4 + 3.0, X4 + W4 - 3.0], [BOT_Y + 7.4] * 2, color=M, lw=0.5, zorder=4)
+    txt(X4 + 4.0, BOT_Y + 3.9, 'Run inside every outer fold; the held-out experiment is never used', p4, color=D)
+
+    # ---------------------------------------------------------------- 5 post-hoc normalization
+    X5, W5 = 86.0, 102.0
+    p5 = panel(X5, BOT_Y, W5, BOT_H, 5, 'Post-hoc spectral normalization (design unchanged)')
+    txt(X5 + 4.0, BOT_Y + 42.2, 'Experiment-wise z-score; each bar is one target experiment in acquisition order', p5, color=D)
+    bx, bw, bh = X5 + 30.0, W5 - 34.0, 5.0
+    yT, yP = BOT_Y + 32.5, BOT_Y + 21.0
+    txt(X5 + 4.0, yT + 1.6, 'Transductive', p5, size=FB, fontweight='bold')
+    txt(X5 + 4.0, yT - 1.9, 'complete target', p5)
+    rect(bx, yT - bh / 2, bw, bh, '#5a5a5a')
+    txt(bx + bw / 2, yT, 'statistics from all records; all records scored', p5, color='white', fontweight='bold', ha='center')
+    txt(X5 + 4.0, yP + 1.6, 'Prospective', p5, size=FB, fontweight='bold')
+    txt(X5 + 4.0, yP - 1.9, 'initial window', p5)
+    wN = 13.0
+    rect(bx, yP - bh / 2, wN, bh, K)
+    rect(bx + wN, yP - bh / 2, bw - wN, bh, 'white')
+    txt(bx + wN / 2, yP, 'first N', p5, color='white', fontweight='bold', ha='center')
+    txt(bx + wN + (bw - wN) / 2, yP, 'statistics from the window; later records scored', p5, ha='center')
+    txt(bx, yP - 5.4, 'N = 10, 25 or 50 unique spectra', p5)
+    arrow(bx + 40.0, yP - 5.4, bx + bw, yP - 5.4, lw=0.7, ms=7)
+    txt(bx + bw - 1.0, yP - 8.3, 'acquisition order', p5, ha='right', color=D)
+    ax.plot([X5 + 3.0, X5 + W5 - 3.0], [BOT_Y + 7.4] * 2, color=M, lw=0.5, zorder=4)
+    txt(X5 + 4.0, BOT_Y + 3.9, 'Controls: duplicate-aware statistics, shared-signature removal, composition stress test', p5, color=D)
+
+    arrow(X2 + 20.0, TOP_Y, X2 + 20.0, BOT_Y + BOT_H)
+    arrow(X3 + W3 / 2, TOP_Y, X3 + W3 / 2, BOT_Y + BOT_H)
+
+    # ---------------------------------------------------------------- overlap check
+    fig.canvas.draw(); r = fig.canvas.get_renderer(); inv = ax.transData.inverted()
+    bbs, bad = [], 0
+    for t, (x0, y0, w, h) in TEXTS:
+        bb = t.get_window_extent(r).transformed(inv)
+        if not (bb.x0 >= x0 + 1.0 and bb.x1 <= x0 + w - 1.0 and bb.y0 >= y0 + 0.8 and bb.y1 <= y0 + h - 0.3):
+            print('Figure 1 label outside its panel:', repr(t.get_text()), [round(float(v), 1) for v in (bb.x0, bb.x1, bb.y0, bb.y1)], (x0, x0 + w)); bad += 1
+        bbs.append((t.get_text(), bb))
+    for i in range(len(bbs)):
+        for j in range(i + 1, len(bbs)):
+            a, b = bbs[i][1], bbs[j][1]
+            if a.x0 < b.x1 - 0.1 and b.x0 < a.x1 - 0.1 and a.y0 < b.y1 - 0.1 and b.y0 < a.y1 - 0.1:
+                print('Figure 1 overlapping labels:', repr(bbs[i][0]), '<->', repr(bbs[j][0])); bad += 1
+    assert bad == 0, f'Figure 1 layout: {bad} overlapping or clipped labels'
     save(fig, 'Figure_1')
 
 # ------------------------------------------------------------------ Fig. 2 domain diagnostics (values = manuscript Table 3)
