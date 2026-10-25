@@ -11,7 +11,7 @@ Reviewer-requested revisions changed the manuscript presentation after the confi
 The repository therefore separates:
 
 1. **Frozen analytical evidence** — the confirmatory model-selection/evaluation pipeline and its original tables; and
-2. **Current revised-manuscript evidence** — presentation artifacts and reviewer-requested additions that do not alter the frozen predictions, rankings, calibration fits, or confirmatory estimands.
+2. **Previous-submission presentation evidence** — presentation artifacts and reviewer-requested additions that do not alter the frozen predictions, rankings, calibration fits, or confirmatory estimands.
 
 ## Current manuscript table mapping
 
@@ -26,4 +26,4 @@ The repository therefore separates:
 | Table S2 | `../reviewer_revision/Table_S2_stage_matched_effective_sample_sizes.csv` | effective stage-matched sample sizes |
 | Table S3 | `../reviewer_revision/Table_S3_development_majority_no_skill_baseline.csv` | development-majority no-skill baseline |
 
-Current figure provenance is recorded in `figures/README.md`, including logical filenames, exact SHA-256 values of the images embedded in the revised manuscript, and analytical-source notes. The PNGs are presentation outputs and are not required by the frozen numerical audit.
+Previous-submission figure provenance is recorded in `figures/README.md`, including logical filenames, exact SHA-256 values of the images embedded in the previous submission, and analytical-source notes. The PNGs are presentation outputs and are not required by the frozen numerical audit.

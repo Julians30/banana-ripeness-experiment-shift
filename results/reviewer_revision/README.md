@@ -21,7 +21,7 @@ python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
 
 ## TreeSHAP scope
 
-The revised manuscript also includes a **post-hoc explanatory** TreeSHAP analysis for spectral Random Forest and XGBoost models. It uses the **frozen NB03 hyperparameters** within each outer fold and is not used for model selection, hyperparameter tuning, or confirmatory inference. SHAP attribution is interpreted as model dependence/importance, **not causal biochemical evidence**. The exact manuscript-embedded image SHA-256 is recorded in `../manuscript_current/figures/README.md`.
+The manuscript also includes (Figure S1) a **post-hoc explanatory** TreeSHAP analysis for spectral Random Forest and XGBoost models. It uses the **frozen NB03 hyperparameters** within each outer fold and is not used for model selection, hyperparameter tuning, or confirmatory inference. SHAP attribution is interpreted as model dependence/importance, **not causal biochemical evidence**. The submitted figure is `../chemolab_submission/figures/Figure_S1.png` (SHA-256 in `../chemolab_submission/figure_provenance.csv`); the previous-submission version is recorded in `../manuscript_current/figures/README.md`.
 
 ## Inferential scope
 

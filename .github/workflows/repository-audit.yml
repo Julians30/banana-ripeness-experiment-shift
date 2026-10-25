@@ -33,3 +33,28 @@ jobs:
 
       - name: Run read-only repository integrity audit
         run: python scripts/audit_repository.py
+
+  figure-regeneration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install figure dependencies
+        run: pip install -r requirements-figures.txt
+
+      - name: Regenerate all 26 submitted figures from tracked files
+        run: |
+          python scripts/make_publication_figures.py --out figures_out
+          python scripts/postprocess_legacy_figures.py --out figures_out
+
+      - name: Compare with the figures embedded in the submitted manuscript
+        run: python scripts/verify_figures.py figures_out

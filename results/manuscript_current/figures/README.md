@@ -2,7 +2,7 @@
 
 > Superseded by `../../chemolab_submission/figure_provenance.csv` (current submission). Retained for provenance.
 
-This file records the exact SHA-256 values of the PNG images embedded in the current revised manuscript, together with stable logical filenames and analytical sources. The hashes provide a submission-level provenance link without making the presentation PNGs part of the frozen numerical evidence.
+This file records the exact SHA-256 values of the PNG images embedded in the previous submission, together with stable logical filenames and analytical sources. The hashes provide a submission-level provenance link without making the presentation PNGs part of the frozen numerical evidence.
 
 | Manuscript figure | File | SHA-256 | Analytical source / scope |
 |---|---|---|---|

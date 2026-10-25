@@ -1,21 +1,29 @@
 """Post-processing of figures carried over from the previous submission (Figs. 3, 6, S1-S3, S11) and of the NB16
 reliability diagrams (Figs. 4, 5, S4-S7) for the Chemometrics and Intelligent Laboratory Systems submission.
 
-Inputs (not tracked in Git): argv[1] must contain pkg/Banana_Chemolab_v03/figures/ (previous-submission PNGs) and
-nb16/NB16_PUBLICATION_FIGURES_20261025_141407/figures/ (NB16 outputs); argv[2] is the output folder.
+Inputs (tracked): results/chemolab_submission/figure_sources/previous_submission/ (figures exactly as produced by
+NB04/NB07, NB05/NB08, NB06-v1.1/NB08, the TreeSHAP analysis and NB10-NB12 for the previous submission) and
+results/chemolab_submission/figure_sources/nb16_reliability/ (NB16 outputs).
+
+Usage:  python scripts/postprocess_legacy_figures.py --out figures_out
+        python scripts/verify_figures.py figures_out          # byte/pixel comparison with the submitted figures
 
 Legacy figures: remove the in-figure title (journal rule) and replace
 notebook-style labels (snake_case, notebook IDs, 'A.' panel labels) with publication labels. Pixel data of the plots
 are untouched; text is re-typeset in DejaVu Sans (matplotlib's default font, used to draw the originals).
 NB16 reliability PDFs are cropped through the PDF CropBox, so they remain vector."""
-import sys, os, shutil
+import argparse, os
+from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from pypdf import PdfReader, PdfWriter
 
-B, OUT = sys.argv[1], sys.argv[2]
-P3 = B + '/pkg/Banana_Chemolab_v03/figures/'
-P16 = B + '/nb16/NB16_PUBLICATION_FIGURES_20261025_141407/figures/'
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / 'results' / 'chemolab_submission' / 'figure_sources'
+ap = argparse.ArgumentParser(); ap.add_argument('--out', default='figures_out'); OUT = ap.parse_args().out
+os.makedirs(OUT, exist_ok=True)
+P3 = str(SRC / 'previous_submission') + '/'
+P16 = str(SRC / 'nb16_reliability') + '/'
 FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
 if not os.path.exists(FONT):
     import matplotlib; FONT = os.path.join(os.path.dirname(matplotlib.__file__), 'mpl-data/fonts/ttf/DejaVuSans.ttf')

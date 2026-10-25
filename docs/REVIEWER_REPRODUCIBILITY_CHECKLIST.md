@@ -5,7 +5,7 @@
 - [x] Raw dataset is not relicensed or redistributed by this repository.
 - [x] Audited master-data SHA-256 documented.
 - [x] Frozen LOEO-protocol SHA-256 documented.
-- [x] Inferred original block versus balancing tail is explicitly audited in current Table S1.
+- [x] Inferred original block versus balancing tail is explicitly audited in Table S1.
 
 ## Leakage control
 - [x] Complete experiments are held out in outer LOEO evaluation.
@@ -28,11 +28,11 @@
 - [x] NB08 source-clean serialization correction is documented without changing code/results.
 
 ## Reviewer-requested explanatory additions
-- [x] Repeated-CV AUC variability is visible in current Figure 1.
-- [x] Selection loss is directly visualized in current Figure 3.
+- [x] Repeated-CV AUC variability is visible in Figure 2.
+- [x] Selection loss is directly visualized in Figure 3.
 - [x] Stage-matched effective n is versioned as Table S2.
 - [x] Development-majority no-skill baseline is versioned as Table S3.
-- [x] TreeSHAP Figure S3 is explicitly labeled post-hoc explanatory and non-causal.
+- [x] TreeSHAP (Figure S1) is explicitly labeled post-hoc explanatory and non-causal.
 - [x] `shap==0.50.0` is pinned in the environment used for the explanatory addition.
 
 ## Repository audit
@@ -40,14 +40,17 @@
 - [x] Python code cells are syntax-checked by CI after excluding notebook magic/shell directives.
 - [x] Frozen numerical results are checked against expected key values.
 - [x] Seven frozen analytical evidence tables are checked automatically.
-- [x] Current revised-manuscript table mappings are versioned; exact SHA-256 provenance is recorded for Figures 1–5 and Figures S1–S3.
+- [x] Previous-submission table mappings and figure SHA-256 values are kept for provenance in `results/manuscript_current/`.
 - [x] Reviewer-requested Tables S1–S3 are versioned and hash-checked.
 - [x] Raw archives and large prediction dumps are prohibited from the Git repository.
 
 ## Post-hoc robustness layer (current submission)
 - [x] Prospective initial-window normalization (NB14) evidence is versioned in `results/post_hoc/nb14_prospective_domain_z/`.
 - [x] Feature displacement, PCA loadings, projections and error localization (NB15) are versioned in `results/post_hoc/nb15_spectral_error_audit/`.
-- [x] Every figure of the current submission is mapped to its source and SHA-256 in `results/chemolab_submission/`.
-- [x] Figures 1, 2, 7–11, S8–S10 and S12–S15 are regenerated from tracked files by `scripts/make_publication_figures.py`.
-- [x] The NB17 notebook (positive control, MSC, alternative calibrators) and its outputs are included (`notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/`).
+- [x] All 26 figures of the current submission are versioned in `results/chemolab_submission/figures/`; the audit checks that each PNG is byte-identical (SHA-256) to the image embedded in the submitted Word files.
+- [x] All 26 figures are regenerated from tracked files (`scripts/make_publication_figures.py`, `scripts/postprocess_legacy_figures.py`) and compared with the submitted files by `scripts/verify_figures.py` in CI.
+- [x] The NB17 notebook (positive control, MSC, alternative calibrators) and its outputs are included (`notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/`); its candidate-grid differences from NB03 are disclosed in `config/PROTOCOL_V1.md`.
+- [x] NB16 reliability-diagram metrics and bin audit are versioned in `results/post_hoc/nb16_reliability_diagrams/`.
+- [x] Exact NB03 candidate grids (manuscript Table 2) are listed in `config/PROTOCOL_V1.md`.
+- [x] `CITATION.cff` lists exactly the three manuscript authors with affiliations.
 - [ ] NB09–NB12 and NB14–NB16 notebook sources to be added.

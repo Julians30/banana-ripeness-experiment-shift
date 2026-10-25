@@ -23,7 +23,7 @@ The primary confirmatory analysis uses the **TPHiS** representation because it p
 
 ## Primary experiments
 
-Tests 2, 3, 4 and 5 are treated as independent acquisition experiments for external validation.
+Tests 2, 3, 4 and 5 are treated as independent acquisition experiments for external validation. None of the four archives contains files for a Test 1, so the study uses the four experiments released with a common TPH + spectral basis.
 
 Original TPHiS observations retained after audit: **17,662**.
 
@@ -51,3 +51,14 @@ SHA-256:
 `0a06fb3773f85dacee42e18eecf17e5e2a8e7f5e9508cd3d60bd4b66757e8ea8`
 
 The frozen nested LOEO protocol is stored in `config/nested_loeo_protocol_v1.json`.
+
+## Master-file variables used by the analyses
+
+| Role | Columns |
+|---|---|
+| Experiment (grouping unit) | `test_id` |
+| Ripeness stage (target, 1–5) | `stage` |
+| TPH | `Temp-int`, `Press-int`, `Humid-int` |
+| Spectral (18 channels, 410–940 nm) | `SpA410`, `SpB435`, `SpC460`, `SpD485`, `SpE510`, `SpF535`, `SpG560`, `SpH585`, `SpR610`, `SpI645`, `SpS680`, `SpJ705`, `SpT730`, `SpU760`, `SpV810`, `SpW860`, `SpK900`, `SpL940` |
+
+The master file is produced by NB01 from `TPHiS.zip` and is not redistributed. NB17 checks the per-experiment stage counts against manuscript Table 1 before fitting.

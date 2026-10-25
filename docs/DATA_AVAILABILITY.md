@@ -18,4 +18,6 @@ The frozen LOEO protocol has SHA-256:
 
 `86731ff9a292f1afd35a215105b14c4af3aa2bda5e8c4dad4df639d4d82ad930`
 
-Large intermediate prediction files are not required for understanding the manuscript results and are not duplicated in the Git repository. Versioned archival storage can be added to the software release if required by the target journal.
+Post-hoc robustness evidence (NB14–NB17) is versioned in `results/post_hoc/`. Record-level files there contain development-fitted projection coordinates, predictions and error outcomes, not raw sensor values. The 26 figures embedded in the submitted manuscript are versioned in `results/chemolab_submission/figures/` together with the files needed to regenerate them.
+
+Large intermediate prediction files are not required for understanding the manuscript results and are not duplicated in the Git repository. A versioned archival snapshot of this repository (for example a Zenodo DOI linked to a GitHub release) can be created at acceptance and cited in the data availability statement.

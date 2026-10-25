@@ -79,7 +79,7 @@ Only the four held-out experiments are independent generalization units. Row-lev
 
 The NB07 factorial OLS/ANOVA is retained only as structural effect-size decomposition. Conventional ANOVA p-values are not interpreted as confirmatory evidence because the 60 model × modality × experiment cells are not 60 independent experiments.
 
-The revised manuscript uses per-experiment observed-class Macro-F1 as its primary fold-specific external endpoint. Fixed-label 1–5 Macro-F1 remains available as a sensitivity/summary metric.
+The manuscript uses per-experiment observed-class Macro-F1 as its primary fold-specific external endpoint. Fixed-label 1–5 Macro-F1 remains available as a sensitivity/summary metric.
 
 ## Known NB02 exclusion
 
@@ -87,22 +87,16 @@ Do not use `external_support_distance_ratio` in the manuscript. Exact duplicate 
 
 ## Reviewer-requested post-freeze additions
 
-Peer-review/audit requests produced a separate explanatory layer without modifying the frozen confirmatory pipeline:
+Peer-review/audit requests produced a separate explanatory layer without modifying the frozen confirmatory pipeline (numbering of the current submission):
 
-- reconstruction count audit (current Table S1);
-- development-majority no-skill baseline (current Table S2);
-- explicit stage-matched effective sample sizes (current Table S3);
-- repeated-CV variability shown with domain AUC (current Figure 1);
-- direct selected-vs-post-hoc-best selection-loss panel (current Figure 3);
-- corrected near-zero calibrated-ECE visibility (current Figure 4);
-- post-hoc TreeSHAP explanation of frozen spectral tree-model fits (current Figure S3).
+- reconstruction count audit (Table S1);
+- explicit stage-matched effective sample sizes (Table S2);
+- development-majority no-skill baseline (Table S3);
+- repeated-CV variability shown with domain AUC (Figure 2);
+- direct selected-vs-post-hoc-best selection-loss panel (Figure 3);
+- post-hoc TreeSHAP explanation of frozen spectral tree-model fits (Figure S1).
 
-Current presentation files are versioned under:
-
-- `results/manuscript_current/`
-- `results/reviewer_revision/`
-
-Tables S1–S3 can be regenerated directly from the original TPHiS archive with:
+Tables S1–S3 are in `results/reviewer_revision/` and can be regenerated directly from the original TPHiS archive with:
 
 ```bash
 python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
@@ -111,6 +105,35 @@ python scripts/09_REVIEWER_REQUESTED_AUDITS.py \
 ```
 
 TreeSHAP is explanatory only and uses already-frozen NB03 spectral Random Forest/XGBoost hyperparameters; it has no role in preprocessing, tuning, model selection, calibration or confirmatory external performance estimation.
+
+The previous-submission numbering is preserved, for provenance only, in `results/manuscript_current/`.
+
+## Post-hoc robustness layer (NB09–NB17)
+
+| Notebook | Analysis (manuscript section) | Evidence in this repository |
+|---|---|---|
+| NB09 | uniform/development-prevalence references; random-selection null (2.11) | values in the manuscript |
+| NB10 | SNV and complete-target DOMAIN_Z under nested LOEO (2.11, 3.7) | Figure 6 |
+| NB11–NB12 | duplicate-aware statistics; removal of shared spectral signatures (2.11, 3.7) | Figure S11 |
+| NB14 | prospective initial-window DOMAIN_Z, window sensitivity, composition stress (2.12, 3.8) | `results/post_hoc/nb14_prospective_domain_z/` |
+| NB15 | feature displacement, PCA loadings, PCA/UMAP projections, error localization (2.12, 3.7–3.8) | `results/post_hoc/nb15_spectral_error_audit/` |
+| NB16 | reliability diagrams with bin support, no refitting (3.5) | `results/post_hoc/nb16_reliability_diagrams/` |
+| NB17 | positive control, MSC, alternative calibrators (2.13, 3.9) | `notebooks/post_hoc/`, `results/post_hoc/nb17_reviewer_shield/` |
+
+NB17 is included as an executable notebook (Colab or local; set `NB17_MASTER_CSV`). NB17 coded its own candidate grid; its tree-ensemble candidates differ from NB03 (see `config/PROTOCOL_V1.md`), which explains the two scenarios in which it does not reproduce manuscript Table 4 exactly. Notebook sources for NB09–NB12 and NB14–NB16 are not yet included; their exported evidence is.
+
+## Publication figures
+
+All 26 figures embedded in the submitted manuscript and supplementary file are in `results/chemolab_submission/figures/` (PNG as embedded, plus vector PDF where available); their SHA-256 values are listed in `results/chemolab_submission/figure_provenance.csv` and checked by the audit. They can be regenerated from tracked files:
+
+```bash
+pip install -r requirements-figures.txt
+python scripts/make_publication_figures.py --out figures_out      # Figs. 1, 2, 7-11, S8-S10, S12-S15
+python scripts/postprocess_legacy_figures.py --out figures_out    # Figs. 3-6, S1-S7, S11
+python scripts/verify_figures.py figures_out
+```
+
+With the versions in `requirements-figures.txt` all 26 PNGs are byte-identical to the submitted files; other matplotlib/Pillow versions may change PNG encoding or anti-aliasing. `postprocess_legacy_figures.py` only removes in-figure titles and re-typesets labels of figures produced by the analytical notebooks (inputs in `results/chemolab_submission/figure_sources/`); plot pixels are not modified.
 
 ## Repository integrity audit
 
@@ -126,13 +149,14 @@ The audit is read-only and uses only the Python standard library. It verifies:
 - frozen nested-LOEO semantic hash;
 - frozen numerical evidence;
 - analytical table inventory;
-- current revised-manuscript table mappings and exact embedded-figure SHA-256 provenance;
+- previous-submission table mappings and figure SHA-256 provenance (kept for provenance);
 - reviewer-requested Tables S1–S3 and explanatory-scope documentation;
-- pinned Python/package metadata and four-author `CITATION.cff`;
+- pinned Python/package metadata and the three-author `CITATION.cff`;
 - manuscript-evidence traceability;
-- repository file policy.
+- repository file policy;
+- post-hoc evidence (NB14 key values, NB15 files, NB17 notebook syntax and outputs) and the SHA-256 of all 26 submitted figures.
 
-GitHub Actions runs the same read-only audit on pushes and pull requests. It does not create commits or push generated files back to the repository.
+GitHub Actions runs the same read-only audit, and a second job that regenerates all 26 figures and compares them with the submitted files, on pushes and pull requests. It does not create commits or push generated files back to the repository.
 
 ## Environment
 

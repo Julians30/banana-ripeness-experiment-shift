@@ -276,10 +276,14 @@ if "shap==0.50.0" not in requirements or "shap==0.50.0" not in environment:
     fail("SHAP dependency used by the revised manuscript is not pinned")
 if "python=3.13.15" not in environment:
     fail("environment.yml does not pin the analytical Python version")
-for author in ["Coronel-Reyes", "Haro-Sarango", "Delgado-Vera", "Triviño-Sánchez"]:
+AUTHORS = ["Coronel-Reyes", "Haro-Sarango", "Triviño Sanchez"]
+for author in AUTHORS:
     if author not in citation:
         fail(f"CITATION.cff missing manuscript author: {author}")
-print("PASS: Python/package environment and four-author citation metadata match the revised study.")
+n_entries = sum(1 for line in citation.splitlines() if line.lstrip().startswith("- family-names:"))
+if n_entries != 2 * len(AUTHORS):  # software authors + preferred-citation authors
+    fail(f"CITATION.cff lists {n_entries} author entries; expected exactly {len(AUTHORS)} in each author block")
+print("PASS: Python/package environment and three-author citation metadata (manuscript author list) match the revised study.")
 
 print("AUDIT 9/11 — documentation and manuscript-evidence traceability")
 readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -299,13 +303,24 @@ for phrase in [
     "Table_S1_reconstruction_count_audit.csv",
     "Table_S3_development_majority_no_skill_baseline.csv",
     "Table_S2_stage_matched_effective_sample_sizes.csv",
-    "Figure_S3_treeshap_spectral_tree_models.png",
+    "chemolab_submission/README.md",
+    "config/PROTOCOL_V1.md",
+    "nb17_reviewer_shield",
     "external_support_distance_ratio",
     "NB06-v1.1",
 ]:
     if phrase not in evidence_map:
         fail(f"manuscript evidence map missing: {phrase}")
-print("PASS: README and evidence map cover frozen and reviewer-revision evidence.")
+import re
+for md in sorted(ROOT.rglob("*.md")):
+    if ".git" in md.parts:
+        continue
+    for target in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", md.read_text(encoding="utf-8")):
+        if target.startswith(("http://", "https://", "mailto:")):
+            continue
+        if not (md.parent / target).exists():
+            fail(f"broken relative link in {md.relative_to(ROOT)}: {target}")
+print("PASS: README and evidence map cover frozen, reviewer-revision and post-hoc evidence; all relative Markdown links resolve.")
 
 print("AUDIT 10/11 — repository file policy")
 for path in ROOT.rglob("*"):
@@ -354,6 +369,14 @@ for name, expected in {
 provenance_rows = (ROOT / "results/chemolab_submission/figure_provenance.csv").read_text(encoding="utf-8").strip().splitlines()[1:]
 if len(provenance_rows) != 26:
     fail(f"expected 26 current-submission figures (11 main + 15 supplementary), found {len(provenance_rows)}")
+figure_dir = ROOT / "results" / "chemolab_submission" / "figures"
+for row in provenance_rows:
+    item, filename, expected_sha = row.split(",")[:3]
+    png = figure_dir / filename
+    if not png.exists():
+        fail(f"submitted figure file missing: {png.relative_to(ROOT)} ({item})")
+    if hashlib.sha256(png.read_bytes()).hexdigest() != expected_sha:
+        fail(f"submitted figure does not match the SHA-256 embedded in the manuscript: {filename}")
 parse_and_compile_post_hoc = json.loads((ROOT / "notebooks/post_hoc/17_REVIEWER_SHIELD_POSITIVE_CONTROL_MSC_CALIBRATORS.ipynb").read_text(encoding="utf-8"))
 for idx, cell in enumerate(parse_and_compile_post_hoc["cells"]):
     if cell.get("cell_type") == "code":
@@ -362,7 +385,7 @@ for idx, cell in enumerate(parse_and_compile_post_hoc["cells"]):
             compile(normalized_code(src), f"NB17:cell{idx}", "exec")
         except SyntaxError as exc:
             fail(f"NB17: Python syntax error in code cell {idx}: {exc}")
-print("PASS: NB14/NB15 evidence, NB17 notebook and the 26-figure current-submission map are versioned and consistent.")
+print("PASS: NB14/NB15 evidence, NB17 notebook and all 26 submitted figures (byte-identical to the manuscript/supplementary embeds) are versioned and consistent.")
 
 print("\nPASS: frozen analysis and current revised-manuscript evidence are internally consistent.")
 print("PASS: repository integrity audit completed successfully (11/11 stages).")

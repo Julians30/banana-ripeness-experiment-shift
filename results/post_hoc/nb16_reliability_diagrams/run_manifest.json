@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-10-25T14:18:37.311471+00:00",
+  "nb06_folder": "NB06_V1_1_WIDE_TEMPERATURE_20260823_181152",
+  "nb15_zip": "RESULTS_NB15_SPECTRAL_ERROR_AUDIT_20261025_135412.zip",
+  "nb15_sha256": "41035f4d1ef52af587a76b844417ce02fa65fdbbba14b8b6c660a0cb71b912b0",
+  "source_table_hashes": {
+    "bins": "e9e6c2f7d02b13df8fc5a1d486330bd51238803521c17a4965367a4d7841d6b6",
+    "metrics": "f8fe2679c1473ccd4e008326cd3c4db25b337752377c406a428dd1de8b874322",
+    "selected": "278fb4ba2409d140f75b71480f0f15f3dbe9ba625a477909d138ff0cb6cacafa"
+  },
+  "classifier_refits": 0,
+  "calibration_refits": 0,
+  "embedding_refits": 0,
+  "reliability_bins": 15,
+  "figures": 19,
+  "scope": "Presentation only; primary and exploratory populations kept separate"
+}

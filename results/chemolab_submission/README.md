@@ -14,7 +14,7 @@ None of the post-hoc layers modifies frozen outer predictions, model rankings, c
 | Manuscript | Content | Repository source |
 |---|---|---|
 | Table 1 | Stage composition of Tests 2–5 | `../main_tables/Table_1_dataset_stage_distribution.csv` |
-| Table 2 | Candidate models and frozen grids | `../../config/PROTOCOL_V1.md`; NB03 |
+| Table 2 | Candidate models and frozen grids | exact configurations in `../../config/PROTOCOL_V1.md`; NB03 `candidate_grid()` |
 | Table 3 | Stage-matched experiment-shift diagnostics | `../main_tables/Table_2_experiment_shift_diagnostics.csv` |
 | Table 4 | External performance of internally selected models | `../main_tables/Table_3_confirmatory_external_selected_models.csv`; `../main_tables/Table_4_model_selection_instability_summary.csv` |
 | Table 5 | Integrated synthesis | `../main_tables/Table_4`–`Table_7`; NB09–NB12 values; NB17; `../post_hoc/nb14_prospective_domain_z/`; `../post_hoc/nb15_spectral_error_audit/` |
@@ -29,14 +29,16 @@ None of the post-hoc layers modifies frozen outer predictions, model rankings, c
 
 ## Figures
 
-Figures marked **script** are regenerated from tracked files (pixel-identical PNGs; verified for the submitted version) with `python scripts/make_publication_figures.py --out <folder>`. Figures marked **post-processed** were produced by NB04/NB07/NB10–NB12 or NB16 and only had their in-figure title removed or labels corrected with `scripts/postprocess_legacy_figures.py` (plot pixels unchanged). SHA-256 values of the exact PNGs embedded in the submitted Word files are listed in `figure_provenance.csv`.
+All 26 submitted figures are in [`figures/`](figures/) (PNG exactly as embedded in the Word files; vector PDF where available). The audit checks each PNG against the SHA-256 in `figure_provenance.csv`.
+
+Figures marked **script** are regenerated from tracked files (pixel-identical PNGs; verified for the submitted version) with `python scripts/make_publication_figures.py --out <folder>`. Figures marked **post-processed** were produced by NB04/NB07/NB10–NB12 or NB16 and only had their in-figure title removed or labels corrected with `scripts/postprocess_legacy_figures.py` (plot pixels unchanged; inputs in [`figure_sources/`](figure_sources/): `previous_submission/` holds the notebook-produced figures of the previous submission, where `Figure_S4.png` is the current Figure S11, and `nb16_reliability/` holds the NB16 outputs). `python scripts/verify_figures.py <folder>` compares regenerated PNGs with the submitted ones; with `requirements-figures.txt` all 26 are byte-identical.
 
 | Manuscript | Content | Source | Production |
 |---|---|---|---|
 | Figure 1 | Leakage-safe study design | design schematic | script |
 | Figure 2 | Domain ROC-AUC and MMD² | `../main_tables/Table_2_experiment_shift_diagnostics.csv` | script |
 | Figure 3 | Model-selection transportability | NB04/NB07 | post-processed |
-| Figures 4–5 | Spectral reliability before/after temperature scaling | NB16 (NB06-v1.1 probabilities) | post-processed |
+| Figures 4–5 | Spectral reliability before/after temperature scaling | NB16 (NB06-v1.1 probabilities); `../post_hoc/nb16_reliability_diagrams/` | post-processed |
 | Figure 6 | Selected-model Macro-F1 after spectral normalization | NB10 | post-processed |
 | Figure 7 | PCA loadings, Test 3 fold | NB15 `pca_coefficients.csv`, `pca_explained_variance.csv` | script |
 | Figure 8 | Prospective normalization synthesis | NB14 `08`, `09`; NB15 `conditional_resampling_sensitivity.csv`, `leave_one_experiment_out_summary.csv` | script |
