@@ -7,7 +7,7 @@ files are byte-identical (SHA-256) and, if not, whether the decoded pixels are i
 PNG bytes can differ across matplotlib/Pillow versions even when the drawing is unchanged.
 Exit status is 1 if any figure differs at pixel level.
 """
-import hashlib, sys
+import hashlib, os, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +27,16 @@ for new in sorted(new_dir.glob("*.png")):
     from PIL import Image
     a, b = np.asarray(Image.open(new).convert("RGB")), np.asarray(Image.open(ref).convert("RGB"))
     same = a.shape == b.shape and bool((a == b).all())
-    print(f"{new.name:16s} {'pixel-identical (different PNG encoding)' if same else 'DIFFERENT'}")
+    if same:
+        detail = "pixel-identical (different PNG encoding)"
+    elif a.shape != b.shape:
+        detail = f"DIFFERENT size {a.shape[1]}x{a.shape[0]} vs submitted {b.shape[1]}x{b.shape[0]}"
+    else:
+        diff = np.abs(a.astype(int) - b.astype(int)).max(axis=2)
+        detail = f"DIFFERENT pixels: {100 * (diff > 0).mean():.3f}% differ, {100 * (diff > 32).mean():.3f}% by >32 levels"
+    print(f"{new.name:16s} {detail}")
+    if os.environ.get("GITHUB_ACTIONS") and not same:
+        print(f"::warning title={new.name}::{detail}")
     if not same:
         failed.append(new.name)
 print(f"checked {checked} figures; {len(failed)} differ")
