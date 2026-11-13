@@ -1,6 +1,6 @@
 # Banana Ripeness Experiment Shift
 
-![Enviado](https://img.shields.io/badge/Enviado-Chemometrics%20and%20Intelligent%20Laboratory%20Systems-2E6DA4?style=flat-square)
+![Submitted](https://img.shields.io/badge/Submitted-SN%20Computer%20Science%20%28Springer%29-2E6DA4?style=flat-square)
 
 [![repository-audit](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml/badge.svg)](https://github.com/Julians30/banana-ripeness-experiment-shift/actions/workflows/repository-audit.yml)
 
@@ -13,7 +13,7 @@ Julián Coronel-Reyes¹ \*, Alexander Haro-Sarango², Johnny Javier Triviño San
 ¹ Facultad de Ciencias Agropecuarias, Universidad Técnica de Machala, Machala, Ecuador · ² Escuela Profesional de Contabilidad, Universidad Peruana Unión, Lima, Peru · ³ Instituto Superior Universitario Bolivariano de Tecnología (ITB), Guayaquil, Ecuador
 \* Corresponding author: jcoronel1@utmachala.edu.ec
 
-**Manuscript status:** Submitted to *Chemometrics and Intelligent Laboratory Systems* on **25 October 2026**.
+**Current manuscript status (13 November 2026):** Submitted to *SN Computer Science* (Springer), as reported by the author; editorial decision pending. The earlier submission to *Chemometrics and Intelligent Laboratory Systems* (25 October 2026) was rejected. The historical `results/chemolab_submission/` folder is retained for reproducibility and does not represent the current submission package.
 
 ## Reviewer quick guide
 
